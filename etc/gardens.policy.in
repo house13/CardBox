@@ -1,0 +1,6 @@
+//
+// The security policy used by the Game Gardens server
+
+grant codeBase "file:@PREFIX@/dist/-" {
+    permission java.security.AllPermission;
+};

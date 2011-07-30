@@ -1,0 +1,44 @@
+#if ($error || $status)
+#set ($title = $i18n.xlate("game_jnlp.title"))
+#import ("/header.wm")
+
+#import ("/footer.wm")
+#else
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- JNLP File for $game.name -->
+
+<!-- If you're seeing this in your web browser, you probably need to
+     download and install the Sun JRE from http://java.sun.com/j2se/ -->
+
+<jnlp spec="1.0+" codebase="$codebase"
+      href="$base_path/game_${game.gameId}.jnlp">
+  <information>
+    <title>$game.name</title>
+    <vendor>Three Rings Design, Inc.</vendor>
+    <homepage href="$base_path/view_game.wm?gameid=$game.gameId"/>
+    <description kind="short">
+        $string.restrictHTML($string.truncate($game.description, 120, "..."))
+    </description>
+    <description>
+        $string.restrictHTML($game.description)
+    </description>
+    <icon kind="splash" href="splash.png"/>
+    <icon href="icon.gif"/>
+  </information>
+  <security>
+    <all-permissions/>
+  </security>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="gg-client.jar"/>
+    <property name="game_id" value="$game.gameId"/>
+    <property name="game_name" value="$game.name"/>
+    <property name="resource_url" value="$resource_url"/>
+  </resources>
+  <application-desc main-class="com.threerings.toybox.client.ToyBoxApp">
+    <argument>$server</argument>
+    <argument>$port</argument>
+  </application-desc>
+</jnlp>
+#end

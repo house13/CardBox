@@ -1,0 +1,7 @@
+#
+# Web crawler control file
+
+User-agent: *
+Disallow: /account/
+Disallow: /client/
+Disallow: /images/

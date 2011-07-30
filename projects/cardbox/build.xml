@@ -1,0 +1,194 @@
+<?xml version="1.0" standalone="yes"?>
+<!-- build configuration -->
+<project name="cardbox" default="compile" basedir="." xmlns:artifact="urn:maven-artifact-ant">
+  <property name="deploy.dir"  value="dist"/>
+  <property name="src.dir"     value="src/main/java"/>
+  <property name="tsrc.dir"    value="src/test/java"/>
+  <property name="asrc.dir"    value="src/main/as"/>
+  <property name="classes.dir"  value="${deploy.dir}/classes"/>
+  <property name="tclasses.dir" value="${deploy.dir}/test-classes"/>
+
+  <property name="ooo-build.vers" value="2.1"/>
+  <ant antfile="etc/bootstrap.xml"/>
+  <import file="${user.home}/.m2/ooo-build/${ooo-build.vers}/ooo-build.xml"/>
+
+  <target name="-check-ooo">
+    <available property="threerings.present" classname="com.threerings.user.OOOUser"
+               classpathref="compile.path"/>
+  </target>
+
+  <target name="-prepare" depends="-init-ooo">
+    <mavendep pom="pom.xml" id="compile"/>
+    <mavendep pom="pom.xml" id="test" scope="test"/>
+	<!-- Remove all actionscript junk
+    <mavendep pom="etc/as-pom.xml" pathProp="aslib.path"/>
+	-->
+    <mkdir dir="${deploy.dir}"/>
+    <path id="built.classpath">
+      <path refid="compile.path"/>
+      <pathelement location="${classes.dir}"/>
+    </path>
+    <path id="test.classpath">
+      <path refid="testlibs.classpath"/>
+      <pathelement location="${classes.dir}"/>
+      <pathelement location="${tclasses.dir}"/>
+    </path>
+  </target>
+
+  <target name="-preptools" depends="-prepare">
+    <artifact:dependencies pathId="tools.classpath">
+      <remoteRepository id="ooo" url="http://threerings.github.com/maven-repo"/>
+      <dependency groupId="com.threerings" artifactId="narya-tools" version="1.2"/>
+    </artifact:dependencies>
+    <taskdef resource="com/threerings/presents/tools.properties" classpathref="tools.classpath"/>
+  </target>
+
+  <target name="clean" depends="-init-ooo" description="Cleans out build results">
+    <delete dir="${deploy.dir}/classes"/>
+    <delete dir="${deploy.dir}/docs"/>
+    <delete failonerror="false"><fileset dir="${deploy.dir}" includes="*.jar"/></delete>
+    <delete failonerror="false"><fileset dir="${deploy.dir}" includes="*.swc"/></delete>
+    <cleanmavendepcache pom="pom.xml"/>
+	<!-- Remove all actionscript junk
+    <cleanmavendepcache pom="etc/as-pom.xml"/>
+	-->
+    <cleanmavendepcache id="test"/>
+  </target>
+
+  <target name="distclean" description="Scorched earth clean">
+    <delete dir="${deploy.dir}"/>
+  </target>
+
+  <target name="compile" depends="-prepare,-check-ooo" description="Builds the Java code.">
+    <mkdir dir="${classes.dir}"/>
+    <copy todir="${classes.dir}"><fileset dir="src/main/resources" includes="**"/></copy>
+    <ooojavac version="1.5" srcdir="${src.dir}" destdir="${classes.dir}"
+        classpathref="compile.path">
+      <exclude name="com/threerings/toybox/server/ooo/**" unless="threerings.present"/>
+    </ooojavac>
+
+<!-- uncomment if we ever have test code
+    <mkdir dir="${tclasses.dir}"/>
+    <copy todir="${tclasses.dir}"><fileset dir="src/test/resources" includes="**"/></copy>
+    <ooojavac srcdir="${tsrc.dir}" destdir="${tclasses.dir}" version="1.5"
+        classpathref="test.classpath"/>
+-->
+  </target>
+
+  <!-- Remove all actionscript junk
+  <target name="aslib" depends="-prepare" description="Builds the ActionScript code">
+    <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.0"/>
+    <compc srcdir="${asrc.dir}" libpath="${aslib.path}"
+        dest="${deploy.dir}/${ant.project.name}lib.swc"/>
+  </target>
+  -->
+
+  <target name="javadoc" depends="-prepare" description="Builds the Java documentation">
+    <mkdir dir="${deploy.dir}/docs"/>
+    <javadoc sourcepath="${src.dir}" packagenames="com.threerings.*"
+             destdir="${deploy.dir}/docs" additionalparam="-breakiterator">
+      <classpath refid="compile.path"/>
+      <link href="http://java.sun.com/j2se/1.5/docs/api/"/>
+      <link href="http://samskivert.googlecode.com/svn/apidocs/"/>
+      <link href="http://depot.googlecode.com/svn/apidocs/"/>
+      <link href="http://www.threerings.net/code/narya/docs/api"/>
+      <link href="http://www.threerings.net/code/vilya/docs/api"/>
+      <link href="http://www.threerings.net/code/nenya/docs/api"/>
+    </javadoc>
+    <copy todir="${deploy.dir}/docs">
+      <fileset dir="${src.dir}" includes="**/*.png"/>
+    </copy>
+  </target>
+
+  <!-- Remove all actionscript junk
+  <target name="asdoc" depends="-prepare" description="Builds the ActionScript documention">
+    <maventaskdef groupId="com.threerings.ant" artifactId="actionscript" version="1.0"/>
+    <mkdir dir="${deploy.dir}/asdocs"/>
+    <asdoc srcdir="${asrc.dir}" libpath="${aslib.path}" destdir="${deploy.dir}/asdocs"/>
+  </target>
+  -->
+
+  <property name="test" value=""/>
+  <target name="tests" depends="compile"
+          description="Runs unit tests. Use -Dtest=Foo to run only FooTest.">
+<!-- uncomment if we ever have test code
+    <taskdef name="unit" classpathref="test.classpath"
+      classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"/>
+    <mkdir dir="${deploy.dir}/test-reports"/>
+    <unit printsummary="off" haltonfailure="yes">
+      <classpath refid="test.classpath"/>
+      <sysproperty key="test_dir" value="${tclasses.dir}"/>
+      <formatter type="brief" usefile="false"/>
+      <formatter type="xml"/>
+      <batchtest todir="${deploy.dir}/test-reports">
+        <fileset dir="${tsrc.dir}" includes="**/*${test}*Test.java"/>
+      </batchtest>
+    </unit>
+-->
+  </target>
+
+  <target name="dist" depends="compile" description="Builds jar files.">
+    <jar destfile="${deploy.dir}/${ant.project.name}.jar" basedir="${classes.dir}"/>
+  </target>
+
+  <target name="genrecord" depends="-prepare"
+          description="Generates fields for persistent record classes.">
+    <taskdef name="grecord" classname="com.samskivert.depot.tools.GenRecordTask"
+             classpathref="compile.path"/>
+    <!-- make sure the record class files are all compiled -->
+    <javac srcdir="${src.dir}" destdir="${classes.dir}" includeAntRuntime="false"
+           debug="on" optimize="${build.optimize}" deprecation="on">
+      <classpath refid="compile.path"/>
+      <include name="**/*Record.java"/>
+    </javac>
+    <!-- now update the source files -->
+    <grecord classpathref="built.classpath">
+      <fileset dir="${src.dir}" includes="**/*Record.java"/>
+    </grecord>
+  </target>
+
+  <target name="gendobj" depends="-preptools"
+          description="Generates additional methods for distributed object classes">
+    <!-- make sure the dobject class files are all compiled -->
+    <ooojavac srcdir="${src.dir}" destdir="${classes.dir}" version="1.5"
+      classpathref="built.classpath">
+      <include name="**/*Object.java"/>
+    </ooojavac>
+    <!-- now generate the associated files -->
+    <gendobj classpathref="built.classpath">
+      <fileset dir="${src.dir}" includes="**/*Object.java"/>
+    </gendobj>
+  </target>
+
+  <target name="genservice" depends="-preptools"
+          description="Generates marshaller and dispatcher classes for all invocation services">
+    <!-- make sure the service class files are all compiled -->
+    <ooojavac srcdir="${src.dir}" destdir="${classes.dir}" version="1.5"
+      classpathref="built.classpath">
+      <include name="**/*Service.java"/>
+    </ooojavac>
+    <genservice header="lib/SOURCE_HEADER" asroot="${asrc.dir}" classpathref="built.classpath">
+      <fileset dir="${src.dir}">
+        <include name="**/client/*Service.java"/>
+      </fileset>
+    </genservice>
+  </target>
+
+  <target name="genascript" depends="-preptools"
+          description="Generates ActionScript versions of our Streamable classes">
+    <!-- now generate the associated files -->
+    <genascript header="lib/SOURCE_HEADER" asroot="${asrc.dir}">
+      <fileset dir="${src.dir}">
+        <include name="**/data/*.java"/>
+      </fileset>
+    </genascript>
+  </target>
+
+  <target name="maven-deploy" depends="dist,tests"
+          description="Deploys our build artifacts to a Maven repository.">
+    <mavendeploy file="${deploy.dir}/${ant.project.name}.jar" srcdir="${src.dir}" pom="pom.xml"/>
+	<!-- Remove all actionscript junk
+    <mavendeploy file="${deploy.dir}/${ant.project.name}lib.swc" pom="etc/as-pom.xml"/>
+	-->
+  </target>
+</project>

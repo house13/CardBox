@@ -1,0 +1,26 @@
+#!/bin/sh
+#
+# Command line launcher for the CardBox client
+
+ROOT=`dirname $0`/..
+
+if [ -z "$1" ]; then
+    echo "Usage: $0 username"
+    exit -1
+fi
+
+# Set up our classpath
+CLASSPATH=$JAVA_HOME/jre/lib/rt.jar:$ROOT
+CLASSPATH=$CLASSPATH:$ROOT/client/card-client.jar:$ROOT/client/card-game.jar
+export CLASSPATH
+
+# Potentially set up our security policy
+JAVA_ARGS="-Dno_log_redir=true"
+SECURITY_POLICY="$ROOT/client/gardens.policy"
+if [ -f $SECURITY_POLICY ]; then
+    JAVA_ARGS="$JAVA_ARGS -Djava.security.manager"
+    JAVA_ARGS="$JAVA_ARGS -Djava.security.policy=$SECURITY_POLICY"
+fi
+
+CLASS=com.hextilla.cardbox.client.CardBoxApp
+$JAVA_HOME/bin/java $JAVA_ARGS $CLASS localhost 47624 $1 secret
