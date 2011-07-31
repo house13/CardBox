@@ -231,7 +231,7 @@ public class CardBoxClient
         // create our managers and directors
         _locdir = createLocationDirector();
         _occdir = new OccupantDirector(_ctx);
-        //_chatdir = new ChatDirector(_ctx, ChatPanel.CHAT_MSGS);
+        _chatdir = new ChatDirector(_ctx, ChatPanel.CHAT_MSGS);
         _pardtr = new ParlorDirector(_ctx);
         _carddtr = new CardBoxDirector(_ctx);
     }
