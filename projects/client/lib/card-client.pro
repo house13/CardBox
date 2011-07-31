@@ -62,6 +62,12 @@
     public protected *;
 }
 
+# keep the guava object handy, for streamer
+-keep public class com.google.common.base.Objects {
+    public protected *;
+}
+
+
 # keep our view test harness
 -keep public class com.hextilla.cardbox.util.GameViewTest
 

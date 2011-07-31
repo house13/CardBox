@@ -28,6 +28,7 @@
     <proguard configuration="lib/card-client.pro">
       <libraryjar name="${rt.jar}"/>
       <libraryjar name="${java.home}/lib/jce.jar"/>
+	  <libraryjar path="lib/jsr305.jar"/>
       <injar path="${com.google.guava:guava:jar}" filter="!META-INF/*"/>
       <injar path="${com.threerings:getdown:jar}" filter="!META-INF/*,!**/tools/**"/>
       <injar path="${com.threerings:narya:jar}"
