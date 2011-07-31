@@ -130,7 +130,7 @@
       <sysproperty key="no_log_redir" value="true"/>
       <sysproperty key="java.security.manager" value=""/>
       <sysproperty key="java.security.policy" value="${deploy.dir}/client.policy"/>
-      <arg value="localhost"/>
+      <arg value="hextilla.com"/>
       <arg value="47624"/>
       <arg value="${username}"/>
       <arg value="secret"/>
@@ -141,6 +141,7 @@
   <!-- a target for running the game server -->
   <target name="server" depends="compile" description="Runs a test server.">
     <propertyfile file="${deploy.dir}/classes/cardbox.properties">
+      <entry key="server_host" value="hextilla.com"/>
       <entry key="resource_dir" value="${deploy.dir}"/>
       <entry key="resource_url" value="file://${deploy.dir}"/>
     </propertyfile>
