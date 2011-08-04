@@ -137,7 +137,7 @@ public class CardBoxManager
         GameDefinition gamedef = null;
         try {
             game.gameId = -1;
-            game.name = "test";
+            game.name = "Hextilla";
             game.maintainerId = 1;
             game.setStatus(Status.READY);
             game.definition = StreamUtil.toString(new FileReader(gameConfig));

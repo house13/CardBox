@@ -46,7 +46,7 @@ public class CardBoxUI
         // try to load our fancy font
         try {
             InputStream in =
-                CardBoxUI.class.getClassLoader().getResourceAsStream("rsrc/media/porc.ttf");
+                CardBoxUI.class.getClassLoader().getResourceAsStream("rsrc/media/quadrtic.ttf");
             fancyFont = Font.createFont(Font.TRUETYPE_FONT, in);
             fancyFont = fancyFont.deriveFont(Font.PLAIN, 52);
             in.close();
