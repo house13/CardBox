@@ -155,7 +155,7 @@
           permission java.security.AllPermission;
       };
     </echo>
-    <java classname="com.hextilla.cardbox.server.CardBoxServer" maxmemory="1024M" fork="true">
+    <java classname="com.hextilla.cardbox.server.CardBoxServer" fork="true">
       <classpath refid="classpath"/>
       <sysproperty key="java.security.manager" value=""/>
       <sysproperty key="java.security.policy" value="${deploy.dir}/server.policy"/>
