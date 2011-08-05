@@ -2,6 +2,7 @@
 # Proguard configuration file for Game Gardens client
 
 -dontskipnonpubliclibraryclasses
+-dontoptimize
 -dontobfuscate
 
 # we ignore a ton of stuff that we know not to be used
@@ -31,6 +32,7 @@
 -dontwarn org.apache.tools.ant.**
 -dontwarn org.apache.velocity.**
 -dontwarn org.lwjgl.**
+-dontwarn sun.misc.Unsafe
 
 # we need whatever we keep of samskivert to be around in its entirety so
 # that if a game uses the same classfile, the whole thing is there
@@ -62,11 +64,9 @@
     public protected *;
 }
 
-# keep the guava object handy, for streamer
--keep public class com.google.common.base.Objects {
-    public protected *;
+-keepclasseswithmembers public class * {
+    public static void main(java.lang.String[]);
 }
-
 
 # keep our view test harness
 -keep public class com.hextilla.cardbox.util.GameViewTest
