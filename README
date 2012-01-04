@@ -1,0 +1,40 @@
+  HEXTILLA
+6-sided cards!
+==============
+CardBox Library
+
+UWaterloo 4YDP for:
+-------------------
+Alex Steers
+Everett Bokma
+Nick Vanderzwet
+Trevor Fairey
+-------------------
+
+
+CARDBOX REPOSITORY
+(Lesser GPL licence)
+
+YOU NEED:
+- Java 1.6
+- Apache ant
+- Apache maven
+
+
+WHERE'S THE CARDBOX JAVA CODE?
+
+Check ./projects/cardbox for all the server/client code
+
+
+COMPILING THE CARDBOX
+
+Check the Ant build script for most detailed info (./build.xml)
+
+These probably work:
+- Build the jar:
+ant dist
+- Run a test server (production-style mode):
+ant server
+- Copy the jar into your maven repository (might be garbage):
+ant maven-deploy
+
