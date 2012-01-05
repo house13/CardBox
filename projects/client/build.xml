@@ -17,7 +17,7 @@
 
     <!-- copy our dependencies somewhere that we can pass them to proguard -->
     <artifact:dependencies filesetId="cardbox.fileset">
-      <dependency groupId="com.hextilla" artifactId="cardbox" version="1.0-SNAPSHOT"/>
+      <dependency groupId="com.hextilla" artifactId="cardbox" version="1.0"/>
     </artifact:dependencies>
 
     <!-- do the proguardian deed -->
