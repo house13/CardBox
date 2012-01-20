@@ -1,0 +1,59 @@
+HOW TO CONFIGURE THE CARDBOOK WEB APP:
+
+AFTER CONFIGURING EVERYTHING FOR CARDBOX/HEXTILLA,
+You'll need to install (through e.g. apt-get):
+jetty
+postgresql (+libpg-java)
+
+CONFIGURING POSTGRES (Ubuntu)
+From bash:
+sudo -u postgres createuser --superuser <USERNAME>
+sudo -u postgres psql
+
+In psql:
+\password <USERNAME>
+\q
+
+In {cardbox.home}/etc modify cardbox.properties:
+-update the DB username and password with the credentials you chose above
+
+From bash:
+sudo -u postgres createdb -O <USERNAME> hextilla
+psql hextilla
+
+In psql:
+create table sites (
+siteId integer PRIMARY KEY,
+siteString varchar(40));
+create table domains (
+siteId integer PRIMARY KEY,
+domain varchar(40));
+insert into sites values (-1, 'hextilla.com');
+insert into domains values (-1, 'hextilla.com');
+\q
+
+CONFIGURING JETTY (Ubuntu)
+First things first, you need to change a default setting:
+-in /etc/default/jetty, change NO_START to 0 (or comment it out)
+
+The jetty home folder should be in /usr/share/jetty
+
+In {jetty.home}/contexts, create a new XML file (e.g. cardbook.xml), with this in it:
+<?xml version="1.0"  encoding="ISO-8859-1"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
+<Configure class="org.mortbay.jetty.webapp.WebAppContext">
+  <Set name="contextPath">/cardbook</Set>
+  <Set name="war"><SystemProperty name="jetty.home" default="."/>/webapps/cardbook.war</Set>
+</Configure>
+
+In {cardbox.home} execute the following:
+ant client
+ant cardbook
+sudo cp webapps/cardbook/dist/cardbook.war /usr/share/jetty/webapps/
+sudo cp -R pages/* /usr/share/jetty/webapps/root/
+sudo chown -R jetty:adm /usr/share/jetty/webapps/*
+
+Start jetty with:
+sudo service jetty start
+
+Then, you should be able to test out the web app by navigating to http://localhost:8080 in your favourite browser
