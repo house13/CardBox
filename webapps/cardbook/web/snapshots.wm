@@ -1,0 +1,3 @@
+#foreach ($game in $games)
+<li> <a href="/cardbook/view_game.wm?gameid=$game.gameId ">$game.name</a>
+#end

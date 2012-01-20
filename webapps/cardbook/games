@@ -1,0 +1,86 @@
+create table derp
+:q
+\q
+drop table derp
+\q
+\h
+SHOW
+SHOW *
+TABLE
+TABLE ;
+SHOW *;
+SHOW;
+TABLE;
+\h TABEL
+\h table
+\h show
+SHOW ALL
+help
+\h
+;
+\d
+select * from GAMES;
+select * from ONLINE
+;
+\h
+\?
+\d
+\?
+\dn
+\q
+create table sites
+;
+create table domains;
+create table domains
+\d
+insert into sites values (2, -1, "hextilla.com");
+insert into sites values (2, -1, "hextilla.com");
+create table sites
+create table sites (
+siteId integer PRIMARY_KEY,
+siteString varchar(40));
+create table sites
+create table sites (
+siteId integer PRIMARY_KEY,
+siteString varchar(40));
+
+create table sites (
+siteId integer PRIMARY_KEY,
+siteString varchar(40));
+
+create table sites (
+siteId integer constraint PRIMARY_KEY,
+siteString varchar(40));
+
+create table sites (
+siteId integer constraint firstkey PRIMARY_KEY,
+siteString varchar(40));
+
+create table sites (
+siteId integer constraint firstkey PRIMARY KEY,
+siteString varchar(40));
+\d
+drop table sites
+
+create table sites (
+siteId integer, constraint firstkey PRIMARY KEY,
+siteString varchar(40));
+drop table sites;
+
+
+create table sites (
+siteId integer, constraint firstkey PRIMARY KEY(siteId),
+siteString varchar(40));
+drop table sites;
+
+
+create table sites (
+siteId integer PRIMARY KEY,
+siteString varchar(40));
+insert into sites values (2, -1, "hextilla.com");
+insert into sites values ( -1, "hextilla.com");
+insert into sites values ( -1, 'hextilla.com');
+select * from sites;
+\?
+\d sites
+\s games

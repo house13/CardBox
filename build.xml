@@ -28,18 +28,22 @@
     </copy>
   </target>
 
-  <target name="gardens" description="Builds the gardens webapp.">
-    <ant dir="webapps/gardens" target="dist" inheritAll="false"/>
+  <target name="cardbook" description="Builds the cardbook webapp.">
+    <ant dir="webapps/cardbook" target="dist" inheritAll="false"/>
     <copy todir="${deploy.dir}">
-      <fileset dir="webapps/gardens/dist" includes="*.war"/>
+      <fileset dir="webapps/cardbook/dist" includes="*.war"/>
     </copy>
+  </target>
+
+  <target name="webdev" description="Builds the cardbook webapp.">
+    <ant dir="webapps/cardbook" target="devmode" inheritAll="false"/>
   </target>
 
   <target name="client" depends="-prepare,cardbox" description="Creates the client jar file.">
     <ant dir="projects/client" target="all" inheritAll="false"/>
   </target>
 
-  <target name="distall" depends="-prepare,cardbox,gardens,client">
+  <target name="distall" depends="-prepare,cardbox,cardbook,client">
     <!-- copy our jar files into a directory where the games can build against them -->
     <copy todir="projects/games/lib">
       <fileset dir="${deploy.dir}/lib" includes="**/*.jar"/>
@@ -58,13 +62,13 @@
   <target name="distcleanall" depends="distclean"
           description="Deletes all temporary files here and in subprojects.">
     <ant dir="projects/cardbox" target="distclean" inheritAll="false"/>
-    <ant dir="webapps/gardens" target="distclean" inheritAll="false"/>
+    <ant dir="webapps/cardbook" target="distclean" inheritAll="false"/>
   </target>
 
   <target name="server" depends="-prepare">
     <artifact:dependencies pathId="server.classpath">
       <dependency groupId="com.hextilla" artifactId="cardbox" version="1.0"/>
-      <dependency groupId="org.hsqldb" artifactId="hsqldb" version="2.0.0"/>
+      <dependency groupId="postgresql" artifactId="postgresql" version="9.0-801.jdbc4"/>
     </artifact:dependencies>
     <java classname="com.hextilla.cardbox.server.CardBoxServer">
       <classpath>

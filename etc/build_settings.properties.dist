@@ -1,9 +1,0 @@
-#
-# Build settings for the Game Gardens system
-
-#
-# Used when signing the Game Gardens client
-
-sign.keystore = keystore.dat
-sign.alias = signCardBox
-sign.storepass = N1n7_eND064
