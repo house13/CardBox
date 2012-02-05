@@ -51,7 +51,6 @@ import com.hextilla.cardbox.server.CardBoxConfig;
 import com.hextilla.cardbox.server.persist.GameRecord;
 
 import com.hextilla.cardbook.CardbookApp;
-import com.hextilla.cardbook.auth.FBConfig;
 import com.hextilla.cardbook.auth.FBUser;
 import com.hextilla.cardbook.auth.FBUserManager;
 import com.hextilla.cardbook.auth.FBUserRepository;
