@@ -70,9 +70,9 @@ public class fbauth extends OptionalUserLogic
 	     HttpServletRequest req = ctx.getRequest();
 	     HttpServletResponse rsp = ctx.getResponse();
 	     String fbcode = req.getParameter("code");
-		 if (!StringUtil.isBlank(fbcode))
+		 if (StringUtil.isBlank(fbcode))
 		 {
-			 throw new FriendlyException("error.fbauth_nocode");
+			 throw new FriendlyException("error.fbauth_failure");
 		 }
 		 
 		 URL authUrl = new URL(getAuthURL(fbcode));
