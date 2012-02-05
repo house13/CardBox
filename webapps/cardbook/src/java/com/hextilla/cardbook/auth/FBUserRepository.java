@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import com.hextilla.cardbox.server.CardBoxConfig;
 import com.samskivert.io.PersistenceException;
 import com.samskivert.jdbc.ConnectionProvider;
 import com.samskivert.jdbc.DatabaseLiaison;
@@ -34,7 +35,7 @@ public class FBUserRepository extends JORARepository
 	     * is <code>userdb</code> which you'll probably need to know to provide the proper
 	     * configuration to your connection provider.
 	     */
-	    public static final String USER_REPOSITORY_IDENT = "userdb";
+	    public static final String USER_REPOSITORY_IDENT = "default";
 
 	    /**
 	     * Creates the repository and opens the user database. The database identifier used to fetch

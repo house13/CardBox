@@ -99,6 +99,7 @@ public class fbauth extends OptionalUserLogic
 			 authUser = userman.login(fbUser.getId(), accessToken, expires, req, rsp);
 			 playerExists = true;
 		 } catch (Exception e) {
+			 log.warning("New user: [user=" + fbUser.getId() + ",token=" + accessToken + "] Successful FB Authentication", e);
 		 }
 		 if (!playerExists) {
 			 FBUserRepository repo = userman.getRepository();
@@ -106,11 +107,12 @@ public class fbauth extends OptionalUserLogic
 				 repo.createUser(fbUser.getId(), new Username(getDefaultUsername()), fbUser.getName(), fbUser.getEmail(), SiteIdentifier.DEFAULT_SITE_ID);
 				 authUser = userman.login(fbUser.getId(), accessToken, expires, req, rsp);
 			 } catch (Exception e) {
+				 log.warning("Creating new user: [user=" + fbUser.getId() + ",token=" + accessToken + "] failed due to exception", e);
 			 }
 		 }
 		 ctx.put("fbid", fbUser.getId());
 		 ctx.put("fbname", fbUser.getName());
-		 ctx.put("fbemal", fbUser.getEmail());
+		 ctx.put("fbemail", fbUser.getEmail());
 	 }
 	 
 	 /** Performs the raw act of Facebook authentication, getting the token/expiry
