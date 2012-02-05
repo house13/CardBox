@@ -275,12 +275,11 @@ public class FBUserRepository extends JORARepository
 
 	        // if we found one, update its expires time and reuse it
 	        if (authcode != null) {
-	            update("update sessions set expires = '" + expires + "' where " +
+	            update("update sessions set authcode = '"+ token +"' expires = '" + expires + "' where " +
 	                   "authcode = '" + authcode + "'");
 	        } else {
 	            // otherwise create a new one and insert it into the table
-	            authcode = FBUserUtil.genAuthCode(user);
-	            update("insert into sessions (authcode, userId, expires) values('" + authcode + "', " +
+	            update("insert into sessions (authcode, userId, expires) values('" + token + "', " +
 	                   user.userId + ", '" + expires + "')");
 	        }
 
