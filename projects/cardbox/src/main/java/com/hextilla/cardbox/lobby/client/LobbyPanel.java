@@ -22,6 +22,7 @@ package com.hextilla.cardbox.lobby.client;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
@@ -70,6 +71,8 @@ import com.hextilla.cardbox.util.CardBoxContext;
 import com.hextilla.cardbox.lobby.data.LobbyCodes;
 import com.hextilla.cardbox.lobby.data.LobbyConfig;
 import com.hextilla.cardbox.lobby.data.LobbyObject;
+import com.hextilla.cardbox.lobby.friendlist.FriendList;
+import com.hextilla.cardbox.lobby.hextillaPanel.HextillaPanel;
 import com.hextilla.cardbox.lobby.table.TableListView;
 
 import static com.hextilla.cardbox.lobby.Log.log;
@@ -95,58 +98,25 @@ public class LobbyPanel extends JPanel
     	// Gridbag layout lets us do some wise shit
     	setLayout(new GridBagLayout());
     	GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.BOTH;
+        c.insets = new Insets(5, 5, 5, 5);        
     	
     	// Add the page title
         _title = new MultiLineLabel("", MultiLineLabel.CENTER);
         _title.setFont(CardBoxUI.fancyFont);
-        c.weightx = 2.0;
+        c.weightx = 1.0;
         c.weighty = 1.0;
         c.gridwidth = GridBagConstraints.REMAINDER;
         c.gridheight = 1;
-        c.insets = new Insets(5, 5, 5, 5);
         add(_title, c);
         
-        // Add the buttons, give them their own panel, love me some GridBagLayout
-        JPanel buttonPane = new JPanel(new GridLayout(4, 1, 5, 5));
-        GridBagConstraints buttonConstraints = new GridBagConstraints();         
-        
-        // Solo     
-        JButton soloButton = new JButton("Solo-Mode");    
-        buttonPane.add(soloButton, buttonConstraints);
-                
-        // Matchmaking
-        JButton matchButton = new JButton("Match-Making");
-        buttonPane.add(matchButton, buttonConstraints);       
-        
-        // Options
-        JButton optsButton = new JButton("Options");      
-        buttonPane.add(optsButton, buttonConstraints);     
-        
-        // Some whitespace, intentionally left blank
-        JPanel whitespace = new JPanel();       
-        buttonPane.add(whitespace, buttonConstraints);
-        
-        // Add the button panel
+        // Main Panel, populated based on the games download progress
+        _main = new JPanel(new GridLayout(1,1));
         c.weightx = 1.0;
         c.weighty = 10.0;
-        c.gridwidth = GridBagConstraints.RELATIVE; 
-        c.gridheight = 10;
-        c.fill = GridBagConstraints.BOTH;        
-        add(buttonPane, c);
-        
-        // Add the friendPanel (same size as button panel)
-        //TODO: make this a special panel, for now just piggyback on existing matchmaking frame
-        JPanel friendPanel = new JPanel(); _main = friendPanel;
-        friendPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        c.gridwidth = GridBagConstraints.REMAINDER;        
-        add(friendPanel, c);   
-        
-        // Add the chat panel
-        c.weightx = 3.0;
-        c.weighty = 3.0;
-        c.gridwidth = GridBagConstraints.REMAINDER;
-        c.gridheight = GridBagConstraints.REMAINDER;             
-        add(new ChatPanel(ctx, true), c);        
+        c.gridwidth = GridBagConstraints.REMAINDER; 
+        c.gridheight = 10;      
+        add(_main, c);        
 
         // load up our background image
         try {
@@ -160,32 +130,9 @@ public class LobbyPanel extends JPanel
         }
 
         // properly configure all of our components
-        SwingUtil.applyToHierarchy(this, _colorizer);
+        SwingUtil.applyToHierarchy(this, _colorizer);      
     }
-
-    /**
-     * Instructs the panel to create and display the match making view.
-     */
-    public void showMatchMakingView (LobbyConfig config)
-    {
-        // create our match-making view
-        JComponent matchView = createMatchMakingView(_ctx, config);
-        if (matchView != null) {
-            _main.add(matchView, GroupLayout.FIXED, 0);
-            if (matchView instanceof PlaceView) {
-                // because we're adding our match making view after we've
-                // already entered our place, we need to fake an entry
-                ((PlaceView)matchView).willEnterPlace(_lobj);
-            }
-            // properly configure all of our components (limiting to a
-            // depth of six is a giant hack but I'm too lazy to do the
-            // serious dicking around that is needed to do the "right"
-            // thing; fucking user interfaces)
-            SwingUtil.applyToHierarchy(this, 6, _colorizer);
-            SwingUtil.refresh(_main);
-        }
-    }
-
+    
     // documentation inherited
     public void willEnterPlace (PlaceObject plobj)
     {
@@ -208,28 +155,6 @@ public class LobbyPanel extends JPanel
         if (_bgimg != null) {
             Graphics2D gfx = (Graphics2D)g;
             ImageUtil.tileImage(gfx, _bgimg, 0, 0, getWidth(), getHeight());
-        }
-    }
-
-    /**
-     * Creates a custom view for the game we're match-making in this
-     * lobby.
-     */
-    protected JComponent createMatchMakingView (
-        CardBoxContext ctx, LobbyConfig config)
-    {
-        GameDefinition gamedef = config.getGameDefinition();
-        CardBoxGameConfig gconfig = new CardBoxGameConfig(
-            config.getGameId(), gamedef);
-
-        // we avoid putting this code into MatchConfig itself as that
-        // introduces dependencies to all sorts of client side
-        // user-interface code for any code that parses game definitions
-        // or otherwise manipulates MatchConfig instances
-        if (gamedef.match instanceof TableMatchConfig) {
-            return new TableListView(ctx, gconfig);
-        } else {
-            return null;
         }
     }
 
@@ -256,6 +181,50 @@ public class LobbyPanel extends JPanel
             }
         }
     };
+    
+    // Set game config data (after it has loaded)
+	public void setGameConfig(LobbyConfig config) {
+		// TODO Auto-generated method stub
+		_config = config;	
+	}   
+	
+    public void loadGamePanel (LobbyConfig config)
+    {
+        // create our match-making view
+        JComponent friendView = createGamePanel(_ctx, config);
+        if (friendView != null) {
+        	_main.add(friendView);
+            if (friendView instanceof PlaceView) {
+                // because we're adding our match making view after we've
+                // already entered our place, we need to fake an entry
+                ((PlaceView)friendView).willEnterPlace(_lobj);
+            }
+            // properly configure all of our components (limiting to a
+            // depth of six is a giant hack but I'm too lazy to do the
+            // serious dicking around that is needed to do the "right"
+            // thing; fucking user interfaces)
+            SwingUtil.applyToHierarchy(this, 6, _colorizer);
+            SwingUtil.refresh(_main);
+        }
+    }
+    
+    protected JComponent createGamePanel (
+            CardBoxContext ctx, LobbyConfig config)
+        {
+            GameDefinition gamedef = config.getGameDefinition();
+            CardBoxGameConfig gconfig = new CardBoxGameConfig(
+                config.getGameId(), gamedef);
+
+            // we avoid putting this code into MatchConfig itself as that
+            // introduces dependencies to all sorts of client side
+            // user-interface code for any code that parses game definitions
+            // or otherwise manipulates MatchConfig instances
+            if (gamedef.match instanceof TableMatchConfig) {
+                return new HextillaPanel(ctx, gconfig);
+            } else {
+                return null;
+            }
+        }    
 
     /** Giver of life and services. */
     protected CardBoxContext _ctx;
@@ -263,7 +232,7 @@ public class LobbyPanel extends JPanel
     /** Our translation messages. */
     protected MessageBundle _msgs;
 
-    /** Contains the match-making view and the chatbox. */
+    /** Contains the main view. */
     protected JPanel _main;
 
     /** Our lobby distributed object. */
@@ -272,9 +241,9 @@ public class LobbyPanel extends JPanel
     /** Displays the game title. */
     protected MultiLineLabel _title;
 
-    /** Our occupant list display. */
-    protected OccupantList _occupants;
-
     /** Our background image. */
     protected Mirage _bgimg;
+    
+    // Game config
+    protected LobbyConfig _config;
 }

@@ -53,12 +53,12 @@ public class LobbyController extends PlaceController
     @Override
     public void willEnterPlace (PlaceObject plobj)
     {
-        super.willEnterPlace(plobj);
+        super.willEnterPlace(plobj);     
 
         // let the cardbox director know that we're in
         _ctx.getCardBoxDirector().enteredLobby(_config);
 
-        // TODO: hold off on creating the match making interface until the
+        // TODO: hold off on creating the friends list until;
         // resources are downloaded (indeed show the download progress in
         // that same location)
 
@@ -69,9 +69,9 @@ public class LobbyController extends PlaceController
                 // TODO: show download progress
             }
             public boolean downloadProgress (int percent, long remaining) {
-                log.info("Download progress: " + percent);
+                log.info("Download progress: " + percent);             
                 if (percent == 100) {
-                    _panel.showMatchMakingView(_config);
+                	_panel.loadGamePanel(_config);
                 } else {
                     // TODO: show download progress
                 }

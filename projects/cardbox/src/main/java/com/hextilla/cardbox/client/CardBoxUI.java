@@ -21,10 +21,17 @@ package com.hextilla.cardbox.client;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 
+import java.io.File;
 import java.io.InputStream;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+
 import com.hextilla.cardbox.util.CardBoxContext;
+import com.threerings.media.image.BufferedMirage;
 
 import static com.hextilla.cardbox.Log.log;
 
@@ -38,6 +45,31 @@ public class CardBoxUI
 
     /** The nice blue background we use for scrolly bits. */
     public static final Color LIGHT_BLUE = new Color(0xC8E1E9);
+    
+    public static ImageIcon getDefaultDisplayPic(){
+        
+    	// Load the pic if it hasn't been loaded yet
+    	if (defaultDisplayPic == null){
+	        // Try to load the default friend display picture
+	        BufferedImage image = null;  
+	        try {
+	        	// Load and scale the picture        	  
+	        	//defaultDisplayPic = new ImageIcon(CardBoxUI.class.getClassLoader().getResource(DEFAULT_DISPLAY_PIC_PATH));
+	        	image = ImageIO.read(CardBoxUI.class.getClassLoader().getResource(DEFAULT_DISPLAY_PIC_PATH));
+	        } catch (Exception e) {
+	        	// Just use an empty image
+	        	log.info("Error: " + e.getMessage());
+	            log.info("Could not located default display picture, defaulting to a black sqare!");
+	        	image = new BufferedImage(64, 64, BufferedImage.TYPE_INT_RGB);
+	        }
+	        
+	        // Scale that image, smooooth style
+	        defaultDisplayPic = new ImageIcon(image.getScaledInstance(32, 32, Image.SCALE_SMOOTH));	        
+    	}
+    	
+    	// Return the default pic
+        return defaultDisplayPic;
+    }
 
     public static void init (CardBoxContext ctx)
     {
@@ -60,4 +92,9 @@ public class CardBoxUI
 
     /** The boring default font used if the custom font can't be loaded. */
     protected static final Font BORING_DEFAULT = new Font("Dialog", Font.PLAIN, 12);
+    
+    // The default image for use in the friend list (used if friend pic is not loaded/available)
+    protected static ImageIcon defaultDisplayPic = null;    
+    
+    protected static String DEFAULT_DISPLAY_PIC_PATH = "rsrc/media/displayPic.png";
 }
