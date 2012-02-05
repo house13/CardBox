@@ -24,11 +24,16 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
 import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -37,7 +42,9 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JSlider;
+import javax.swing.plaf.SeparatorUI;
 
 import com.samskivert.swing.GroupLayout;
 import com.samskivert.swing.MultiLineLabel;
@@ -84,38 +91,62 @@ public class LobbyPanel extends JPanel
 
         // we want a five pixel border around everything
     	setBorder(BorderFactory.createEmptyBorder(5, 10, 10, 10));
-        setLayout(new BorderLayout(10, 10));
 
-        // create our main panel
-        GroupLayout gl = new VGroupLayout(
-            GroupLayout.STRETCH, 10, GroupLayout.TOP);
-        gl.setOffAxisPolicy(GroupLayout.STRETCH);
-        _main = new JPanel(gl);
-
-        // create a chat box and stick that in
-        _main.add(new ChatPanel(ctx, true));
-
-        // set up the title and main panel
+    	// Gridbag layout lets us do some wise shit
+    	setLayout(new GridBagLayout());
+    	GridBagConstraints c = new GridBagConstraints();
+    	
+    	// Add the page title
         _title = new MultiLineLabel("", MultiLineLabel.CENTER);
         _title.setFont(CardBoxUI.fancyFont);
-        add(_title, BorderLayout.NORTH);
-        add(_main, BorderLayout.CENTER);
-
-        // create our sidebar panel
-        gl = new VGroupLayout(GroupLayout.STRETCH);
-        JPanel sidePanel = new JPanel(gl);
-
-        JLabel label = new JLabel(_msgs.get("m.occupants"));
-        sidePanel.add(label, GroupLayout.FIXED);
-        sidePanel.add(_occupants = new OccupantList(ctx));
-
-        JButton logoff = new JButton(_msgs.get("m.logoff"));
-        logoff.addActionListener(LobbyController.DISPATCHER);
-        logoff.setActionCommand("logoff");
-        sidePanel.add(logoff, GroupLayout.FIXED);
-
-        // add our sidebar panel into the mix
-        add(sidePanel, BorderLayout.EAST);
+        c.weightx = 2.0;
+        c.weighty = 1.0;
+        c.gridwidth = GridBagConstraints.REMAINDER;
+        c.gridheight = 1;
+        c.insets = new Insets(5, 5, 5, 5);
+        add(_title, c);
+        
+        // Add the buttons, give them their own panel, love me some GridBagLayout
+        JPanel buttonPane = new JPanel(new GridLayout(4, 1, 5, 5));
+        GridBagConstraints buttonConstraints = new GridBagConstraints();         
+        
+        // Solo     
+        JButton soloButton = new JButton("Solo-Mode");    
+        buttonPane.add(soloButton, buttonConstraints);
+                
+        // Matchmaking
+        JButton matchButton = new JButton("Match-Making");
+        buttonPane.add(matchButton, buttonConstraints);       
+        
+        // Options
+        JButton optsButton = new JButton("Options");      
+        buttonPane.add(optsButton, buttonConstraints);     
+        
+        // Some whitespace, intentionally left blank
+        JPanel whitespace = new JPanel();       
+        buttonPane.add(whitespace, buttonConstraints);
+        
+        // Add the button panel
+        c.weightx = 1.0;
+        c.weighty = 10.0;
+        c.gridwidth = GridBagConstraints.RELATIVE; 
+        c.gridheight = 10;
+        c.fill = GridBagConstraints.BOTH;        
+        add(buttonPane, c);
+        
+        // Add the friendPanel (same size as button panel)
+        //TODO: make this a special panel, for now just piggyback on existing matchmaking frame
+        JPanel friendPanel = new JPanel(); _main = friendPanel;
+        friendPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        c.gridwidth = GridBagConstraints.REMAINDER;        
+        add(friendPanel, c);   
+        
+        // Add the chat panel
+        c.weightx = 3.0;
+        c.weighty = 3.0;
+        c.gridwidth = GridBagConstraints.REMAINDER;
+        c.gridheight = GridBagConstraints.REMAINDER;             
+        add(new ChatPanel(ctx, true), c);        
 
         // load up our background image
         try {
