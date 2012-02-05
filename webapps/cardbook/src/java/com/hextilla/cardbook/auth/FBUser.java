@@ -42,6 +42,16 @@ public class FBUser
     /**
      * Updates the user's username.
      */
+    public void setFacebookId (String id)
+    {
+    	//TODO: Apply some kind of suitability check to chosen usernames
+        this.fbId = id;
+        setModified("fbId");
+    }
+    
+    /**
+     * Updates the user's username.
+     */
     public void setUsername (Username username)
     {
     	//TODO: Apply some kind of suitability check to chosen usernames
@@ -74,6 +84,12 @@ public class FBUser
     {
         this.siteId = siteId;
         setModified("siteId");
+    }
+    
+    public void setCreated (Date date)
+    {
+    	this.created = date;
+    	setModified("created");
     }
 
     /**

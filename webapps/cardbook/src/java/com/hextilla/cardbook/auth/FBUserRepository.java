@@ -385,11 +385,11 @@ public class FBUserRepository extends JORARepository
 	    protected void populateUser (
 	        FBUser user, String fb, Username name, String realname, String email, int siteId)
 	    {
-	    	user.fbId = fb;
-	        user.username = name.getUsername();
+	    	user.setFacebookId(fb);
+	        user.setUsername(name);
 	        user.setRealName(realname);
 	        user.setEmail(email);
-	        user.created = new Date(System.currentTimeMillis());
+	        user.setCreated(new Date(System.currentTimeMillis()));
 	        user.setSiteId(siteId);
 	    }
 
