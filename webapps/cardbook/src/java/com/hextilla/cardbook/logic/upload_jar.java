@@ -26,7 +26,6 @@ import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.samskivert.servlet.user.User;
 import com.samskivert.servlet.util.FriendlyException;
 import com.samskivert.servlet.util.ParameterUtil;
 import com.samskivert.velocity.InvocationContext;
@@ -42,6 +41,7 @@ import com.hextilla.cardbox.server.CardBoxConfig;
 import com.hextilla.cardbox.server.persist.GameRecord;
 
 import com.hextilla.cardbook.CardbookApp;
+import com.hextilla.cardbook.auth.FBUser;
 
 import static com.hextilla.cardbook.Log.log;
 
@@ -51,7 +51,7 @@ import static com.hextilla.cardbook.Log.log;
 public class upload_jar extends UserLogic
 {
     // documentation inherited
-    public void invoke (InvocationContext ctx, CardbookApp app, User user)
+    public void invoke (InvocationContext ctx, CardbookApp app, FBUser user)
         throws Exception
     {
         HttpServletRequest req = ctx.getRequest();

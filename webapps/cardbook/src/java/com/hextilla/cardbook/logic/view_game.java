@@ -21,7 +21,6 @@ package com.hextilla.cardbook.logic;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.samskivert.servlet.user.User;
 import com.samskivert.servlet.util.FriendlyException;
 import com.samskivert.servlet.util.HTMLUtil;
 import com.samskivert.servlet.util.ParameterUtil;
@@ -32,6 +31,7 @@ import com.hextilla.cardbox.server.persist.GameRecord;
 
 import com.hextilla.cardbook.Log;
 import com.hextilla.cardbook.CardbookApp;
+import com.hextilla.cardbook.auth.FBUser;
 
 /**
  * Handles the logic behind creating and managing a game's metadata.
@@ -39,7 +39,7 @@ import com.hextilla.cardbook.CardbookApp;
 public class view_game extends OptionalUserLogic
 {
     // documentation inherited
-    public void invoke (InvocationContext ctx, CardbookApp app, User user)
+    public void invoke (InvocationContext ctx, CardbookApp app, FBUser user)
         throws Exception
     {
         HttpServletRequest req = ctx.getRequest();
@@ -49,11 +49,17 @@ public class view_game extends OptionalUserLogic
             throw new FriendlyException("error.no_such_game");
         }
         ctx.put("game", game);
-        User creator = app.getUserManager().getRepository().loadUser(game.maintainerId);
+        /*
+        FBUser creator = app.getUserManager().getRepository().loadUser(game.maintainerId);
         if (creator != null) {
             ctx.put("creator", creator.username);
             ctx.put("creator_profile", PROFILE_URL + creator.username);
         }
+        */
+        
+        ctx.put("creator", "Anonymous");
+        ctx.put("creator_profile", "http://google.com");
+        
         ctx.put("players", app.getCardBoxRepository().getOnlineCount(gameId));
         try {
             ctx.put("single_player", game.parseGameDefinition().isSinglePlayerPlayable());

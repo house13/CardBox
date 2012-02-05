@@ -23,10 +23,9 @@ import com.samskivert.velocity.Application;
 import com.samskivert.velocity.InvocationContext;
 import com.samskivert.velocity.Logic;
 
-import com.samskivert.servlet.user.User;
-
 import com.hextilla.cardbook.Log;
 import com.hextilla.cardbook.CardbookApp;
+import com.hextilla.cardbook.auth.FBUser;
 
 /**
  * A base logic class for pages that require an authenticated user.
@@ -42,7 +41,7 @@ public abstract class UserLogic implements Logic
      * @param user the user record for the authenticated user.
      */
     public abstract void invoke (
-        InvocationContext ctx, CardbookApp app, User user)
+        InvocationContext ctx, CardbookApp app, FBUser user)
         throws Exception;
 
     // documentation inherited from interface
@@ -50,7 +49,7 @@ public abstract class UserLogic implements Logic
         throws Exception
     {
         CardbookApp gtapp = (CardbookApp)app;
-        User user = gtapp.getUserManager().requireUser(ctx.getRequest());
+        FBUser user = gtapp.getUserManager().requireUser(ctx.getRequest());
         ctx.put("user", user);
         invoke(ctx, gtapp, user);
     }

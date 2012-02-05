@@ -20,11 +20,11 @@
 package com.hextilla.cardbook.logic;
 
 import com.samskivert.velocity.InvocationContext;
-import com.samskivert.servlet.user.User;
 
 import com.hextilla.cardbox.server.CardBoxConfig;
 
 import com.hextilla.cardbook.CardbookApp;
+import com.hextilla.cardbook.auth.FBUser;
 
 /**
  * Fires up a game in an applet.
@@ -32,7 +32,7 @@ import com.hextilla.cardbook.CardbookApp;
 public class play_game extends view_game
 {
     // documentation inherited
-    public void invoke (InvocationContext ctx, CardbookApp app, User user)
+    public void invoke (InvocationContext ctx, CardbookApp app, FBUser user)
         throws Exception
     {
         super.invoke(ctx, app, user);
