@@ -27,7 +27,6 @@ import java.util.regex.Pattern;
 import java.net.URL;
 import javax.servlet.http.HttpServletRequest;
 
-import com.samskivert.servlet.user.User;
 import com.samskivert.servlet.util.FriendlyException;
 import com.samskivert.servlet.util.ParameterUtil;
 
@@ -99,7 +98,7 @@ public class game_jnlp implements Logic
         try {
             codebase = new URL("http", game.host, path);
         } catch (Exception e) {
-            log.log(Level.WARNING, "Error creating codebase URL " +
+            log.warning("Error creating codebase URL " +
                     "[ghost=" + game.host + ", path=" + path + "].", e);
             throw new FriendlyException("error.internal_error");
         }

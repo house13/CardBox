@@ -24,7 +24,6 @@ import java.sql.Date;
 import javax.servlet.http.HttpServletRequest;
 
 import com.samskivert.servlet.RedirectException;
-import com.samskivert.servlet.user.User;
 import com.samskivert.servlet.util.FriendlyException;
 import com.samskivert.servlet.util.HTMLUtil;
 import com.samskivert.servlet.util.ParameterUtil;
@@ -41,6 +40,7 @@ import com.hextilla.cardbox.server.persist.GameRecord;
 
 import com.hextilla.cardbook.Log;
 import com.hextilla.cardbook.CardbookApp;
+import com.hextilla.cardbook.auth.FBUser;
 
 /**
  * Handles the logic behind creating and managing a game's metadata.
@@ -48,7 +48,7 @@ import com.hextilla.cardbook.CardbookApp;
 public class edit_game extends UserLogic
 {
     // documentation inherited
-    public void invoke (InvocationContext ctx, CardbookApp app, User user)
+    public void invoke (InvocationContext ctx, CardbookApp app, FBUser user)
         throws Exception
     {
         HttpServletRequest req = ctx.getRequest();

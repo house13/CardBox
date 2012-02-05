@@ -1,0 +1,13 @@
+#set ($title = $i18n.xlate("browse.title"))
+#import ("/header.wm")
+
+#if ($fbtoken)
+<p>
+$fbtoken<br/>
+$fbexpires<br/>
+$fbid<br/>
+$fbname<br/>
+$fbemail<br/>
+#end
+
+#import ("/footer.wm")

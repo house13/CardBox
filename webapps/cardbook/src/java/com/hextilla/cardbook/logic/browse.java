@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Collections;
 import java.util.Comparator;
 
-import com.samskivert.servlet.user.User;
 import com.samskivert.servlet.util.ParameterUtil;
 import com.samskivert.velocity.InvocationContext;
 
@@ -31,6 +30,7 @@ import com.hextilla.cardbox.server.persist.GameRecord;
 
 import com.hextilla.cardbook.Log;
 import com.hextilla.cardbook.CardbookApp;
+import com.hextilla.cardbook.auth.FBUser;
 
 /**
  * Displays a list of all registered games.
@@ -38,7 +38,7 @@ import com.hextilla.cardbook.CardbookApp;
 public class browse extends OptionalUserLogic
 {
     // documentation inherited
-    public void invoke (InvocationContext ctx, CardbookApp app, User user)
+    public void invoke (InvocationContext ctx, CardbookApp app, FBUser user)
         throws Exception
     {
         String category = ParameterUtil.getParameter(
