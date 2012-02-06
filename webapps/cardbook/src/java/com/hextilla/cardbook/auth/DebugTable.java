@@ -89,6 +89,8 @@ public class DebugTable<T> extends Table<T>
     public synchronized void insert (Connection conn, T obj)
         throws SQLException
     {
+    	String firstval = "?";
+    	
         StringBuilder sql = new StringBuilder(
             "insert into " + name + " (" + listOfFields + ") values (?");
         for (int i = 1; i < nColumns; i++) {
@@ -99,6 +101,9 @@ public class DebugTable<T> extends Table<T>
         PreparedStatement insertStmt = conn.prepareStatement(sql.toString());
         log.info("Binding variables for provided object:\n" + obj.toString());
         bindUpdateVariables(insertStmt, obj, null);
+        if (obj instanceof FBUser) {
+    		insertStmt.setString(0, "nextval('\"users_userId_seq\"')");
+    	}
         insertStmt.executeUpdate();
         insertStmt.close();
     }
@@ -124,6 +129,9 @@ public class DebugTable<T> extends Table<T>
         for (int i = 0; i < objects.length; i++) {
         	log.info("Binding variables for provided object:\n" + objects[i].toString());
             bindUpdateVariables(insertStmt, objects[i], null);
+            if (objects[i] instanceof FBUser) {
+        		insertStmt.setString(0, "nextval('\"users_userId_seq\"')");
+        	}
             insertStmt.addBatch();
         }
         insertStmt.executeBatch();

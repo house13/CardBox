@@ -36,6 +36,7 @@ import com.restfb.DefaultFacebookClient;
 import com.restfb.types.User;
 
 import com.samskivert.servlet.SiteIdentifier;
+import com.samskivert.servlet.user.InvalidUsernameException;
 import com.samskivert.servlet.user.Username;
 import com.samskivert.servlet.util.FriendlyException;
 import com.samskivert.servlet.util.ParameterUtil;
@@ -104,7 +105,7 @@ public class fbauth extends OptionalUserLogic
 		 if (!playerExists) {
 			 FBUserRepository repo = userman.getRepository();
 			 try {
-				 repo.createUser(fbUser.getId(), new Username(getDefaultUsername()), fbUser.getName(), fbUser.getEmail(), SiteIdentifier.DEFAULT_SITE_ID);
+				 repo.createUser(fbUser.getId(), getDefaultUsername(), fbUser.getName(), fbUser.getEmail(), SiteIdentifier.DEFAULT_SITE_ID);
 				 authUser = userman.login(fbUser.getId(), accessToken, expires, req, rsp);
 			 } catch (Exception e) {
 				 log.warning("Creating new user: [user=" + fbUser.getId() + ",token=" + accessToken + "] failed due to exception", e);
@@ -196,8 +197,13 @@ public class fbauth extends OptionalUserLogic
 		return "https://graph.facebook.com/me?access_token=" + accessToken;
 	}
 	
-	public static String getDefaultUsername() {
-		return CardBoxConfig.config.getValue("default_username", "Anonymous");
+	public static Username getDefaultUsername() {
+		try {
+			return new Username(CardBoxConfig.config.getValue("default_username", "Anonymous"));
+		} catch (InvalidUsernameException iue) {
+			log.warning("Default username fails to meet requirements", iue);
+		}
+		return new Username("Anonymous");
 	}
 	
 	protected Pattern _jnlppat = Pattern.compile("/game_([0-9]+).jnlp");
