@@ -406,14 +406,6 @@ public class FBUserRepository extends JORARepository
 	            {
 	                try {
 	                    _utable.insert(conn, user);
-	                } catch (SQLException sqe) {
-	                    if (liaison.isDuplicateRowException(sqe)) {
-	                        throw new UserExistsException("error.user_exists");
-	                    } else {
-	                        throw sqe;
-	                    }
-	                }
-	                try {
 	                    // update the userid now that it's known
 	                    user.userId = liaison.lastInsertedId(conn, _utable.getName(), "userId");
 	                    // nothing to return
@@ -511,7 +503,7 @@ public class FBUserRepository extends JORARepository
 	    protected void createTables ()
 	    {
 	        // create our table object
-	        _utable = new Table<FBUser>(FBUser.class, "users", "userId");
+	        _utable = new DebugTable<FBUser>(FBUser.class, "users", "userId");
 	    }
 
 	    /** A wrapper that provides access to the userstable. */
