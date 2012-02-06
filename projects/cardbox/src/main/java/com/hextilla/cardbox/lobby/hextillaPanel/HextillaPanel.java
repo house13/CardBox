@@ -5,6 +5,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -14,9 +16,12 @@ import com.hextilla.cardbox.client.ChatPanel;
 import com.hextilla.cardbox.data.CardBoxGameConfig;
 import com.hextilla.cardbox.lobby.data.LobbyConfig;
 import com.hextilla.cardbox.lobby.friendlist.FriendList;
+import com.hextilla.cardbox.lobby.matchmaking.MatchMakingPanel;
 import com.hextilla.cardbox.util.CardBoxContext;
 
 public class HextillaPanel extends JPanel {
+	JButton _matchButton;
+	MatchMakingPanel _matchMaker;
 	
 	public HextillaPanel (CardBoxContext ctx, CardBoxGameConfig config)
 	{
@@ -29,31 +34,36 @@ public class HextillaPanel extends JPanel {
         c.fill = GridBagConstraints.BOTH;         
 		
         // Add the buttons, give them their own panel, love me some GridBagLayout
-        JPanel buttonPane = new JPanel(new GridLayout(4, 1, 5, 5));
-        GridBagConstraints buttonConstraints = new GridBagConstraints();         
-        
-        // Solo     
-        JButton soloButton = new JButton("Computer Opponent");    
-        buttonPane.add(soloButton, buttonConstraints);
-                
-        // Matchmaking
-        JButton matchButton = new JButton("Random Opponent");
-        buttonPane.add(matchButton, buttonConstraints);       
+        JPanel leftPane = new JPanel(new GridBagLayout());
+        GridBagConstraints buttonConstraints = new GridBagConstraints();  
+        buttonConstraints.weightx = 1;
+        buttonConstraints.weighty = 1;             
+        buttonConstraints.gridheight = 1;
+        buttonConstraints.gridwidth	= GridBagConstraints.REMAINDER;
+        buttonConstraints.fill = GridBagConstraints.BOTH;
+        buttonConstraints.insets = new Insets(5, 5, 5, 5);
         
         // Options
         JButton optsButton = new JButton("Options");      
-        buttonPane.add(optsButton, buttonConstraints);     
+        leftPane.add(optsButton, buttonConstraints);     
         
-        // Some whitespace, intentionally left blank
-        JPanel whitespace = new JPanel();       
-        buttonPane.add(whitespace, buttonConstraints);
+        // Solo     
+        JButton soloButton = new JButton("Computer Opponent");    
+        leftPane.add(soloButton, buttonConstraints);      
+        
+        // Add matchmaking info box here, takes up more space then other buttons
+        buttonConstraints.gridheight = 2;
+        buttonConstraints.weightx = 2;
+        buttonConstraints.weighty = 2;            
+        _matchMaker = new MatchMakingPanel(ctx, config);      
+        leftPane.add(_matchMaker, buttonConstraints);   
         
         // Add the button panel
         c.weightx = 1.0;
         c.weighty = 10.0;
         c.gridwidth = 1; 
         c.gridheight = 10;       
-        add(buttonPane, c);
+        add(leftPane, c);
         
         // Add the friendPanel (same size as button panel)
         FriendList friendPanel = new FriendList(ctx);
