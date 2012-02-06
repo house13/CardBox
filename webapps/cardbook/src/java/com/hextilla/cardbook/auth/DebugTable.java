@@ -6,7 +6,6 @@ import java.sql.*;
 import java.lang.reflect.*;
 
 import com.samskivert.util.StringUtil;
-import com.samskivert.jdbc.jora.FieldDescriptor;
 import com.samskivert.jdbc.jora.FieldMask;
 import com.samskivert.jdbc.jora.Table;
 
