@@ -161,7 +161,7 @@ public class DebugTable<T> extends Table<T>
     public synchronized int update (Connection conn, T obj, FieldMask mask)
         throws SQLException
     {
-    	return super.update(conn, obj, mask);
+    	return super.delete(conn, obj, mask);
     }
 
     /**
