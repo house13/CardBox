@@ -6,6 +6,7 @@ import java.sql.*;
 import java.lang.reflect.*;
 
 import com.samskivert.util.StringUtil;
+import com.samskivert.jdbc.jora.FieldDescriptor;
 import com.samskivert.jdbc.jora.FieldMask;
 import com.samskivert.jdbc.jora.Table;
 
@@ -97,7 +98,7 @@ public class DebugTable<T> extends Table<T>
         sql.append(")");
         log.info("SQL update prepared statement is: " + sql.toString());
         PreparedStatement insertStmt = conn.prepareStatement(sql.toString());
-        bindUpdateVariables(insertStmt, obj, null);
+        bindUpdateVariables(insertStmt, obj, null, false);
         insertStmt.executeUpdate();
         insertStmt.close();
     }
@@ -121,7 +122,7 @@ public class DebugTable<T> extends Table<T>
         log.info("SQL update prepared statement is: " + sql.toString());
         PreparedStatement insertStmt = conn.prepareStatement(sql.toString());
         for (int i = 0; i < objects.length; i++) {
-            bindUpdateVariables(insertStmt, objects[i], null);
+            bindUpdateVariables(insertStmt, objects[i], null, false);
             insertStmt.addBatch();
         }
         insertStmt.executeBatch();
@@ -202,6 +203,58 @@ public class DebugTable<T> extends Table<T>
     {
         return super.delete(conn, objects);
     }
+    
+    protected int bindUpdateVariables(PreparedStatement pstmt,
+            T            obj,
+            FieldMask         mask, boolean derp)
+	throws SQLException
+	{
+	return bindUpdateVariables(pstmt, obj, 0, nFields, 0, mask, derp);
+	}
+    
+    protected final int bindUpdateVariables (
+            PreparedStatement pstmt, Object obj, int i, int end, int column,
+            FieldMask mask, boolean derp)
+            throws SQLException
+        {
+            try {
+                while (i < end) {
+                    FieldDescriptor fd = fields[i++];
+                    Object comp = null;
+                    // skip non-modified fields
+                    if (mask != null && !mask.isModified(i-1)) {
+                        continue;
+                    }
+                    if (!fd.isBuiltin() && (comp = fd.field.get(obj)) == null) {
+                        if (fd.isCompound()) {
+                            int nComponents = fd.outType-FieldDescriptor.tCompound;
+                            while (--nComponents >= 0) {
+                                fd = fields[i++];
+                                if (!fd.isCompound()) {
+                                    pstmt.setNull(++column,
+                                                  FieldDescriptor.sqlTypeMapping[fd.outType]);
+                                    log.info("Setting column " + column + " to null");
+                                }
+                            }
+                        } else {
+                            pstmt.setNull(
+                                ++column,
+                                FieldDescriptor.sqlTypeMapping[fd.outType]);
+                            log.info("Setting column " + column + " to null");
+                        }
+                    } else {
+                        if (!fd.bindVariable(pstmt, obj, ++column)) {
+                            int nComponents = fd.outType-FieldDescriptor.tCompound;
+                            column = bindUpdateVariables(
+                                pstmt, comp, i, i+nComponents,column-1, mask);
+                            i += nComponents;
+                        }
+                        log.info("Setting column " + column + " to non-null value " + obj.toString());
+                    }
+                }
+            } catch(IllegalAccessException ex) { throw new IllegalAccessError(); }
+            return column;
+        }
     
     /**
      
