@@ -100,11 +100,9 @@ public class DebugTable<T> extends Table<T>
         log.info("SQL update prepared statement is: " + sql.toString());
         PreparedStatement insertStmt = conn.prepareStatement(sql.toString());
         log.info("Binding variables for provided object:\n" + obj.toString());
+        bindUpdateVariables(insertStmt, obj, null);
         if (obj instanceof FBUser) {
-    		insertStmt.setString(0, "nextval('\"users_userId_seq\"')");
-    		bindUpdateVariables(insertStmt, obj, ((FBUser)obj).getDirtyMask());
-    	} else {
-    		bindUpdateVariables(insertStmt, obj, null);
+    		insertStmt.setString(1, "nextval('\"users_userId_seq\"')");
     	}
         
         insertStmt.executeUpdate();
@@ -131,11 +129,9 @@ public class DebugTable<T> extends Table<T>
         PreparedStatement insertStmt = conn.prepareStatement(sql.toString());
         for (int i = 0; i < objects.length; i++) {
         	log.info("Binding variables for provided object:\n" + objects[i].toString());
+        	bindUpdateVariables(insertStmt, objects[i], null);
         	if (objects[i] instanceof FBUser) {
-        		insertStmt.setString(0, "nextval('\"users_userId_seq\"')");
-        		bindUpdateVariables(insertStmt, objects[i], ((FBUser)objects[i]).getDirtyMask());
-        	} else {
-        		bindUpdateVariables(insertStmt, objects[i], null);
+        		insertStmt.setString(1, "nextval('\"users_userId_seq\"')");
         	}
             insertStmt.addBatch();
         }
