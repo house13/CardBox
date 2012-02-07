@@ -19,7 +19,7 @@
 
 package com.hextilla.cardbox.server.persist;
 
-import java.sql.Time;
+import java.sql.Timestamp;
 
 import com.samskivert.depot.Key;
 import com.samskivert.depot.PersistentRecord;
@@ -51,7 +51,7 @@ public class SessionRecord extends PersistentRecord
     public String authtoken;
 
     @Column(name="EXPIRES")
-    public Time expires;
+    public Timestamp expires;
     
     public void init (int userId, String authtoken, long expires)
     {
@@ -62,7 +62,7 @@ public class SessionRecord extends PersistentRecord
     public void refresh (String authtoken, long expires)
     {
     	this.authtoken = authtoken;
-    	this.expires = new Time(expires);
+    	this.expires = new Timestamp(expires);
     }
     
     /**
