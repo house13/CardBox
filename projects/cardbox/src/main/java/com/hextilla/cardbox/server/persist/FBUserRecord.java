@@ -29,13 +29,9 @@ import com.samskivert.depot.annotation.Entity;
 import com.samskivert.depot.annotation.GeneratedValue;
 import com.samskivert.depot.annotation.GenerationType;
 import com.samskivert.depot.annotation.Id;
-import com.samskivert.depot.annotation.Index;
 import com.samskivert.depot.expression.ColumnExp;
 import com.samskivert.util.StringUtil;
 
-import com.threerings.presents.server.InvocationException;
-
-import com.hextilla.cardbox.data.CardBoxCodes;
 import com.hextilla.cardbox.server.CardBoxConfig;
 
 import com.restfb.types.User;
@@ -142,7 +138,7 @@ public class FBUserRecord extends PersistentRecord
     	setStatus(Status.NEW);
     }
     
-    public static String _default_username = CardBoxConfig.config.getValue("default_username", "Anonymous");
+    public static final String _default_username = CardBoxConfig.config.getValue("default_username", "Anonymous");
 
     // AUTO-GENERATED: METHODS START
     /**

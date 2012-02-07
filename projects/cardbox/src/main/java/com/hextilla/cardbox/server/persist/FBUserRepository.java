@@ -41,7 +41,6 @@ import com.samskivert.depot.clause.OrderBy;
 import com.samskivert.depot.clause.Where;
 
 import com.samskivert.io.PersistenceException;
-import com.samskivert.util.Tuple;
 
 import com.hextilla.cardbox.server.CardBoxManager;
 
@@ -84,16 +83,8 @@ public class FBUserRepository extends DepotRepository
  public FBUserRecord loadUserByFbId (String fbId)
      throws PersistenceException
  {
-     List<FBUserRecord> result = findAll(FBUserRecord.class, new Where(fbIdMatch(fbId)));
-     
-     if (result == null || result.isEmpty())
-     { 
-    	 return null; 
-     }
-     else 
-     {
-    	 return result.get(0);
-     }
+	 FBUserMapRecord maptoUser = load(FBUserMapRecord.getKey(fbId));
+     return load(FBUserRecord.getKey(maptoUser.userId));
  }
  
  /**
@@ -103,26 +94,8 @@ public class FBUserRepository extends DepotRepository
  public FBUserRecord loadUserBySession (String authtoken)
      throws PersistenceException
  {
-     List<SessionRecord> result = findAll(SessionRecord.class, new Where(sessionMatch(authtoken)));
-     
-     if (result == null || result.isEmpty())
-     { 
-    	 return null; 
-     }
-     else 
-     {
-    	 if (result.size() > 1)
-    	 {
-    		 StringBuilder warn = new StringBuilder(
-    				 "loadUserBySession returned multiple rows for [ session=" + authtoken + " ]\n");
-    		 for (SessionRecord sesh : result)
-    		 {
-    			 warn.append(sesh.toString());
-    		 }
-    		 log.warning(warn.toString());
-    	 }
-    	 return load(FBUserRecord.getKey(result.get(0).userId));
-     }
+	 SessionMapRecord maptoSession = load(SessionMapRecord.getKey(authtoken));
+	 return load(FBUserRecord.getKey(maptoSession.userId));
  }
 
  /**
@@ -133,6 +106,10 @@ public class FBUserRepository extends DepotRepository
      throws PersistenceException
  {
      insert(user);
+     FBUserMapRecord maptoUser = new FBUserMapRecord();
+     maptoUser.fbId = user.fbId;
+     maptoUser.userId = user.userId;
+     insert(maptoUser);
  }
  
  /**
@@ -152,18 +129,41 @@ public class FBUserRepository extends DepotRepository
  public void registerSession (final FBUserRecord user, String authtoken, long expires)
      throws PersistenceException
  {
-	 SessionRecord sesh;
 	 // If a session record already exists for this user, update with the new token/expires pair
-	 sesh = loadSession(user.userId);
+	  SessionRecord sesh = load(SessionRecord.getKey(user.userId));
 	 if (sesh == null) {
-		// If there's no session record already, make 'em a new one
-    	 sesh = new SessionRecord();
-    	 sesh.init(user.userId, authtoken, expires);
-    	 insert(sesh);
+		 // If there's no session record already, make 'em a new one
+    	 newSession(user.userId, authtoken, expires);
 	 } else {
-		 sesh.refresh(authtoken, expires);
-    	 update(sesh);
+		 refreshSession(sesh, authtoken, expires);
 	 }
+ }
+ 
+ protected void newSession (int userId, String authtoken, long expires)
+ 	throws PersistenceException
+ {
+	 SessionRecord sesh = new SessionRecord();
+	 sesh.init(userId, authtoken, expires);
+	 SessionMapRecord seshmap = new SessionMapRecord();
+	 seshmap.init(sesh);
+	 insert(sesh);
+	 insert(seshmap);
+	 
+ }
+ 
+ protected void refreshSession (final SessionRecord oldsesh, String authtoken, long expires)
+	throws PersistenceException
+ {
+	 SessionMapRecord seshmap = load(SessionMapRecord.getKey(oldsesh.authtoken));
+	 if (seshmap != null)
+	 {
+		 delete(seshmap);
+	 }
+	 oldsesh.refresh(authtoken, expires);
+	 seshmap = new SessionMapRecord();
+	 seshmap.init(oldsesh);
+	 update(oldsesh);
+	 insert(seshmap);
  }
 
  /**
@@ -214,14 +214,23 @@ public class FBUserRepository extends DepotRepository
  public int pruneSessions ()
 	 throws PersistenceException
  {
-	 return deleteAll(SessionRecord.class, new Where(sessionExpired()));
+	 Calendar now = Calendar.getInstance();
+	 Timestamp nowstamp = new Timestamp(now.getTimeInMillis());
+	 
+	 int rows_deleted = 0;
+	 rows_deleted += deleteAll(SessionRecord.class, new Where(SessionRecord.EXPIRES.lessEq(nowstamp)));
+	 rows_deleted += deleteAll(SessionMapRecord.class, new Where(SessionMapRecord.EXPIRES.lessEq(nowstamp)));
+	 
+	 return rows_deleted;
  }
 
  @Override
  protected void getManagedRecords (Set<Class<? extends PersistentRecord>> classes)
  {
      classes.add(FBUserRecord.class);
+     classes.add(FBUserMapRecord.class);
      classes.add(SessionRecord.class);
+     classes.add(SessionMapRecord.class);
  }
 
  protected static FluentExp alive ()
@@ -237,11 +246,5 @@ public class FBUserRepository extends DepotRepository
  protected static FluentExp sessionMatch (String authtoken)
  {
 	 return SessionRecord.AUTHTOKEN.eq(authtoken);
- }
- 
- protected static FluentExp sessionExpired ()
- {
-	 Calendar now = Calendar.getInstance();
-	 return SessionRecord.EXPIRES.lessEq(new Timestamp(now.getTimeInMillis()));
  }
 }

@@ -39,7 +39,7 @@ public class FBUserManager
      *
      * @param pruneQueue an optional run queue on which to run our periodic session pruning task.
      */
-    public FBUserManager (PersistenceContext pctx, RunQueue pruneQueue)
+    public FBUserManager (PersistenceContext pctx)
         throws PersistenceException
     {
         // create the user repository
@@ -48,28 +48,10 @@ public class FBUserManager
         if (USERMGR_DEBUG) {
             log.info("FBUserManager initialized", "acook", _userAuthCookie, "login", _loginURL);
         }
-
-        // register a cron job to prune the session table every hour
-        if (pruneQueue != null) {
-            _pruner = new Interval(pruneQueue) {
-                @Override public void expired () {
-                    try {
-                        _repository.pruneSessions();
-                    } catch (PersistenceException pe) {
-                        log.warning("Error pruning session table.", pe);
-                    }
-                }
-            };
-            _pruner.schedule(SESSION_PRUNE_INTERVAL, true);
-        }
     }
 
     public void shutdown ()
     {
-        // cancel our session table pruning thread
-        if (_pruner != null) {
-            _pruner.cancel();
-        }
     }
 
     /**
@@ -242,9 +224,6 @@ public class FBUserManager
 
     /** The user repository. */
     protected FBUserRepository _repository;
-
-    /** The interval for user session pruning. */
-    protected Interval _pruner;
 
     /** The URL for the user login page. */
     protected static String _loginURL;

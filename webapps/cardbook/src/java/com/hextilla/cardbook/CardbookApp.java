@@ -102,7 +102,7 @@ public class CardbookApp extends Application {
 			
 			PersistenceContext userctx = new PersistenceContext();
 			userctx.init(FBUserRepository.USER_DB_IDENT, _conprov, null);
-			_usermgr = new FBUserManager(userctx, new BasicRunQueue("SessionCull"));
+			_usermgr = new FBUserManager(userctx);
 			userctx.initializeRepositories(true);
 
 			// load up our build stamp so that we can report it

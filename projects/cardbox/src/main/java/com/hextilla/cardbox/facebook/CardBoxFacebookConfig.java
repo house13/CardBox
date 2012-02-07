@@ -4,38 +4,44 @@ import com.hextilla.cardbox.server.CardBoxConfig;
 
 public class CardBoxFacebookConfig 
 {
-	protected static String getClientId()
+	public static String getClientId()
 	{
-		return CardBoxConfig.config.getValue("web.fb.client_id", "");
+		return _clientId;
 	}
 	 
-	protected static String getAppSecret()
+	public static String getAppSecret()
 	{
-		return CardBoxConfig.config.getValue("web.fb.app_secret", "");
+		return _appSecret;
 	}
 	 
-	protected static String getRedirectUri()
+	public static String getRedirectUri()
 	{
-		return CardBoxConfig.config.getValue("web.fb.redirect_uri", "");
+		return _redirectUri;
 	}
 	 
-	protected static String getPermissions()
+	public static String getPermissions()
 	{
-		return CardBoxConfig.config.getValue("web.fb.perms", "");
+		return _perms;
 	}
 	 
 	public static String getLoginRedirectURL() {
-	    return "https://www.facebook.com/dialog/oauth?client_id=" + getClientId() +
-	    	   "&redirect_uri=" + getRedirectUri() + "&scope=" + getPermissions();
+	    return "https://www.facebook.com/dialog/oauth?client_id=" + _clientId +
+	    	   "&redirect_uri=" + _redirectUri + "&scope=" + _perms;
 	}
 	
 	public static String getAuthURL(String authCode) {
-	    return "https://graph.facebook.com/oauth/access_token?client_id=" +  getClientId() +
-			   "&redirect_uri=" + getRedirectUri() +  "&client_secret="+ getAppSecret() +
+	    return "https://graph.facebook.com/oauth/access_token?client_id=" +  _clientId +
+			   "&redirect_uri=" + _redirectUri +  "&client_secret="+ _appSecret +
 			   "&code=" + authCode;
 	}
 	
 	public static String getUserDataURL(String accessToken) {
 		return "https://graph.facebook.com/me?access_token=" + accessToken;
 	}
+	
+	/** Load and cache our Facebook configuration data statically from the CardBoxConfig */
+	protected static final String _clientId = CardBoxConfig.config.getValue("web.fb.client_id", "");
+	protected static final String _appSecret = CardBoxConfig.config.getValue("web.fb.app_secret", "");
+	protected static final String _redirectUri = CardBoxConfig.config.getValue("web.fb.redirect_uri", "");
+	protected static final String _perms = CardBoxConfig.config.getValue("web.fb.perms", "");
 }
