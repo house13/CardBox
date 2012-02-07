@@ -20,7 +20,7 @@
 package com.hextilla.cardbox.server.persist;
 
 import java.sql.Date;
-import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
@@ -242,6 +242,6 @@ public class FBUserRepository extends DepotRepository
  protected static FluentExp sessionExpired ()
  {
 	 Calendar now = Calendar.getInstance();
-	 return SessionRecord.EXPIRES.lessEq(new Time(now.getTimeInMillis()));
+	 return SessionRecord.EXPIRES.lessEq(new Timestamp(now.getTimeInMillis()));
  }
 }
