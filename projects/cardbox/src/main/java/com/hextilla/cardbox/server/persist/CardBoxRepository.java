@@ -57,7 +57,7 @@ public class CardBoxRepository extends DepotRepository
      * The database identifier used when establishing a database connection. This value being
      * <code>gamedb</code>.
      */
-    public static final String GAME_DB_IDENT = "gamedb";
+    public static final String GAME_DB_IDENT = "default";
 
     /**
      * Constructs a new repository with the specified persistence context.

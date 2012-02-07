@@ -24,7 +24,8 @@ import com.samskivert.velocity.InvocationContext;
 import com.hextilla.cardbox.server.CardBoxConfig;
 
 import com.hextilla.cardbook.CardbookApp;
-import com.hextilla.cardbook.auth.FBUser;
+
+import com.hextilla.cardbox.server.persist.FBUserRecord;
 
 /**
  * Fires up a game in an applet.
@@ -32,7 +33,7 @@ import com.hextilla.cardbook.auth.FBUser;
 public class play_game extends view_game
 {
     // documentation inherited
-    public void invoke (InvocationContext ctx, CardbookApp app, FBUser user)
+    public void invoke (InvocationContext ctx, CardbookApp app, FBUserRecord user)
         throws Exception
     {
         super.invoke(ctx, app, user);

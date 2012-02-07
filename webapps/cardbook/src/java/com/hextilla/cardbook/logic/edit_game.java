@@ -40,7 +40,7 @@ import com.hextilla.cardbox.server.persist.GameRecord;
 
 import com.hextilla.cardbook.Log;
 import com.hextilla.cardbook.CardbookApp;
-import com.hextilla.cardbook.auth.FBUser;
+import com.hextilla.cardbox.server.persist.FBUserRecord;
 
 /**
  * Handles the logic behind creating and managing a game's metadata.
@@ -48,7 +48,7 @@ import com.hextilla.cardbook.auth.FBUser;
 public class edit_game extends UserLogic
 {
     // documentation inherited
-    public void invoke (InvocationContext ctx, CardbookApp app, FBUser user)
+    public void invoke (InvocationContext ctx, CardbookApp app, FBUserRecord user)
         throws Exception
     {
         HttpServletRequest req = ctx.getRequest();
@@ -66,7 +66,7 @@ public class edit_game extends UserLogic
 
         // make sure this user is the maintainer or an admin
         if (game != null &&
-            !(user.userId == game.maintainerId || user.isAdmin())) {
+            !(user.userId == game.maintainerId)) {
             throw new RedirectException(app.getProperty("access_denied_url"));
         }
 

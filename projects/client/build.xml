@@ -40,6 +40,7 @@
       <injar path="${com.samskivert:samskivert:jar}"
              filter="**/user/Password.class,**/user/UserUtil.class"/>
       <injar path="${com.hextilla:cardbox:jar}" filter="!META-INF/*,!*/xml/*"/>
+      <injar path="${com.restfb:restfb:jar}" filter="!META-INF/*,!*/xml/*"/>
       <outjar path="${client.dir}/card-client.jar"/>
     </proguard>
 

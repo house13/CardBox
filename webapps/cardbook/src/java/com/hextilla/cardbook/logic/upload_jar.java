@@ -41,7 +41,7 @@ import com.hextilla.cardbox.server.CardBoxConfig;
 import com.hextilla.cardbox.server.persist.GameRecord;
 
 import com.hextilla.cardbook.CardbookApp;
-import com.hextilla.cardbook.auth.FBUser;
+import com.hextilla.cardbox.server.persist.FBUserRecord;
 
 import static com.hextilla.cardbook.Log.log;
 
@@ -51,7 +51,7 @@ import static com.hextilla.cardbook.Log.log;
 public class upload_jar extends UserLogic
 {
     // documentation inherited
-    public void invoke (InvocationContext ctx, CardbookApp app, FBUser user)
+    public void invoke (InvocationContext ctx, CardbookApp app, FBUserRecord user)
         throws Exception
     {
         HttpServletRequest req = ctx.getRequest();

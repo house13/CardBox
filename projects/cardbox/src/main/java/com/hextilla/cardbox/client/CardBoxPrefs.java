@@ -65,6 +65,22 @@ public class CardBoxPrefs
     }
 
     /**
+     * Returns the user's userId.
+     */
+    public static int getUserId ()
+    {
+    	return config.getValue(USERID_KEY, 0);
+    }
+    
+    /**
+     * Sets the user's userId.
+     */
+    public static void setUserId (int id)
+    {
+    	config.setValue(USERID_KEY, id);
+    }
+    
+    /**
      * Returns the user's username.
      */
     public static String getUsername ()
@@ -149,4 +165,7 @@ public class CardBoxPrefs
 
     /** The configuration key for whether the user's password is remembered. */
     protected static final String REMEMBER_PASSWORD_KEY = "remember_password";
+    
+    /** The configuration key for the user's ID. */
+    protected static final String USERID_KEY = "userId";
 }

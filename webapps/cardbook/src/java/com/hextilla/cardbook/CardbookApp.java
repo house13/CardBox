@@ -30,8 +30,6 @@ import com.samskivert.io.PersistenceException;
 import com.samskivert.jdbc.ConnectionProvider;
 import com.samskivert.jdbc.StaticConnectionProvider;
 
-import com.samskivert.servlet.JDBCTableSiteIdentifier;
-import com.samskivert.servlet.SiteIdentifier;
 import com.samskivert.velocity.Application;
 
 import com.samskivert.util.BasicRunQueue;
@@ -42,6 +40,7 @@ import com.samskivert.util.ServiceUnavailableException;
 import com.hextilla.cardbook.auth.FBUserManager;
 import com.hextilla.cardbox.server.CardBoxConfig;
 import com.hextilla.cardbox.server.persist.CardBoxRepository;
+import com.hextilla.cardbox.server.persist.FBUserRepository;
 
 import static com.hextilla.cardbook.Log.log;
 
@@ -95,16 +94,16 @@ public class CardbookApp extends Application {
 			_conprov = new StaticConnectionProvider(
 					CardBoxConfig.getJDBCConfig());
 
-			// create our repositories and managers
-			String umclass = _config.getProperty("webapp_auth",
-					FBUserManager.class.getName());
-			_usermgr = (FBUserManager) Class.forName(umclass).newInstance();
-			_usermgr.init(_config, _conprov, new BasicRunQueue("SessionCull"));
-
-			PersistenceContext pctx = new PersistenceContext();
-			pctx.init(CardBoxRepository.GAME_DB_IDENT, _conprov, null);
-			_cbrepo = new CardBoxRepository(pctx);
-			pctx.initializeRepositories(true);
+			// configure our persistence objects
+			PersistenceContext gamectx = new PersistenceContext();
+			gamectx.init(CardBoxRepository.GAME_DB_IDENT, _conprov, null);
+			_cbrepo = new CardBoxRepository(gamectx);
+			gamectx.initializeRepositories(true);
+			
+			PersistenceContext userctx = new PersistenceContext();
+			userctx.init(FBUserRepository.USER_DB_IDENT, _conprov, null);
+			_usermgr = new FBUserManager(userctx, new BasicRunQueue("SessionCull"));
+			userctx.initializeRepositories(true);
 
 			// load up our build stamp so that we can report it
 			String bstamp = PropertiesUtil.loadAndGet("build.properties",
@@ -125,16 +124,6 @@ public class CardbookApp extends Application {
 
 		} catch (Throwable t) {
 			log.warning("Error shutting down repository", t);
-		}
-	}
-
-	/** We want a special site identifier. */
-	protected SiteIdentifier createSiteIdentifier(ServletContext ctx) {
-		try {
-			return new JDBCTableSiteIdentifier(_conprov);
-		} catch (PersistenceException pe) {
-			throw new ServiceUnavailableException(
-					"Can't access site database.", pe);
 		}
 	}
 

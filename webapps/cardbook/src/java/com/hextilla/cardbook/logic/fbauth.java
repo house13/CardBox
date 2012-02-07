@@ -35,7 +35,6 @@ import com.restfb.FacebookClient;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.types.User;
 
-import com.samskivert.servlet.SiteIdentifier;
 import com.samskivert.servlet.user.InvalidUsernameException;
 import com.samskivert.servlet.user.Username;
 import com.samskivert.servlet.util.FriendlyException;
@@ -52,9 +51,12 @@ import com.hextilla.cardbox.server.CardBoxConfig;
 import com.hextilla.cardbox.server.persist.GameRecord;
 
 import com.hextilla.cardbook.CardbookApp;
-import com.hextilla.cardbook.auth.FBUser;
 import com.hextilla.cardbook.auth.FBUserManager;
-import com.hextilla.cardbook.auth.FBUserRepository;
+
+import com.hextilla.cardbox.server.persist.FBUserRecord;
+import com.hextilla.cardbox.server.persist.FBUserRepository;
+
+import com.hextilla.cardbox.facebook.CardBoxFacebookConfig;
 
 import static com.hextilla.cardbook.Log.log;
 
@@ -65,7 +67,7 @@ import static com.hextilla.cardbook.Log.log;
 public class fbauth extends OptionalUserLogic
 {
 	 // documentation inherited
-	 public void invoke (InvocationContext ctx, CardbookApp app, FBUser user)
+	 public void invoke (InvocationContext ctx, CardbookApp app, FBUserRecord user)
 	     throws Exception
 	 {
 	     HttpServletRequest req = ctx.getRequest();
@@ -76,7 +78,7 @@ public class fbauth extends OptionalUserLogic
 			 throw new FriendlyException("error.fbauth_failure");
 		 }
 		 
-		 URL authUrl = new URL(getAuthURL(fbcode));
+		 URL authUrl = new URL(CardBoxFacebookConfig.getAuthURL(fbcode));
 		 Tuple<String,Integer> accessCreds = getAuthenticated(authUrl);
 		 if (accessCreds == null) {
 			 throw new FriendlyException("error.fbauth_failure");
@@ -91,7 +93,7 @@ public class fbauth extends OptionalUserLogic
 		 User fbUser = fbClient.fetchObject("me", User.class);
 		 
 		 boolean playerExists = false;
-		 FBUser authUser = null;
+		 FBUserRecord authUser = null;
 		 FBUserManager userman = app.getUserManager();
 		 
 		 // Attempt to log the user in, assuming they've played the game before
@@ -100,12 +102,15 @@ public class fbauth extends OptionalUserLogic
 			 authUser = userman.login(fbUser.getId(), accessToken, expires, req, rsp);
 			 playerExists = true;
 		 } catch (Exception e) {
-			 log.warning("New user: [user=" + fbUser.getId() + ",token=" + accessToken + "] Successful FB Authentication", e);
+			 log.info("New user: [user=" + fbUser.getId() + ",token=" + accessToken + "] Successful FB Authentication");
 		 }
 		 if (!playerExists) {
+			 Calendar now = Calendar.getInstance();
 			 FBUserRepository repo = userman.getRepository();
 			 try {
-				 repo.createUser(fbUser.getId(), new Username(getDefaultUsername()), fbUser.getName(), fbUser.getEmail(), SiteIdentifier.DEFAULT_SITE_ID);
+				 authUser = new FBUserRecord();
+				 authUser.init(fbUser, now.getTimeInMillis());
+				 repo.insertUser(authUser);
 				 authUser = userman.login(fbUser.getId(), accessToken, expires, req, rsp);
 			 } catch (Exception e) {
 				 log.warning("Creating new user: [user=" + fbUser.getId() + ",token=" + accessToken + "] failed due to exception", e);
@@ -161,41 +166,6 @@ public class fbauth extends OptionalUserLogic
         }
         return new String(baos.toByteArray());
     }
-	 
-	protected static String getClientId()
-	{
-		return CardBoxConfig.config.getValue("web.fb.client_id", "");
-	}
-	 
-	protected static String getAppSecret()
-	{
-		return CardBoxConfig.config.getValue("web.fb.app_secret", "");
-	}
-	 
-	protected static String getRedirectUri()
-	{
-		return CardBoxConfig.config.getValue("web.fb.redirect_uri", "");
-	}
-	 
-	protected static String getPermissions()
-	{
-		return CardBoxConfig.config.getValue("web.fb.perms", "");
-	}
-	 
-	public static String getLoginRedirectURL() {
-	    return "https://www.facebook.com/dialog/oauth?client_id=" + getClientId() +
-	    	   "&redirect_uri=" + getRedirectUri() + "&scope=" + getPermissions();
-	}
-	
-	public static String getAuthURL(String authCode) {
-	    return "https://graph.facebook.com/oauth/access_token?client_id=" +  getClientId() +
-			   "&redirect_uri=" + getRedirectUri() +  "&client_secret="+ getAppSecret() +
-			   "&code=" + authCode;
-	}
-	
-	public static String getUserDataURL(String accessToken) {
-		return "https://graph.facebook.com/me?access_token=" + accessToken;
-	}
 	
 	public static String getDefaultUsername() {
 			return CardBoxConfig.config.getValue("default_username", "Anonymous");

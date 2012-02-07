@@ -25,7 +25,8 @@ import com.samskivert.velocity.Logic;
 
 import com.hextilla.cardbook.Log;
 import com.hextilla.cardbook.CardbookApp;
-import com.hextilla.cardbook.auth.FBUser;
+
+import com.hextilla.cardbox.server.persist.FBUserRecord;
 
 /**
  * A base logic class for pages that optionally accept an authenticated user.
@@ -42,18 +43,18 @@ public abstract class OptionalUserLogic implements Logic
      * no user is authenticated.
      */
     public abstract void invoke (
-        InvocationContext ctx, CardbookApp app, FBUser user)
+        InvocationContext ctx, CardbookApp app, FBUserRecord user)
         throws Exception;
 
     // documentation inherited from interface
     public void invoke (Application app, InvocationContext ctx)
         throws Exception
     {
-        CardbookApp gtapp = (CardbookApp)app;
-        FBUser user = gtapp.getUserManager().loadUser(ctx.getRequest());
+        CardbookApp cbapp = (CardbookApp)app;
+        FBUserRecord user = cbapp.getUserManager().loadUser(ctx.getRequest());
         if (user != null) {
             ctx.put("user", user);
         }
-        invoke(ctx, gtapp, user);
+        invoke(ctx, cbapp, user);
     }
 }

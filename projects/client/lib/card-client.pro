@@ -64,6 +64,11 @@
     public protected *;
 }
 
+# we're going to need our RestDB stuff client-side
+-keep public class com.restfb.** {
+    public protected *;
+}
+
 -keepclasseswithmembers public class * {
     public static void main(java.lang.String[]);
 }

@@ -28,10 +28,11 @@ import com.samskivert.velocity.InvocationContext;
 
 import com.threerings.presents.server.InvocationException;
 import com.hextilla.cardbox.server.persist.GameRecord;
+import com.hextilla.cardbox.server.persist.FBUserRecord;
 
 import com.hextilla.cardbook.Log;
 import com.hextilla.cardbook.CardbookApp;
-import com.hextilla.cardbook.auth.FBUser;
+
 
 /**
  * Handles the logic behind creating and managing a game's metadata.
@@ -39,7 +40,7 @@ import com.hextilla.cardbook.auth.FBUser;
 public class view_game extends OptionalUserLogic
 {
     // documentation inherited
-    public void invoke (InvocationContext ctx, CardbookApp app, FBUser user)
+    public void invoke (InvocationContext ctx, CardbookApp app, FBUserRecord user)
         throws Exception
     {
         HttpServletRequest req = ctx.getRequest();
@@ -50,7 +51,7 @@ public class view_game extends OptionalUserLogic
         }
         ctx.put("game", game);
         /*
-        FBUser creator = app.getUserManager().getRepository().loadUser(game.maintainerId);
+        FBUserRecord creator = app.getUserManager().getRepository().loadUser(game.maintainerId);
         if (creator != null) {
             ctx.put("creator", creator.username);
             ctx.put("creator_profile", PROFILE_URL + creator.username);

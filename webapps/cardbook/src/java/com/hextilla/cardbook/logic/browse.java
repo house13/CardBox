@@ -30,7 +30,8 @@ import com.hextilla.cardbox.server.persist.GameRecord;
 
 import com.hextilla.cardbook.Log;
 import com.hextilla.cardbook.CardbookApp;
-import com.hextilla.cardbook.auth.FBUser;
+
+import com.hextilla.cardbox.server.persist.FBUserRecord;
 
 /**
  * Displays a list of all registered games.
@@ -38,7 +39,7 @@ import com.hextilla.cardbook.auth.FBUser;
 public class browse extends OptionalUserLogic
 {
     // documentation inherited
-    public void invoke (InvocationContext ctx, CardbookApp app, FBUser user)
+    public void invoke (InvocationContext ctx, CardbookApp app, FBUserRecord user)
         throws Exception
     {
         String category = ParameterUtil.getParameter(
