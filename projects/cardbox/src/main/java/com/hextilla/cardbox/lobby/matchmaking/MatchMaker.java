@@ -1,57 +1,209 @@
 package com.hextilla.cardbox.lobby.matchmaking;
 
-import java.util.ArrayList;
+import static com.hextilla.cardbox.lobby.Log.log;
+
+import java.util.List;
+import java.util.Vector;
+
+import javax.swing.JPanel;
 
 import com.hextilla.cardbox.data.CardBoxGameConfig;
+import com.hextilla.cardbox.data.TableMatchConfig;
+import com.hextilla.cardbox.lobby.data.LobbyObject;
+import com.hextilla.cardbox.lobby.table.TableItem;
 import com.hextilla.cardbox.util.CardBoxContext;
+import com.samskivert.swing.util.SwingUtil;
+import com.threerings.crowd.client.PlaceView;
+import com.threerings.crowd.data.PlaceObject;
+import com.threerings.parlor.client.SeatednessObserver;
+import com.threerings.parlor.client.TableDirector;
+import com.threerings.parlor.client.TableObserver;
+import com.threerings.parlor.data.Table;
+import com.threerings.parlor.data.TableConfig;
+import com.threerings.parlor.data.TableLobbyObject;
+import com.threerings.parlor.game.client.GameConfigurator;
 
-public class MatchMaker {
-	// Vector of listeners
-	ArrayList<MatchListener> listeners;
+public class MatchMaker implements TableObserver, SeatednessObserver, PlaceView 
+{
 
 	// Use an enum to indicate status, we may need to change this if we need more info
 	public enum MatchStatus {
 		AVAILABLE,	// Match found! Press Accept!
-		CANCELED	// Match was canceled (you or someone else did not accept)
+		CANCELED	// Match was cancelled (you or someone else did not accept)
 	}
 
 	public MatchMaker(CardBoxContext ctx, CardBoxGameConfig config) {
-		listeners = new ArrayList<MatchListener>();
+		listeners = new Vector<MatchListener>();
+        _config = config;
+        _ctx = ctx;
+        _matchedTable = null;
+        _openList = new Vector<Table>();
+        _playList = new Vector<Table>();
+        
+        // create our table director
+        _tdtr = new TableDirector(ctx, LobbyObject.TABLE_SET, this);
+
+        // add ourselves as a seatedness observer
+        _tdtr.addSeatednessObserver(this);        
 	}
 
 	// Accept the currently matched game
 	public void startGame() {
-		// TODO Auto-generated method stub
-		
+		//go to the game
+        _ctx.getLocationDirector().moveTo(_matchedTable.gameOid);	
 	}
 
 	// Start searching for a game
 	public void startMatchMaking() {
-		// TODO Auto-generated method stub
-		
+		// Search for open games
+	    for (Table table : _openList) {
+	    	// Try to join at the next open position (Join at position 2, host sits in 1)
+	    	//TODO: may need to keep track of open seats using seatedness observer
+            _tdtr.joinTable(table.tableId, 2);
+            
+            // Move table to playin tables
+            _openList.remove(table);
+            _playList.add(table);
+            
+            // Notify the user
+            NotifyMatchListeners(MatchStatus.AVAILABLE);
+            return;
+	    }	
+	    
+	    // Setup the configuration
+        TableConfig tconfig = new TableConfig();
+        tconfig.minimumPlayerCount = ((TableMatchConfig)_config.getGameDefinition().match).minSeats;
+        tconfig.desiredPlayerCount = 2;
+        _tdtr.createTable(tconfig, _config); 	    
 	}
 
 	// Stop Searching for a game
 	public void stopMatchMaking() {
-		// TODO Auto-generated method stub
-		
+		// Leave the table if matched
+		if (_matchedTable != null) _tdtr.leaveTable(_matchedTable.tableId);			
 	}
 
 	// Add listener
 	public void AddMatchListener(MatchListener listener) {
-		//listeners.add(listener);		
+		listeners.add(listener);		
 	}
 
 	// Remove listener
 	public void RemoveMatchListener(MatchListener listener) {
-		//listeners.remove(listener);		
+		listeners.remove(listener);		
 	}	
 	
 	// Update all the listeners of the change
 	public void NotifyMatchListeners(MatchStatus status) {
-	    //for (MatchListener listener : listeners) {
-	    	//listener.update(status);
-	    //}
+	    for (MatchListener listener : listeners) {
+	    	listener.update(status);
+	    }
 	}
 
+	public void seatednessDidChange(boolean arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	// Table added to table manager
+	public void tableAdded(Table table) {
+		if (table.inPlay()){
+			_playList.add(table);
+			return;
+		}
+		_openList.add(table);
+	}
+
+	// Clean up references to tables when one is removed
+	public void tableRemoved(int id) {
+		// Search inplay list
+	    for (Table table : _playList) {
+	    	if (table.tableId == id) {
+	    		_playList.remove(table);
+	    		return;
+	    	}
+	    }
+	    
+	    // Search open list
+	    for (Table table : _openList) {
+	    	if (table.tableId == id) {
+	    		_openList.remove(table);
+	    		return;
+	    	}
+	    }	    
+	}
+
+	// Update tables
+	public void tableUpdated(Table updatedTable) {
+		// Search inplay list
+	    for (Table table : _playList) {
+	    	if (table.tableId == updatedTable.tableId) {
+	    		table = updatedTable;	    		
+	    		return;
+	    	}
+	    }
+	    
+	    // Search open list
+	    for (Table table : _openList) {
+	    	if (table.tableId == updatedTable.tableId) {
+	    		
+	    		// Move the table to the other list if the game is transitioning to in play
+	    		if (table.gameOid != -1){
+	    			_openList.remove(table);
+	    			_playList.add(table);
+	    			
+    			// Otherwise just update the current entry	    			
+	    		} else {
+		    		table = updatedTable;
+	    		}
+	    		
+	    		return;
+	    	}
+	    }			
+	}		
+
+	// Entering and leaving the match maker
+	public void willEnterPlace(PlaceObject place) {
+        // pass the good word on to our table director
+        _tdtr.setTableObject(place);
+
+		// Load-up the table lists		
+        TableLobbyObject tlobj = (TableLobbyObject)place;
+        for (Table table : tlobj.getTables()) {
+            tableAdded(table);
+        }		
+	}
+
+	public void didLeavePlace(PlaceObject place) {
+        // pass the good word on to our table director
+        _tdtr.clearTableObject();
+
+        // clear out our table lists
+        _openList.clear();
+        _playList.clear();	
+	}	
+	
+	// Vector of listeners
+	protected List<MatchListener> listeners;	
+	
+    /** A reference to the client context. */
+    protected CardBoxContext _ctx;
+
+    /** The configuration for the game that we're match-making. */
+    protected CardBoxGameConfig _config;
+    
+    /** A reference to our table director. */
+    protected TableDirector _tdtr;	
+    
+    // The table matched
+    protected Table _matchedTable;
+    
+    /** The list of tables that are in play. */
+    protected List<Table> _playList;
+    
+    /** The list of tables with open spaces */
+    protected List<Table> _openList;  
+    
+    /** The interface used to configure a table before creating it. */
+    protected GameConfigurator _figger;    
 }
