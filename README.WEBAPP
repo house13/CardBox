@@ -1,9 +1,17 @@
 HOW TO CONFIGURE THE CARDBOOK WEB APP:
 
+
 AFTER CONFIGURING EVERYTHING FOR CARDBOX/HEXTILLA,
-You'll need to install (through e.g. apt-get):
-jetty
-postgresql (+libpg-java)
+You'll need to install (On Ubuntu) (through e.g. apt-get):
+	jetty
+	postgresql
+	    (+libpg-java)
+
+In a server environment (i.e. CentOS), the following software is needed:
+	postgresql 
+	    (plus relevant optional packages)
+	jetty6 
+	    (from JPackage, with relevant additional packages)
 
 CONFIGURING POSTGRES (Ubuntu)
 From bash:
@@ -14,23 +22,14 @@ In psql:
 \password <USERNAME>
 \q
 
-In {cardbox.home}/etc modify cardbox.properties:
--update the DB username and password with the credentials you chose above
-
 From bash:
 sudo -u postgres createdb -O <USERNAME> hextilla
-psql hextilla
 
-In psql:
-create table sites (
-siteId integer PRIMARY KEY,
-siteString varchar(40));
-create table domains (
-siteId integer PRIMARY KEY,
-domain varchar(40));
-insert into sites values (-1, 'hextilla.com');
-insert into domains values (-1, 'hextilla.com');
-\q
+SETTING UP CARDBOX.PROPERTIES:
+In {cardbox.home}/etc modify cardbox.properties:
+-update the DB username and password with the credentials you chose above
+-update missing facebook data with values from our Developer page on Facebook (not sharing those, sorry :D)
+
 
 CONFIGURING JETTY (Ubuntu)
 First things first, you need to change a default setting:
