@@ -93,7 +93,7 @@ public class HextillaPanel extends JPanel implements PlaceView {
 	}
 
 	public void didLeavePlace(PlaceObject place) {
-      
+		MatchMakingPanel.matchMaker.willEnterPlace(_lobj);
 	}		
 	
     /** Giver of life and services. */

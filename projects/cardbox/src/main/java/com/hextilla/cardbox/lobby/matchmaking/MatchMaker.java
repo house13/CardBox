@@ -45,17 +45,23 @@ public class MatchMaker implements TableObserver, SeatednessObserver, PlaceView
         _tdtr = new TableDirector(ctx, LobbyObject.TABLE_SET, this);
 
         // Set addSeatednessObserver to stun
-        _tdtr.addSeatednessObserver(this);        
+        _tdtr.addSeatednessObserver(this);      
+        
+	    // Setup the table configuration
+        _tconfig = new TableConfig();
+        _tconfig.minimumPlayerCount = ((TableMatchConfig)_config.getGameDefinition().match).minSeats;
+        _tconfig.desiredPlayerCount = 2;
 	}
 
-	// Accept the currently matched game
-	public void startGame() {
-		Table table = _tdtr.getSeatedTable();
-			
-		log.info("Starting game: " + table);
-		
-		//go to the game
-        _ctx.getLocationDirector().moveTo(table.gameOid);	
+	// Accept and start the currently matched game
+	public void startGame() {	
+		Table table = _tdtr.getSeatedTable();		
+		if (table != null){
+			log.info("Starting game: " + table.tableId);	
+        	_ctx.getLocationDirector().moveTo(table.gameOid);
+		} else {
+			//TODO: game canceled or something?
+		}
 	}
 
 	// Start searching for a game
@@ -65,15 +71,13 @@ public class MatchMaker implements TableObserver, SeatednessObserver, PlaceView
 	    for (Table table : _openList) {
 	    	// Try to join at the next open position (Join at position 2, host sits in 1)
 	    	//TODO: may need to keep track of open seats using seatedness observer
+	    	//TODO: We need to try again if join fails (how to detect this...?)
             _tdtr.joinTable(table.tableId, 1);
             return;
-	    }	
+	    }
 	    
-	    // Setup the configuration
-        TableConfig tconfig = new TableConfig();
-        tconfig.minimumPlayerCount = ((TableMatchConfig)_config.getGameDefinition().match).minSeats;
-        tconfig.desiredPlayerCount = 2;
-        _tdtr.createTable(tconfig, _config); 	    
+	    // No open tables, make a new table
+        _tdtr.createTable(_tconfig, _config);
 	}
 
 	// Stop Searching for a game
@@ -81,7 +85,7 @@ public class MatchMaker implements TableObserver, SeatednessObserver, PlaceView
 		log.info("Leaving Matchmaking...");
 		Table table = _tdtr.getSeatedTable();
 		
-		// Leave the table if matched
+		// Leave the table if sitting at one
 		if (table != null){
 			_tdtr.leaveTable(table.tableId);
 		}
@@ -105,8 +109,7 @@ public class MatchMaker implements TableObserver, SeatednessObserver, PlaceView
 	}
 
 	public void seatednessDidChange(boolean arg0) {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub		
 	}
 
 	// Table added to table manager
@@ -159,7 +162,7 @@ public class MatchMaker implements TableObserver, SeatednessObserver, PlaceView
 	    			log.info("Possible match found...");
 	                // Move table to playin tables
 	                _openList.remove(table);
-	                _playList.add(table);
+	                _playList.add(updatedTable);
 	                
 	                // Notify the user that they have been matched
 	                NotifyMatchListeners(MatchStatus.AVAILABLE);
@@ -219,4 +222,7 @@ public class MatchMaker implements TableObserver, SeatednessObserver, PlaceView
     
     /** The interface used to configure a table before creating it. */
     protected GameConfigurator _figger;    
+    
+    // Table configuration object
+    protected TableConfig _tconfig;    
 }
