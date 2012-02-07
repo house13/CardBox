@@ -1,5 +1,7 @@
 package com.hextilla.cardbox.lobby.hextillaPanel;
 
+import static com.hextilla.cardbox.lobby.Log.log;
+
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -15,11 +17,16 @@ import javax.swing.JPanel;
 import com.hextilla.cardbox.client.ChatPanel;
 import com.hextilla.cardbox.data.CardBoxGameConfig;
 import com.hextilla.cardbox.lobby.data.LobbyConfig;
+import com.hextilla.cardbox.lobby.data.LobbyObject;
 import com.hextilla.cardbox.lobby.friendlist.FriendList;
 import com.hextilla.cardbox.lobby.matchmaking.MatchMakingPanel;
 import com.hextilla.cardbox.util.CardBoxContext;
+import com.threerings.crowd.client.PlaceView;
+import com.threerings.crowd.data.PlaceObject;
+import com.threerings.parlor.data.Table;
+import com.threerings.parlor.data.TableLobbyObject;
 
-public class HextillaPanel extends JPanel {
+public class HextillaPanel extends JPanel implements PlaceView {
 	JButton _matchButton;
 	MatchMakingPanel _matchMaker;
 	
@@ -79,9 +86,22 @@ public class HextillaPanel extends JPanel {
         add(new ChatPanel(ctx, true), c);  	
 	}
 	
+	// Entering and leaving the Hextilla panel
+	public void willEnterPlace(PlaceObject place) {
+		_lobj = (LobbyObject)place;
+		MatchMakingPanel.matchMaker.willEnterPlace(_lobj);
+	}
+
+	public void didLeavePlace(PlaceObject place) {
+      
+	}		
+	
     /** Giver of life and services. */
     protected CardBoxContext _ctx;
     
     // Game config
     protected CardBoxGameConfig _config;
+    
+    /** Our lobby distributed object. */
+    protected LobbyObject _lobj;    
 }

@@ -181,13 +181,13 @@ public class LobbyPanel extends JPanel
     public void loadGamePanel (LobbyConfig config)
     {
         // create our match-making view
-        JComponent friendView = createGamePanel(_ctx, config);
-        if (friendView != null) {
-        	_main.add(friendView);
-            if (friendView instanceof PlaceView) {
+        JComponent hextillaView = createGamePanel(_ctx, config);
+        if (hextillaView != null) {
+        	_main.add(hextillaView);
+            if (hextillaView instanceof PlaceView) {
                 // because we're adding our match making view after we've
                 // already entered our place, we need to fake an entry
-                ((PlaceView)friendView).willEnterPlace(_lobj);
+                ((PlaceView)hextillaView).willEnterPlace(_lobj);
             }
             // properly configure all of our components (limiting to a
             // depth of six is a giant hack but I'm too lazy to do the

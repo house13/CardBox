@@ -22,19 +22,19 @@ import com.hextilla.cardbox.util.CardBoxContext;
 // Displays the match making information
 public class MatchMakingPanel extends JPanel{
 	// The underlying matchmaking class
-	MatchMaker _matchMaker;
+	public static MatchMaker matchMaker;
 	
 	// Animates the "..." in searching
-	Timer elipseTimer;
-	int elipses = 0;
+	protected Timer elipseTimer;
+	protected int elipses = 0;
 	
 	// Buttons that need referencing so they can hide and stuff
-	JLabel _statusBox;
-	JButton _matchButton;
-	JButton _acceptButton;
+	protected JLabel _statusBox;
+	protected JButton _matchButton;
+	protected JButton _acceptButton;
 	
 	public MatchMakingPanel(CardBoxContext ctx, CardBoxGameConfig config) {
-		_matchMaker = new MatchMaker(ctx, config);
+		matchMaker = new MatchMaker(ctx, config);
 		
 		// TODO: make the Searching label thing its own class instead of programming like a shithead
 		SEARCHING_TEXT = new String[4];
@@ -64,6 +64,9 @@ public class MatchMakingPanel extends JPanel{
 				switch (status) {
 				case AVAILABLE:
 					_acceptButton.setVisible(true);
+					elipses = 0;
+					elipseTimer.stop();
+					_matchButton.setText("MATCH FOUND");					
 					break;
 				case CANCELED:
 					_acceptButton.setVisible(false);
@@ -73,7 +76,7 @@ public class MatchMakingPanel extends JPanel{
 				}
 			}
 		};	
-		_matchMaker.AddMatchListener(matchFound);
+		matchMaker.AddMatchListener(matchFound);
 		
 		// Split the panel into two pieces
 		setLayout(new GridLayout(2, 1));
@@ -88,16 +91,16 @@ public class MatchMakingPanel extends JPanel{
 		_matchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				// Toggle text on the button
-				if (_matchButton.getText() == MATCHMAKING_CANCEL_TEXT){
-					_matchButton.setText(MATCHMAKING_BUTTON_TEXT);
-					elipseTimer.stop();
-					elipses = 0;
-					_statusBox.setText(" ");					
-					_matchMaker.startMatchMaking();
-				} else {
+				if (_matchButton.getText() == MATCHMAKING_BUTTON_TEXT){
 					_matchButton.setText(MATCHMAKING_CANCEL_TEXT);
+					elipses = 0;
+					elipseTimer.stop();					
+					_statusBox.setText(" ");					
+					matchMaker.startMatchMaking();   					
+				} else {
+					_matchButton.setText(MATCHMAKING_BUTTON_TEXT);
 					elipseTimer.start();
-					_matchMaker.stopMatchMaking();
+					matchMaker.stopMatchMaking();   					
 				}
 			}
 		}); 		
@@ -122,7 +125,7 @@ public class MatchMakingPanel extends JPanel{
 		_acceptButton.addActionListener(
 			new ActionListener () {
 				public void actionPerformed(ActionEvent e) {
-					_matchMaker.startGame();
+					matchMaker.startGame();
 				}
 			});	
 		_acceptButton.setVisible(false);		
