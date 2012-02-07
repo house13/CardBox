@@ -19,10 +19,8 @@
 
 package com.hextilla.cardbox.lobby.client;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
@@ -34,8 +32,6 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -43,13 +39,9 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JSlider;
-import javax.swing.plaf.SeparatorUI;
 
-import com.samskivert.swing.GroupLayout;
 import com.samskivert.swing.MultiLineLabel;
-import com.samskivert.swing.VGroupLayout;
 import com.samskivert.swing.util.SwingUtil;
 
 import com.threerings.media.image.BufferedMirage;
@@ -71,9 +63,7 @@ import com.hextilla.cardbox.util.CardBoxContext;
 import com.hextilla.cardbox.lobby.data.LobbyCodes;
 import com.hextilla.cardbox.lobby.data.LobbyConfig;
 import com.hextilla.cardbox.lobby.data.LobbyObject;
-import com.hextilla.cardbox.lobby.friendlist.FriendList;
 import com.hextilla.cardbox.lobby.hextillaPanel.HextillaPanel;
-import com.hextilla.cardbox.lobby.table.TableListView;
 
 import static com.hextilla.cardbox.lobby.Log.log;
 
@@ -191,13 +181,13 @@ public class LobbyPanel extends JPanel
     public void loadGamePanel (LobbyConfig config)
     {
         // create our match-making view
-        JComponent friendView = createGamePanel(_ctx, config);
-        if (friendView != null) {
-        	_main.add(friendView);
-            if (friendView instanceof PlaceView) {
+        JComponent hextillaView = createGamePanel(_ctx, config);
+        if (hextillaView != null) {
+        	_main.add(hextillaView);
+            if (hextillaView instanceof PlaceView) {
                 // because we're adding our match making view after we've
                 // already entered our place, we need to fake an entry
-                ((PlaceView)friendView).willEnterPlace(_lobj);
+                ((PlaceView)hextillaView).willEnterPlace(_lobj);
             }
             // properly configure all of our components (limiting to a
             // depth of six is a giant hack but I'm too lazy to do the
