@@ -37,7 +37,7 @@ import com.threerings.parlor.game.data.GameAI;
 import com.threerings.util.MessageBundle;
 
 public class ComputerOpponentView extends JPanel
-	    implements PlaceView, TableObserver, ActionListener, SeatednessObserver
+	    implements TableObserver, ActionListener, SeatednessObserver
 	{
 	    /**
 	     * Creates a new table list view, suitable for providing the user interface for table-style
@@ -48,11 +48,11 @@ public class ComputerOpponentView extends JPanel
 	        // keep track of these
 	        _config = config;
 	        _ctx = ctx;
-
+	        
 	        MessageBundle msgs = ctx.getMessageManager().getBundle(LobbyCodes.LOBBY_MSGS);
 
 	        // create our table director
-	        _tdtr = new TableDirector(ctx, LobbyObject.TABLE_SET, this);
+	        _tdtr = new TableDirector(ctx, "aiTableSet", this);
 
 	        // add ourselves as a seatedness observer
 	        _tdtr.addSeatednessObserver(this);
@@ -79,21 +79,14 @@ public class ComputerOpponentView extends JPanel
 	    }
 
 	    // documentation inherited
-	    public void willEnterPlace (PlaceObject place)
+	    public void setPlace (PlaceObject place)
 	    {
 	        // pass the good word on to our table director
 	        _tdtr.setTableObject(place);
-
-	        // iterate over the tables already active in this lobby and put them in their respective
-	        // lists
-	        TableLobbyObject tlobj = (TableLobbyObject)place;
-	        for (Table table : tlobj.getTables()) {
-	            tableAdded(table);
-	        }
 	    }
 
 	    // documentation inherited
-	    public void didLeavePlace (PlaceObject place)
+	    public void leavePlace (PlaceObject place)
 	    {
 	        // pass the good word on to our table director
 	        _tdtr.clearTableObject();
@@ -164,4 +157,5 @@ public class ComputerOpponentView extends JPanel
 
 	    /** Our number of players indicator. */
 	    protected JLabel _pcount;
+	    
 	}
