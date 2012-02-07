@@ -93,13 +93,13 @@ public class MatchMakingPanel extends JPanel{
 				// Toggle text on the button
 				if (_matchButton.getText() == MATCHMAKING_BUTTON_TEXT){
 					_matchButton.setText(MATCHMAKING_CANCEL_TEXT);
-					elipses = 0;
-					elipseTimer.stop();					
-					_statusBox.setText(" ");					
+					elipseTimer.start();					
 					matchMaker.startMatchMaking();   					
 				} else {
 					_matchButton.setText(MATCHMAKING_BUTTON_TEXT);
-					elipseTimer.start();
+					elipses = 0;
+					elipseTimer.stop();					
+					_statusBox.setText(" ");						
 					matchMaker.stopMatchMaking();   					
 				}
 			}
