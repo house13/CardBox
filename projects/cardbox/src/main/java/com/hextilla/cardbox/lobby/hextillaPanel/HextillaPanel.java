@@ -19,6 +19,7 @@ import com.hextilla.cardbox.data.CardBoxGameConfig;
 import com.hextilla.cardbox.lobby.data.LobbyConfig;
 import com.hextilla.cardbox.lobby.data.LobbyObject;
 import com.hextilla.cardbox.lobby.friendlist.FriendList;
+import com.hextilla.cardbox.lobby.matchmaking.ComputerOpponentView;
 import com.hextilla.cardbox.lobby.matchmaking.MatchMakingPanel;
 import com.hextilla.cardbox.util.CardBoxContext;
 import com.threerings.crowd.client.PlaceView;
@@ -55,8 +56,8 @@ public class HextillaPanel extends JPanel implements PlaceView {
         leftPane.add(optsButton, buttonConstraints);     
         
         // Solo     
-        JButton soloButton = new JButton("Computer Opponent");    
-        leftPane.add(soloButton, buttonConstraints);      
+        _cov = new ComputerOpponentView(_ctx, _config);     
+        leftPane.add(_cov, buttonConstraints);
         
         // Add matchmaking info box here, takes up more space then other buttons
         buttonConstraints.gridheight = 2;
@@ -89,11 +90,13 @@ public class HextillaPanel extends JPanel implements PlaceView {
 	// Entering and leaving the Hextilla panel
 	public void willEnterPlace(PlaceObject place) {
 		_lobj = (LobbyObject)place;
-		MatchMakingPanel.matchMaker.willEnterPlace(_lobj);
+		_cov.setPlace(place);
+		MatchMakingPanel.matchMaker.setPlace(place);
 	}
 
 	public void didLeavePlace(PlaceObject place) {
-		MatchMakingPanel.matchMaker.willEnterPlace(_lobj);
+		_cov.leavePlace(place);
+		MatchMakingPanel.matchMaker.leavePlace(place);
 	}		
 	
     /** Giver of life and services. */
@@ -104,4 +107,6 @@ public class HextillaPanel extends JPanel implements PlaceView {
     
     /** Our lobby distributed object. */
     protected LobbyObject _lobj;    
+    
+    protected ComputerOpponentView _cov;
 }

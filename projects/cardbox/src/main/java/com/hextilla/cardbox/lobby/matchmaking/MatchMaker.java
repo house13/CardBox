@@ -23,7 +23,7 @@ import com.threerings.parlor.data.TableConfig;
 import com.threerings.parlor.data.TableLobbyObject;
 import com.threerings.parlor.game.client.GameConfigurator;
 
-public class MatchMaker implements TableObserver, SeatednessObserver, PlaceView 
+public class MatchMaker implements TableObserver, SeatednessObserver 
 {
 
 	// Use an enum to indicate status, we may need to change this if we need more info
@@ -66,7 +66,13 @@ public class MatchMaker implements TableObserver, SeatednessObserver, PlaceView
 
 	// Start searching for a game
 	public void startMatchMaking() {
-		log.info("Start Matchmaking...");
+		log.info("Start Matchmaking...");		
+
+		// Load-up the table lists		
+        for (Table table : _tlobj.getTables()) {
+            tableAdded(table);
+        }	
+        
 		// Search for open games
 	    for (Table table : _openList) {
 	    	// Try to join at the next open position (Join at position 2, host sits in 1)
@@ -89,6 +95,10 @@ public class MatchMaker implements TableObserver, SeatednessObserver, PlaceView
 		if (table != null){
 			_tdtr.leaveTable(table.tableId);
 		}
+		
+        // clear out our table lists
+        _openList.clear();
+        _playList.clear();			
 	}
 
 	// Add listener
@@ -178,28 +188,19 @@ public class MatchMaker implements TableObserver, SeatednessObserver, PlaceView
 	}		
 
 	// Entering and leaving the match maker
-	public void willEnterPlace(PlaceObject place) {
+	public void setPlace(PlaceObject place) {
         log.info("Entering MatchMaker");
+        _tlobj = (TableLobbyObject)place;        
         
         // pass the good word on to our table director
-        _tdtr.setTableObject(place);
-
-		// Load-up the table lists		
-        TableLobbyObject tlobj = (TableLobbyObject)place;
-        for (Table table : tlobj.getTables()) {
-            tableAdded(table);
-        }		
+        _tdtr.setTableObject(place);	
 	}
 
-	public void didLeavePlace(PlaceObject place) {
+	public void leavePlace(PlaceObject place) {
         log.info("Leaving MatchMaker");
         
         // pass the good word on to our table director
         _tdtr.clearTableObject();
-
-        // clear out our table lists
-        _openList.clear();
-        _playList.clear();	
 	}	
 	
 	// Vector of listeners
@@ -224,5 +225,8 @@ public class MatchMaker implements TableObserver, SeatednessObserver, PlaceView
     protected GameConfigurator _figger;    
     
     // Table configuration object
-    protected TableConfig _tconfig;    
+    protected TableConfig _tconfig;   
+    
+    // Reference to the lobby
+    TableLobbyObject _tlobj;    
 }
