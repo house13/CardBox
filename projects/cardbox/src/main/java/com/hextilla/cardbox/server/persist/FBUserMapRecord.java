@@ -35,18 +35,15 @@ public class FBUserMapRecord extends PersistentRecord
 {
     // AUTO-GENERATED: FIELDS START
     public static final Class<FBUserMapRecord> _R = FBUserMapRecord.class;
-    public static final ColumnExp USER_ID = colexp(_R, "userId");
     public static final ColumnExp FB_ID = colexp(_R, "fbId");
+    public static final ColumnExp USER_ID = colexp(_R, "userId");
     // AUTO-GENERATED: FIELDS END
 
     public static final int SCHEMA_VERSION = 1;
-    
-    /** Defines the possible values for {@link #status}. */
-    public enum Status { NEW, ONLINE, OFFLINE, DEAD }
 
     /** The user's Facebook ID (unique) */
     @Id @Column(name="FB_ID")
-    public String fbId;
+    public long fbId;
     
     /** The user's unique integer identifier. */
     @Column(name="USER_ID")
@@ -71,7 +68,7 @@ public class FBUserMapRecord extends PersistentRecord
     
     public void init (final FBUserRecord fbuser)
     {
-    	this.fbId = fbuser.fbId;
+    	this.fbId = Long.valueOf(fbuser.fbId);
     	this.userId = fbuser.userId;
     }
 
@@ -81,6 +78,15 @@ public class FBUserMapRecord extends PersistentRecord
      * with the supplied key values.
      */
     public static Key<FBUserMapRecord> getKey (String fbId)
+    {
+        return newKey(_R, Long.valueOf(fbId));
+    }
+    
+    /**
+     * Create and return a primary {@link Key} to identify a {@link FBUserRecord}
+     * with the supplied key values.
+     */
+    public static Key<FBUserMapRecord> getKey (long fbId)
     {
         return newKey(_R, fbId);
     }

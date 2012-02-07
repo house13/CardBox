@@ -152,6 +152,7 @@ public class FBUserManager
         // load up the requested user
         FBUserRecord user = _repository.loadUserByFbId(fbId);
         if (user == null) {
+        	log.warning("Couldn't load user by facebook ID [ fbId=" + fbId + " ]");
             throw new NoSuchUserException("error.no_such_user");
         }
 

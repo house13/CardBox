@@ -84,6 +84,11 @@ public class FBUserRepository extends DepotRepository
      throws PersistenceException
  {
 	 FBUserMapRecord maptoUser = load(FBUserMapRecord.getKey(fbId));
+	 if (maptoUser == null)
+	 {
+		 log.warning("Query for user by facebook ID returned no results", "fbId", fbId);
+		 return null;
+	 }
      return load(FBUserRecord.getKey(maptoUser.userId));
  }
  
@@ -95,6 +100,11 @@ public class FBUserRepository extends DepotRepository
      throws PersistenceException
  {
 	 SessionMapRecord maptoSession = load(SessionMapRecord.getKey(authtoken));
+	 if (maptoSession == null)
+	 {
+		 log.warning("Query for user by session returned no results", "token", authtoken);
+		 return null;
+	 }
 	 return load(FBUserRecord.getKey(maptoSession.userId));
  }
 
@@ -107,8 +117,7 @@ public class FBUserRepository extends DepotRepository
  {
      insert(user);
      FBUserMapRecord maptoUser = new FBUserMapRecord();
-     maptoUser.fbId = user.fbId;
-     maptoUser.userId = user.userId;
+     maptoUser.init(user);
      insert(maptoUser);
  }
  
