@@ -19,6 +19,7 @@
 
 package com.hextilla.cardbox.server.persist;
 
+import java.security.MessageDigest;
 import java.sql.Timestamp;
 
 import com.samskivert.depot.Key;
@@ -37,15 +38,15 @@ public class SessionMapRecord extends PersistentRecord
 {
     // AUTO-GENERATED: FIELDS START
     public static final Class<SessionMapRecord> _R = SessionMapRecord.class;
-    public static final ColumnExp AUTHTOKEN = colexp(_R, "authtoken");
+    public static final ColumnExp SESSION_TOKEN = colexp(_R, "sessionToken");
     public static final ColumnExp USER_ID = colexp(_R, "userId");
     public static final ColumnExp EXPIRES = colexp(_R, "expires");
     // AUTO-GENERATED: FIELDS END
 
     public static final int SCHEMA_VERSION = 1;
 
-    @Id @Column(name="AUTHTOKEN")
-    public String authtoken;
+    @Id @Column(name="SESSION_TOKEN")
+    public String sessionToken;
     
     @Column(name="USER_ID")
     public int userId;
@@ -53,10 +54,10 @@ public class SessionMapRecord extends PersistentRecord
     @Column(name="EXPIRES")
     public Timestamp expires;
     
-    public void init (final SessionRecord sesh)
+    public void init (final SessionRecord sesh, String hash_session)
     {
+    	this.sessionToken = hash_session;
     	this.userId = sesh.userId;
-    	this.authtoken = sesh.authtoken;
     	this.expires = sesh.expires;
     }
     
@@ -74,12 +75,12 @@ public class SessionMapRecord extends PersistentRecord
      * Create and return a primary {@link Key} to identify a {@link SessionRecord}
      * with the supplied key values.
      */
-    public static Key<SessionMapRecord> getKey (String authtoken)
+    public static Key<SessionMapRecord> getKey (String sessionToken)
     {
-        return newKey(_R, authtoken);
+        return newKey(_R, sessionToken);
     }
 
     /** Register the key fields in an order matching the getKey() factory. */
-    static { registerKeyFields(AUTHTOKEN); }
+    static { registerKeyFields(SESSION_TOKEN); }
     // AUTO-GENERATED: METHODS END
 }

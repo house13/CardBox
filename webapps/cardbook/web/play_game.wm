@@ -6,19 +6,21 @@
 
 #if ($game)
 <!--[if !IE]>-->
-<object classid="java:com.threerings.toybox.client.ToyBoxApplet.class" type="application/x-java-applet" archive="/client/gg-client.jar" width="800" height="600">
+<object classid="java:com.hextilla.cardbox.client.CardBoxApplet.class" type="application/x-java-applet;version=1.6" archive="/client/card-client.jar" width="800" height="600">
 <param name="server" value="$game.host"/>
 <param name="port" value="$port"/>
 <param name="resource_url" value="$resource_url"/>
 <param name="game_id" value="$game.gameId"/>
+<param name="session_id" value="$session_id"/>
 <!--<![endif]-->
-<object classid="clsid:8AD9C840-044E-11D1-B3E9-00805F499D93" width="800" height="600" codebase="http://java.sun.com/update/1.5.0/jinstall-1_5-windows-i586.cab#Version=5,0,0,5\"> 
-<param name="code" value="com.threerings.toybox.client.ToyBoxApplet"/>
-<param name="archive" value="/client/gg-client.jar"/>
+<object classid="clsid:CAFEEFAC-0016-0000-FFFF-ABCDEFFEDCBA" width="800" height="600" codebase="http://java.sun.com/update/1.6.0/jinstall-6u30-windows-i586.cab"> 
+<param name="code" value="com.hextilla.cardbox.client.CardBoxApplet"/>
+<param name="archive" value="/client/card-client.jar"/>
 <param name="server" value="$game.host"/>
 <param name="port" value="$port"/>
 <param name="resource_url" value="$resource_url"/>
 <param name="game_id" value="$game.gameId"/>
+<param name="session_id" value="$session_id"/>
 Install the Javer.
 </object> 
 <!--[if !IE]>-->

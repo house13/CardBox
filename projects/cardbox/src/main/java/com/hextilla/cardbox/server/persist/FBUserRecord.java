@@ -66,7 +66,7 @@ public class FBUserRecord extends PersistentRecord
     
     /** The user's Facebook ID (unique) */
     @Column(name="FB_ID")
-    public String fbId;
+    public long fbId;
     
     /** The status of the user. We can't use the enumeration directly here as this class is
      * persisted and JORA doesn't (and can't be made to) automagically handle enums. */
@@ -128,7 +128,7 @@ public class FBUserRecord extends PersistentRecord
     
     public void init (final User fbuser, final long created)
     {
-    	this.fbId = fbuser.getId();
+    	this.fbId = Long.valueOf(fbuser.getId());
     	this.username = _default_username;
     	this.firstname = fbuser.getFirstName();
     	this.lastname = fbuser.getLastName();
@@ -136,6 +136,11 @@ public class FBUserRecord extends PersistentRecord
     	this.created = new Date(created);
     	this.lastActive = new Date(created);
     	setStatus(Status.NEW);
+    }
+    
+    public void activate (final long now)
+    {
+    	this.lastActive = new Date(now);
     }
     
     public static final String _default_username = CardBoxConfig.config.getValue("default_username", "Anonymous");

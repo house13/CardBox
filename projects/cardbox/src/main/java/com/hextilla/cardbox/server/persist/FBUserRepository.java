@@ -19,6 +19,8 @@
 
 package com.hextilla.cardbox.server.persist;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -42,7 +44,7 @@ import com.samskivert.depot.clause.Where;
 
 import com.samskivert.io.PersistenceException;
 
-import com.hextilla.cardbox.server.CardBoxManager;
+import com.hextilla.cardbox.server.CardBoxUserManager;
 
 import static com.hextilla.cardbox.Log.log;
 
@@ -50,7 +52,7 @@ import static com.hextilla.cardbox.Log.log;
 * Provides an interface to our persistent repository of user metadata.
 */
 public class FBUserRepository extends DepotRepository
- implements CardBoxManager.FacebookUserRepository
+ implements CardBoxUserManager.FacebookUserRepository
 {
  /**
   * The database identifier used when establishing a database connection. This value being
@@ -68,7 +70,7 @@ public class FBUserRepository extends DepotRepository
  
  /**
   * Loads information on a single user from the repository. Returns null if no user exists with
-  * the specifed id.
+  * the specified user id.
   */
  public FBUserRecord loadUser (int userId)
      throws PersistenceException
@@ -77,32 +79,30 @@ public class FBUserRepository extends DepotRepository
  }
  
  /**
-  * Loads information on a single user from the repository. Returns null if no user exists with
-  * the specifed id.
+  * Loads information on a single user from the repository. Returns null if no user exists for
+  * the specified Facebook id.
   */
- public FBUserRecord loadUserByFbId (String fbId)
+ public FBUserRecord loadUser (long fbId)
      throws PersistenceException
  {
 	 FBUserMapRecord maptoUser = load(FBUserMapRecord.getKey(fbId));
 	 if (maptoUser == null)
 	 {
-		 log.warning("Query for user by facebook ID returned no results", "fbId", fbId);
 		 return null;
 	 }
      return load(FBUserRecord.getKey(maptoUser.userId));
  }
  
  /**
-  * Loads information on a single user from the repository. Returns null if no user exists with
-  * the specifed id.
+  * Loads information on a single user from the repository. Returns null if no user exists for
+  * the provided session hash.
   */
- public FBUserRecord loadUserBySession (String authtoken)
+ public FBUserRecord loadUser (String sessionHash)
      throws PersistenceException
  {
-	 SessionMapRecord maptoSession = load(SessionMapRecord.getKey(authtoken));
+	 SessionMapRecord maptoSession = load(SessionMapRecord.getKey(sessionHash));
 	 if (maptoSession == null)
 	 {
-		 log.warning("Query for user by session returned no results", "token", authtoken);
 		 return null;
 	 }
 	 return load(FBUserRecord.getKey(maptoSession.userId));
@@ -135,44 +135,73 @@ public class FBUserRepository extends DepotRepository
   * Inserts the supplied user into the repository. {@link GameRecord#gameId} will be filled in
   * by this method with the user's newly assigned unique identifier.
   */
- public void registerSession (final FBUserRecord user, String authtoken, long expires)
+ public String registerSession (final FBUserRecord user, String authtoken, long expires)
      throws PersistenceException
  {
+	 // Since the user's registering a session, I'd say that counts as activity
+	 activateUser(user);
+	 
 	 // If a session record already exists for this user, update with the new token/expires pair
-	  SessionRecord sesh = load(SessionRecord.getKey(user.userId));
+	 SessionRecord sesh = load(SessionRecord.getKey(user.userId));
 	 if (sesh == null) {
 		 // If there's no session record already, make 'em a new one
-    	 newSession(user.userId, authtoken, expires);
+    	 return newSession(user.userId, authtoken, expires);
 	 } else {
-		 refreshSession(sesh, authtoken, expires);
+		 return refreshSession(sesh, authtoken, expires);
 	 }
  }
  
- protected void newSession (int userId, String authtoken, long expires)
+ /** 
+  * Create a new session record, and session map record (hashed).
+  * 
+  * @param userId Unique CardBox userId
+  * @param authtoken Facebook authentication token
+  * @param expires Milliseconds when the authtoken will expire
+  * @return Hashed authentication token (session ID)
+  * @throws PersistenceException
+  */
+ protected String newSession (int userId, String authtoken, long expires)
  	throws PersistenceException
  {
 	 SessionRecord sesh = new SessionRecord();
 	 sesh.init(userId, authtoken, expires);
+	 
+	 String hash_session = hash(authtoken);
 	 SessionMapRecord seshmap = new SessionMapRecord();
-	 seshmap.init(sesh);
+	 seshmap.init(sesh, hash_session);
+	 
 	 insert(sesh);
 	 insert(seshmap);
 	 
+	 return hash_session;
  }
  
- protected void refreshSession (final SessionRecord oldsesh, String authtoken, long expires)
+ /**
+  * Update an existing SessionRecord with new FB token, and create a new session map record (hashed)
+  * 
+  * @param oldsesh Existing session to be updated
+  * @param authtoken Facebook authentication token
+  * @param expires Milliseconds when the authtoken will expire
+  * @return Hashed authentication token (session ID)
+  * @throws PersistenceException
+  */
+ protected String refreshSession (final SessionRecord oldsesh, String authtoken, long expires)
 	throws PersistenceException
  {
-	 SessionMapRecord seshmap = load(SessionMapRecord.getKey(oldsesh.authtoken));
+	 String hash_session = hash(authtoken);
+	 SessionMapRecord seshmap = load(SessionMapRecord.getKey(hash(oldsesh.authtoken)));
 	 if (seshmap != null)
 	 {
 		 delete(seshmap);
 	 }
 	 oldsesh.refresh(authtoken, expires);
 	 seshmap = new SessionMapRecord();
-	 seshmap.init(oldsesh);
+	 seshmap.init(oldsesh, hash_session);
+	 
 	 update(oldsesh);
 	 insert(seshmap);
+	 
+	 return hash_session;
  }
 
  /**
@@ -212,15 +241,29 @@ public class FBUserRepository extends DepotRepository
      switch (mod) {
      case 0: return false;
      case 1:
-     case 2:
     	 return true;
      default:
-         log.warning("updateUser() modified more than two rows?!", "user", user, "modified", mod);
+         log.warning("updateUser() modified more than one row?!", "user", user, "modified", mod);
          return true; // something was updated!
      }
  }
  
- public int pruneSessions ()
+ /**
+  * Update the given user record to reflect recent activity.
+  * 
+  * @param user User to be updated
+  * @return Whether a row was matched/updated
+  * @throws PersistenceException
+  */
+ public boolean activateUser (final FBUserRecord user)
+ 	 throws PersistenceException
+ {
+	 Calendar now = Calendar.getInstance();
+	 user.activate(now.getTimeInMillis());
+	 return updateUser(user);
+ }
+ 
+ public int purgeSessions ()
 	 throws PersistenceException
  {
 	 Calendar now = Calendar.getInstance();
@@ -231,6 +274,19 @@ public class FBUserRepository extends DepotRepository
 	 rows_deleted += deleteAll(SessionMapRecord.class, new Where(SessionMapRecord.EXPIRES.lessEq(nowstamp)));
 	 
 	 return rows_deleted;
+ }
+ 
+ public String hash (String authtoken)
+ {
+	 String hashed = null;
+	 try {
+		 MessageDigest md = MessageDigest.getInstance("MD5");
+		 md.update(authtoken.getBytes(), 0, authtoken.length());
+		 hashed = new String(md.digest());
+	 } catch (NoSuchAlgorithmException e) {
+		 log.warning("Apparently we don't know MD5", e);
+	 }
+	 return hashed;
  }
 
  @Override
@@ -245,15 +301,5 @@ public class FBUserRepository extends DepotRepository
  protected static FluentExp alive ()
  {
      return FBUserRecord.STATUS.notEq(FBUserRecord.Status.DEAD.toString());
- }
- 
- protected static FluentExp fbIdMatch (String fbId)
- {
-	 return FBUserRecord.FB_ID.eq(fbId);
- }
- 
- protected static FluentExp sessionMatch (String authtoken)
- {
-	 return SessionRecord.AUTHTOKEN.eq(authtoken);
  }
 }

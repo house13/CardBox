@@ -19,6 +19,8 @@
 
 package com.hextilla.cardbook.logic;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.samskivert.velocity.InvocationContext;
 
 import com.hextilla.cardbox.server.CardBoxConfig;
@@ -37,6 +39,8 @@ public class play_game extends view_game
         throws Exception
     {
         super.invoke(ctx, app, user);
+        HttpServletRequest req = ctx.getRequest();
+        ctx.put("session_id", app.getUserManager().getSession(req));
         ctx.put("port", CardBoxConfig.getServerPort());
         ctx.put("resource_url", CardBoxConfig.getResourceURL());
     }

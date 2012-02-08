@@ -80,14 +80,14 @@ public class FBUserManager
     }
 
     /**
-     * Loads up a user based on the supplied session authentication token.
+     * Loads up a user based on the supplied session hash.
      */
-    public FBUserRecord loadUser (String authcode)
+    public FBUserRecord loadUser (String sessionId)
         throws PersistenceException
     {
-        FBUserRecord user = (authcode == null) ? null : _repository.loadUserBySession(authcode);
+        FBUserRecord user = (sessionId == null) ? null : _repository.loadUser(sessionId);
         if (USERMGR_DEBUG) {
-            log.info("Loaded user by authcode", "code", authcode, "user", user);
+            log.info("Loaded user by authcode", "code", sessionId, "user", user);
         }
         return user;
     }
@@ -128,6 +128,11 @@ public class FBUserManager
         }
         return user;
     }
+    
+    public String getSession (HttpServletRequest req)
+    {
+    	return CookieUtil.getCookieValue(req, _userAuthCookie);
+    }
 
     /**
      * Attempts to authenticate the requester and initiate an authenticated session for them. An
@@ -150,9 +155,9 @@ public class FBUserManager
         throws PersistenceException, AuthenticationFailedException
     {
         // load up the requested user
-        FBUserRecord user = _repository.loadUserByFbId(fbId);
+        FBUserRecord user = _repository.loadUser(Long.valueOf(fbId));
         if (user == null) {
-        	log.warning("Couldn't load user by facebook ID [ fbId=" + fbId + " ]");
+        	log.warning("Couldn't load user by facebook ID", "fbId", fbId);
             throw new NoSuchUserException("error.no_such_user");
         }
 

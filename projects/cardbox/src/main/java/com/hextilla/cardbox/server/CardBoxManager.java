@@ -64,7 +64,6 @@ import com.hextilla.cardbox.lobby.server.LobbyManager;
 import com.hextilla.cardbox.data.GameDefinition;
 import com.hextilla.cardbox.data.CardBoxGameConfig;
 import com.hextilla.cardbox.server.persist.GameRecord.Status;
-import com.hextilla.cardbox.server.persist.FBUserRecord;
 import com.hextilla.cardbox.server.persist.GameRecord;
 import com.hextilla.cardbox.server.persist.SessionRecord;
 import com.hextilla.cardbox.util.CardBoxClassLoader;
@@ -96,17 +95,6 @@ public class CardBoxManager
         /** Updates the number of players online for a game. */
         public void updateOnlineCount (int gameId, int players)
             throws PersistenceException;
-    }
-    
-    public interface FacebookUserRepository
-    {
-    	/** Loads persistent user data */
-    	public FBUserRecord loadUser (int userId)
-    		     throws PersistenceException;
-    	
-    	/** Loads Facebook authentication data for a given user */
-    	public SessionRecord loadSession (int userId)
-    		     throws PersistenceException;
     }
 
     @Inject public CardBoxManager (InvocationManager invmgr)
