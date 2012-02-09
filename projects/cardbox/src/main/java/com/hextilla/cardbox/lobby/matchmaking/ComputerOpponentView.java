@@ -2,16 +2,12 @@ package com.hextilla.cardbox.lobby.matchmaking;
 
 import static com.hextilla.cardbox.lobby.Log.log;
 
-import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -20,8 +16,6 @@ import com.hextilla.cardbox.data.CardBoxGameConfig;
 import com.hextilla.cardbox.data.TableMatchConfig;
 import com.hextilla.cardbox.lobby.table.TableItem;
 import com.hextilla.cardbox.util.CardBoxContext;
-import com.samskivert.swing.HGroupLayout;
-import com.samskivert.swing.VGroupLayout;
 import com.threerings.crowd.data.PlaceObject;
 import com.threerings.parlor.client.SeatednessObserver;
 import com.threerings.parlor.client.TableDirector;
@@ -31,7 +25,7 @@ import com.threerings.parlor.data.TableConfig;
 import com.threerings.parlor.game.data.GameAI;
 
 public class ComputerOpponentView extends JPanel
-	    implements TableObserver, ActionListener, SeatednessObserver
+	    implements TableObserver, SeatednessObserver
 	{
 	    /**
 	 * 
@@ -53,48 +47,25 @@ public class ComputerOpponentView extends JPanel
 
 	        // add ourselves as a seatedness observer
 	        _tdtr.addSeatednessObserver(this);
-
-	        // set up a layout manager
-			/*HGroupLayout gl = new HGroupLayout(HGroupLayout.STRETCH);
-			gl.setOffAxisPolicy(HGroupLayout.STRETCH);
-			setLayout(gl);
-
-	        // we have two lists of tables, one of tables being matchmade...
-	        VGroupLayout pgl = new VGroupLayout(VGroupLayout.STRETCH);
-	        pgl.setOffAxisPolicy(VGroupLayout.STRETCH);
-	        pgl.setJustification(VGroupLayout.TOP);
-	        JPanel panel = new JPanel(pgl);
-	        panel.add(new JLabel("Computer Opponents"));
-	        
-	        
-	        JPanel bbox = HGroupLayout.makeButtonBox(HGroupLayout.RIGHT);
-	        bbox.add(_randomButton);
-	        bbox.add(_aggressiveButton);
-	        bbox.add(_defensiveButton);
-	        panel.add(bbox, VGroupLayout.FIXED);
-
-	        add(panel);*/
-	        /*_randomButton = new JButton("Easy Opponent");
-	        _randomButton.addActionListener(this);
-	        _aggressiveButton = new JButton("Aggressive Opponent");
-	        _defensiveButton = new JButton("Defensive Opponent");
-	        
-	        setLayout(new GridLayout(2, 1));
-			JPanel top = new JPanel(new BorderLayout());
-			JPanel bottom = new JPanel();			
-			bottom.setLayout(new BoxLayout(bottom, BoxLayout.Y_AXIS));
-			top.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));			
-			bottom.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-			top.add(new JLabel("Computer Opponents"));
-			bottom.add(_randomButton);
-			
-			add(top);
-			add(bottom);*/
 	        
 	        _randomButton = new JButton("Easy Opponent");
-	        _randomButton.addActionListener(this);
+	        _randomButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					startAIMatch(0);
+				}
+			}); 
 	        _aggressiveButton = new JButton("Aggressive Opponent");
+	        _aggressiveButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					startAIMatch(2);
+				}
+			}); 
 	        _defensiveButton = new JButton("Defensive Opponent");
+	        _defensiveButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					startAIMatch(1);
+				}
+			}); 
 	        
 	        setLayout(new GridBagLayout());
 		
@@ -154,7 +125,7 @@ public class ComputerOpponentView extends JPanel
 	    }
 
 	    // documentation inherited
-	    public void actionPerformed (ActionEvent event)
+	    public void startAIMatch (int AISkill)
 	    {
 	        // the create table button was clicked. use the game config as configured by the
 	        // configurator to create a table
@@ -162,8 +133,9 @@ public class ComputerOpponentView extends JPanel
 	        
 	        //Add the AI player
 	        GameAI ai = new GameAI();
-	        ai.skill = 0;
+	        ai.skill = AISkill;
 	        ai.personality = 0;
+	        
 	        config.ais = new GameAI[1];
 	        config.ais[0] = ai;
 	        
