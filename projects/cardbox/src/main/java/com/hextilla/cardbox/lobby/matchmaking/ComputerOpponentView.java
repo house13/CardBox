@@ -2,44 +2,43 @@ package com.hextilla.cardbox.lobby.matchmaking;
 
 import static com.hextilla.cardbox.lobby.Log.log;
 
+import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.hextilla.cardbox.data.CardBoxGameConfig;
 import com.hextilla.cardbox.data.TableMatchConfig;
-import com.hextilla.cardbox.lobby.data.LobbyCodes;
-import com.hextilla.cardbox.lobby.data.LobbyObject;
 import com.hextilla.cardbox.lobby.table.TableItem;
 import com.hextilla.cardbox.util.CardBoxContext;
 import com.samskivert.swing.HGroupLayout;
-import com.samskivert.swing.SimpleSlider;
 import com.samskivert.swing.VGroupLayout;
-import com.samskivert.swing.util.SwingUtil;
-import com.threerings.crowd.client.PlaceView;
 import com.threerings.crowd.data.PlaceObject;
-import com.threerings.media.SafeScrollPane;
 import com.threerings.parlor.client.SeatednessObserver;
 import com.threerings.parlor.client.TableDirector;
 import com.threerings.parlor.client.TableObserver;
 import com.threerings.parlor.data.Table;
 import com.threerings.parlor.data.TableConfig;
-import com.threerings.parlor.data.TableLobbyObject;
-import com.threerings.parlor.game.client.GameConfigurator;
-import com.threerings.parlor.game.client.SwingGameConfigurator;
 import com.threerings.parlor.game.data.GameAI;
-import com.threerings.util.MessageBundle;
 
 public class ComputerOpponentView extends JPanel
 	    implements TableObserver, ActionListener, SeatednessObserver
 	{
 	    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -5893833850770210445L;
+
+		/**
 	     * Creates a new table list view, suitable for providing the user interface for table-style
 	     * matchmaking in a table lobby.
 	     */
@@ -48,8 +47,6 @@ public class ComputerOpponentView extends JPanel
 	        // keep track of these
 	        _config = config;
 	        _ctx = ctx;
-	        
-	        MessageBundle msgs = ctx.getMessageManager().getBundle(LobbyCodes.LOBBY_MSGS);
 
 	        // create our table director
 	        _tdtr = new TableDirector(ctx, "aiTableSet", this);
@@ -58,7 +55,7 @@ public class ComputerOpponentView extends JPanel
 	        _tdtr.addSeatednessObserver(this);
 
 	        // set up a layout manager
-			HGroupLayout gl = new HGroupLayout(HGroupLayout.STRETCH);
+			/*HGroupLayout gl = new HGroupLayout(HGroupLayout.STRETCH);
 			gl.setOffAxisPolicy(HGroupLayout.STRETCH);
 			setLayout(gl);
 
@@ -67,15 +64,63 @@ public class ComputerOpponentView extends JPanel
 	        pgl.setOffAxisPolicy(VGroupLayout.STRETCH);
 	        pgl.setJustification(VGroupLayout.TOP);
 	        JPanel panel = new JPanel(pgl);
+	        panel.add(new JLabel("Computer Opponents"));
 	        
-	        _create = new JButton("Computer Opponent");
-	        _create.addActionListener(this);
 	        
 	        JPanel bbox = HGroupLayout.makeButtonBox(HGroupLayout.RIGHT);
-	        bbox.add(_create);
+	        bbox.add(_randomButton);
+	        bbox.add(_aggressiveButton);
+	        bbox.add(_defensiveButton);
 	        panel.add(bbox, VGroupLayout.FIXED);
 
-	        add(panel);
+	        add(panel);*/
+	        /*_randomButton = new JButton("Easy Opponent");
+	        _randomButton.addActionListener(this);
+	        _aggressiveButton = new JButton("Aggressive Opponent");
+	        _defensiveButton = new JButton("Defensive Opponent");
+	        
+	        setLayout(new GridLayout(2, 1));
+			JPanel top = new JPanel(new BorderLayout());
+			JPanel bottom = new JPanel();			
+			bottom.setLayout(new BoxLayout(bottom, BoxLayout.Y_AXIS));
+			top.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));			
+			bottom.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+			top.add(new JLabel("Computer Opponents"));
+			bottom.add(_randomButton);
+			
+			add(top);
+			add(bottom);*/
+	        
+	        _randomButton = new JButton("Easy Opponent");
+	        _randomButton.addActionListener(this);
+	        _aggressiveButton = new JButton("Aggressive Opponent");
+	        _defensiveButton = new JButton("Defensive Opponent");
+	        
+	        setLayout(new GridBagLayout());
+		
+	        GridBagConstraints c = new GridBagConstraints();  
+	        c.weightx = 1;
+	        c.weighty = 0.1;             
+	        c.gridheight = 1;
+	        c.fill = GridBagConstraints.HORIZONTAL;
+	        c.insets = new Insets(0, 5, 0, 5);
+	        c.gridx = 0;
+	        c.gridy = 0;
+	        c.gridwidth = 3;
+	        add(new JLabel("Computer Opponents"), c);
+	        
+	        c.gridx = 0;
+	        c.gridy = 1;
+	        c.fill = GridBagConstraints.BOTH;
+	        c.gridwidth = 1;
+	        c.weighty = 0.9;
+	        add(_randomButton, c);
+	        c.gridx = 1;
+	        c.gridy = 1;
+	        add(_aggressiveButton, c);
+	        c.gridx = 2;
+	        c.gridy = 1;
+	        add(_defensiveButton, c);
 	    }
 
 	    // documentation inherited
@@ -132,7 +177,9 @@ public class ComputerOpponentView extends JPanel
 	    public void seatednessDidChange (boolean isSeated)
 	    {
 	        // update the create table button
-	        _create.setEnabled(!isSeated);
+	    	_randomButton.setEnabled(!isSeated);
+	    	_aggressiveButton.setEnabled(!isSeated);
+	    	_defensiveButton.setEnabled(!isSeated);
 	    }
 
 	    /**
@@ -153,7 +200,9 @@ public class ComputerOpponentView extends JPanel
 	    protected TableDirector _tdtr;
 
 	    /** Our create table button. */
-	    protected JButton _create;
+	    protected JButton _randomButton;
+	    protected JButton _aggressiveButton;
+	    protected JButton _defensiveButton;
 
 	    /** Our number of players indicator. */
 	    protected JLabel _pcount;
