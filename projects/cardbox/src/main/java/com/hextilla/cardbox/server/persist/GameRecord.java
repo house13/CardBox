@@ -93,7 +93,7 @@ public class GameRecord extends PersistentRecord
     public String host;
 
     /** The XML game definition associated with this version. */
-    @Column(name="DEFINITION")
+    @Column(name="DEFINITION", length=1000)
     public String definition;
 
     /** The MD5 digest of the game jar file. */
