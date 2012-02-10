@@ -180,8 +180,8 @@ public class FBUserManager
     	Calendar now = Calendar.getInstance();
     	now.add(Calendar.SECOND, expires);
 		long expiration = now.getTimeInMillis();
-        _repository.registerSession(user, token, expiration);
-        Cookie acookie = new Cookie(_userAuthCookie, token);
+        String sessionId = _repository.registerSession(user, token, expiration);
+        Cookie acookie = new Cookie(_userAuthCookie, sessionId);
         acookie.setPath("/");
         acookie.setMaxAge((expires > 0) ? expires : 60*60);
         if (USERMGR_DEBUG) {
