@@ -119,6 +119,8 @@ public class fbauth extends OptionalUserLogic
 		 ctx.put("fbid", fbUser.getId());
 		 ctx.put("fbname", fbUser.getName());
 		 ctx.put("fbemail", fbUser.getEmail());
+		 
+		 rsp.sendRedirect("/cardbook/play.wm");
 	 }
 	 
 	 /** Performs the raw act of Facebook authentication, getting the token/expiry

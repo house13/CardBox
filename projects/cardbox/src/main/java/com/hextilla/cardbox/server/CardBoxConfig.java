@@ -109,6 +109,14 @@ public class CardBoxConfig
     {
         return config.getSubProperties("db");
     }
+    
+    /**
+     * Returns the game record id of your big game.
+     */
+    public static int getGameId ()
+    {
+        return config.getValue("game_id", 1);
+    }
 
     /** Helper function for warning on undefined config elements. */
     protected static String requireValue (String key)
