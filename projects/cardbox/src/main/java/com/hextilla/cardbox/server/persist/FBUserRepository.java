@@ -19,6 +19,7 @@
 
 package com.hextilla.cardbox.server.persist;
 
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
@@ -88,6 +89,7 @@ public class FBUserRepository extends DepotRepository
 	 FBUserMapRecord maptoUser = load(FBUserMapRecord.getKey(fbId));
 	 if (maptoUser == null)
 	 {
+		 log.warning("Query for user by fbId returned 0 rows.", "fbId", fbId);
 		 return null;
 	 }
      return load(FBUserRecord.getKey(maptoUser.userId));
@@ -103,6 +105,7 @@ public class FBUserRepository extends DepotRepository
 	 SessionMapRecord maptoSession = load(SessionMapRecord.getKey(sessionHash));
 	 if (maptoSession == null)
 	 {
+		 log.warning("Query for user by session returned 0 rows.", "session", sessionHash);
 		 return null;
 	 }
 	 return load(FBUserRecord.getKey(maptoSession.userId));
@@ -276,17 +279,23 @@ public class FBUserRepository extends DepotRepository
 	 return rows_deleted;
  }
  
- public String hash (String authtoken)
+ public static String hash (String s)
  {
+	 String algo = "SHA-256";
 	 String hashed = null;
 	 try {
-		 MessageDigest md = MessageDigest.getInstance("MD5");
-		 md.update(authtoken.getBytes(), 0, authtoken.length());
-		 hashed = new String(md.digest());
+		 MessageDigest md = MessageDigest.getInstance(algo);
+		 hashed = bytes2hex(md.digest(s.getBytes()));
 	 } catch (NoSuchAlgorithmException e) {
-		 log.warning("Apparently we don't know MD5", e);
+		 log.warning("Apparently we don't know " + algo, e);
 	 }
 	 return hashed;
+ }
+ 
+ private static String bytes2hex (final byte[] bytes)
+ {
+	 BigInteger bi = new BigInteger(1, bytes);
+	 return String.format("%0" + (bytes.length << 1) + "X", bi);
  }
 
  @Override
