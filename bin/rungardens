@@ -20,7 +20,7 @@ else
     exit 255
 fi
 
-CLASS=com.threerings.toybox.server.ToyBoxServer
+CLASS=com.hextilla.cardbox.server.CardBoxServer
 JAVA_ARGS="-server -mx$SERVER_MEMORY \
     -Dhostname=$HOSTNAME \
     -Dlog4j.configuration=log4j.properties \
@@ -35,7 +35,7 @@ umask 002
 # Start with the deployment directory
 CLASSPATH="$GARDENS_HOME/dist"
 # Add all JAR files in $GARDENS_HOME/dist/lib to the CLASSPATH
-for jar in $GARDENS_HOME/dist/lib/*.jar; do
+for jar in $GARDENS_HOME/lib/*.jar; do
     if [ -e $jar ]; then
         CLASSPATH=$CLASSPATH:$jar
     fi

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+jetty_home="/usr/share/jetty6"
+
+cp pages/client/card-client.jar ${jetty_home}/webapps/root/client/
+cp webapps/cardbook/dist/cardbook.war ${jetty_home}/webapps/
+cp ../Hextilla/dist/hextilla.jar ${jetty_home}/webapps/root/games/hextilla-1.jar
+service jetty6 restart

@@ -68,7 +68,7 @@
   <target name="server" depends="-prepare">
     <artifact:dependencies pathId="server.classpath">
       <dependency groupId="com.hextilla" artifactId="cardbox" version="1.0"/>
-      <dependency groupId="postgresql" artifactId="postgresql" version="8.1-408.jdbc3"/>
+      <dependency groupId="mysql" artifactId="mysql-connector-java" version="5.0.8"/>
     </artifact:dependencies>
     <java classname="com.hextilla.cardbox.server.CardBoxServer">
       <classpath>
