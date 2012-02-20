@@ -13,4 +13,4 @@ if [ -z "$3" ]; then
 fi
 
 `dirname $0`/runjava -- $JAVA_ARGS -Dgame_id=$3 \
-  com.threerings.toybox.client.ToyBoxApp localhost 47624 $*
+  com.threerings.toybox.client.CardBoxApp localhost 47624 $*

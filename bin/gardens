@@ -31,10 +31,10 @@ case "$1" in
             exit 1
         fi
         # Make sure there are no hung Gardens server processes
-        RPIDS=`ps auxww | grep ToyBoxServer | grep java | \
+        RPIDS=`ps auxww | grep CardBoxServer | grep java | \
             awk '{ print $2 }' | sort -n | head -1`
         if [ ! -z "$RPIDS" ]; then
-            echo "WARNING: A Gardens server process is currently running."
+            echo "WARNING: A CardBox server process is currently running."
             echo "If it has failed and you wish to forcibly restart it, please"
             echo "execute the following commands:"
             echo ""

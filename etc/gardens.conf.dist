@@ -7,4 +7,4 @@
 # write access to the 'logs' and 'data' directory (which are contained in
 # the same directory as this configuration file).
 
-GARDENS_USER=gardens
+GARDENS_USER=root
