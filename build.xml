@@ -2,6 +2,7 @@
 <project name="cardbox-pkg" default="client" basedir="." xmlns:artifact="urn:maven-artifact-ant">
   <property file="etc/cardbox.properties"/>
   <property name="deploy.dir"  value="dist"/>
+  <property name="lib.dir"  value="lib"/>
 
   <!-- boilerplate for downloading maven ant task jar -->
   <import file="maven-ant.xml"/>
@@ -17,14 +18,17 @@
     <mkdir dir="${deploy.dir}/lib"/>
 
     <copy file="etc/cardbox.properties" todir="${deploy.dir}"/>
+    <copy file="etc/log4j.properties" todir="${deploy.dir}"/>
     <copy file="etc/build_settings.properties" todir="${deploy.dir}"/>
+    <copy file="etc/gardens.conf.dist" tofile="${deploy.dir}/gardens.conf"/>
   </target>
 
   <target name="cardbox" description="Builds cardbox and installs it into ~/.m2/repository.">
     <!-- we need to install our cardbox artifact locally for projects/client to use -->
     <ant dir="projects/cardbox" target="maven-deploy" inheritAll="false"/>
+    <copy file="projects/cardbox/dist/cardbox.jar" tofile="lib/cardbox-1.0.jar"/>
     <copy todir="${deploy.dir}/lib">
-      <fileset dir="projects/cardbox/dist" includes="*.jar"/>
+      <fileset dir="lib" includes="*.jar"/>
     </copy>
   </target>
 

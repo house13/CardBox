@@ -1,0 +1,23 @@
+DEPLOYING A PRODUCTION SERVER:
+
+Easy/Lazy route:
+- Set up your root user for use with Git
+- Clone our repositories into your root home directory somewhere
+- Delete your ~/.m2/repository if it's non-empty
+- In {cardbox.home}, run:
+    ant client
+    ant cardbook
+    ./deploy
+
+- You need to stock your {cardbox.home}/lib directory (you'll only need to do this once), so run:
+    cp `find ~/.m2/repository -iname *.jar` lib/
+    cp lib/*.jar dist/lib/
+
+- The deploy script will already restart jetty, so run the Cardbox server by running:
+    bin/gardens start
+
+- This will put a .pid file in run/ and will log to log/
+
+- You may need to take down the server manually, so use:
+    ps aux | grep java
+    kill -9 <PID>
