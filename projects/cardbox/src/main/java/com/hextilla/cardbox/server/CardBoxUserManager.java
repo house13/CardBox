@@ -5,8 +5,6 @@ import static com.hextilla.cardbox.Log.log;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import com.hextilla.cardbox.lobby.data.LobbyObject;
-import com.hextilla.cardbox.lobby.server.LobbyManager;
 import com.hextilla.cardbox.server.persist.FBUserRecord;
 import com.hextilla.cardbox.server.persist.SessionRecord;
 
@@ -16,6 +14,7 @@ import com.samskivert.util.Interval;
 import com.samskivert.util.Invoker;
 
 import com.threerings.presents.annotation.MainInvoker;
+import com.threerings.presents.server.InvocationManager;
 import com.threerings.presents.server.PresentsDObjectMgr;
 
 @Singleton
@@ -41,6 +40,10 @@ public class CardBoxUserManager
     	
     	public int purgeSessions ()
     			 throws PersistenceException;
+    }
+    
+    @Inject public CardBoxUserManager (InvocationManager invmgr)
+    {
     }
     
 	/**

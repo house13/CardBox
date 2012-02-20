@@ -47,6 +47,7 @@ import com.threerings.crowd.server.PlaceRegistry;
 import com.threerings.parlor.server.ParlorManager;
 
 import com.hextilla.cardbox.server.persist.CardBoxRepository;
+import com.hextilla.cardbox.server.persist.FBUserRepository;
 
 import static com.hextilla.cardbox.Log.log;
 
@@ -96,15 +97,22 @@ public class CardBoxServer extends CrowdServer
 
         // determine whether we've been run in test mode with a single game configuration
         String gconfig = System.getProperty("game_conf");
-        PersistenceContext pctx = null;
+        PersistenceContext gctx = null, uctx = null;
         CardBoxRepository cardrepo = null;
+        FBUserRepository userrepo = null;
         if (StringUtil.isBlank(gconfig)) {
-            pctx = new PersistenceContext();
-            cardrepo = new CardBoxRepository(pctx);
-            pctx.init(CardBoxRepository.GAME_DB_IDENT, _conprov, null);
-            pctx.initializeRepositories(true);
+            gctx = new PersistenceContext();
+            cardrepo = new CardBoxRepository(gctx);
+            gctx.init(CardBoxRepository.GAME_DB_IDENT, _conprov, null);
+            gctx.initializeRepositories(true);
+            
+            uctx = new PersistenceContext();
+            userrepo = new FBUserRepository(uctx);
+            uctx.init(FBUserRepository.USER_DB_IDENT, _conprov, null);
+            uctx.initializeRepositories(true);
         }
         _cardmgr.init(cardrepo);
+        _usermgr.init(userrepo);
         if (!StringUtil.isBlank(gconfig)) {
             _cardmgr.setDevelopmentMode(new File(gconfig));
         }
@@ -148,9 +156,11 @@ public class CardBoxServer extends CrowdServer
             return mgr;
         }
         @Inject protected CardBoxManager _cardmgr;
+        @Inject protected CardBoxUserManager _usermgr;
     }
 
     @Inject protected ParlorManager _parmgr;
     @Inject protected CardBoxManager _cardmgr;
+    @Inject protected CardBoxUserManager _usermgr;
     @Inject protected ConnectionProvider _conprov;
 }
