@@ -276,6 +276,8 @@ public class FBUserRepository extends DepotRepository
 	 rows_deleted += deleteAll(SessionRecord.class, new Where(SessionRecord.EXPIRES.lessEq(nowstamp)));
 	 rows_deleted += deleteAll(SessionMapRecord.class, new Where(SessionMapRecord.EXPIRES.lessEq(nowstamp)));
 	 
+	 log.info("Call to purgeSessions() removed " + rows_deleted + " total expired session records for approx. " + (rows_deleted/2) + " users.");
+	 
 	 return rows_deleted;
  }
  

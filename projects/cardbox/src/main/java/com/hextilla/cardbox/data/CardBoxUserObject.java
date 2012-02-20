@@ -20,8 +20,11 @@
 package com.hextilla.cardbox.data;
 
 import javax.annotation.Generated;
+
+import com.hextilla.cardbox.facebook.CardBoxName;
 import com.threerings.crowd.data.BodyObject;
 import com.threerings.crowd.data.TokenRing;
+import com.threerings.util.Name;
 
 /**
  * Extends the {@link BodyObject} with some custom bits needed for CardBox.
@@ -32,15 +35,45 @@ public class CardBoxUserObject extends BodyObject
     /** The field name of the <code>tokens</code> field. */
     @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public static final String TOKENS = "tokens";
+    
+    /** The field name of the <code>session</code> field. */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
+    public static final String SESSION = "session";
+    
+    /** The field name of the <code>session</code> field. */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
+    public static final String CBNAME = "cbname";
     // AUTO-GENERATED: FIELDS END
 
     /** Indicates which access control tokens are held by this user. */
     public TokenRing tokens;
+    
+    /** Indicates which access control tokens are held by this user. */
+    public String session;
+    
+    /** Richer representation of user identity suitable for our social needs */
+    public CardBoxName cbname;
 
     @Override // from BodyObject
     public TokenRing getTokens ()
     {
         return tokens;
+    }
+    
+    @Override //from BodyObject
+    public Name getVisibleName ()
+    {
+    	return cbname.getStrangerName();
+    }
+    
+    public String getSession ()
+    {
+    	return session;
+    }
+    
+    public long getFacebookId ()
+    {
+    	return cbname.getFacebookId();
     }
 
     // AUTO-GENERATED: METHODS START
@@ -59,6 +92,44 @@ public class CardBoxUserObject extends BodyObject
         requestAttributeChange(
             TOKENS, value, ovalue);
         this.tokens = value;
+    }
+    
+    /**
+     * Requests that the <code>session</code> field be set to the
+     * specified value. The local value will be updated immediately and an
+     * event will be propagated through the system to notify all listeners
+     * that the attribute did change. Proxied copies of this object (on
+     * clients) will apply the value change when they received the
+     * attribute changed notification.
+     */
+    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
+    public void setSession (String value)
+    {
+        String ovalue = this.session;
+        requestAttributeChange(
+            SESSION, value, ovalue);
+        this.session = value;
+    }
+    
+    /**
+     * Requests that the <code>tokens</code> field be set to the
+     * specified value. The local value will be updated immediately and an
+     * event will be propagated through the system to notify all listeners
+     * that the attribute did change. Proxied copies of this object (on
+     * clients) will apply the value change when they received the
+     * attribute changed notification.
+     */
+    @Override @Generated(value={"com.threerings.presents.tools.GenDObjectTask"}) // from ClientObject
+    public void setUsername (Name value)
+    {
+    	if (value instanceof CardBoxName)
+    	{
+    		CardBoxName ovalue = this.cbname;
+            requestAttributeChange(
+                CBNAME, value, ovalue);
+            this.cbname = (CardBoxName)value;
+    	}
+        super.setUsername(value);
     }
     // AUTO-GENERATED: METHODS END
 }

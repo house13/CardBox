@@ -59,6 +59,7 @@ import com.threerings.parlor.client.ParlorDirector;
 
 import com.hextilla.cardbox.data.CardBoxGameConfig;
 import com.hextilla.cardbox.data.CardBoxCodes;
+import com.hextilla.cardbox.facebook.CardBoxCredentials;
 import com.hextilla.cardbox.util.CardBoxContext;
 
 import static com.hextilla.cardbox.Log.log;
@@ -171,23 +172,30 @@ public class CardBoxClient
     {
         return _cctrl;
     }
-
+    
     /**
-     * Creates the appropriate type of credentials from the supplied username and plaintext
-     * password.
+     * @param session_id The (encrypted) hex string identifying our session authenticated through Facebook
      */
-    public Credentials createCredentials (String username, String pw)
+    public void setSession (String session_id)
     {
-        return createCredentials(username, Password.makeFromClear(pw));
+    	_session = session_id;
+    }
+    
+    /**
+     * Creates the appropriate type of credentials from the supplied session ID
+     */
+    public Credentials createCredentials ()
+    {
+        return new CardBoxCredentials(_session);
     }
 
     /**
-     * Creates the appropriate type of credentials from the supplied username and encrypted
-     * password.
+     * Creates the appropriate type of credentials from the supplied session ID
      */
-    public Credentials createCredentials (String username, Password pw)
+    public Credentials createCredentials (String session_id)
     {
-        return new UsernamePasswordCreds(new Name(username), pw.getEncrypted());
+    	setSession(session_id);
+        return new CardBoxCredentials(session_id);
     }
 
     /**
@@ -197,8 +205,8 @@ public class CardBoxClient
     {
         // remove the old panel
         _root.removeAll();
-	// add the new one
-	_root.add(panel, BorderLayout.CENTER);
+        // add the new one
+        _root.add(panel, BorderLayout.CENTER);
         // swing doesn't properly repaint after adding/removing children
         _root.revalidate();
         _root.repaint();
@@ -400,6 +408,8 @@ public class CardBoxClient
     protected ChatDirector _chatdir;
     protected ParlorDirector _pardtr;
     protected CardBoxDirector _carddtr;
+    
+    protected String _session;
 
     /** The prefix prepended to localization bundle names before looking them up in the
      * classpath. */

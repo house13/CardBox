@@ -88,6 +88,10 @@ public class CardBoxApplet extends ManagedJApplet
             log.warning("Invalid resource_url supplied '" +
                         resourceURL + "': " + e + ".");
         }
+        
+        // and our authenticated session ID
+        String session_id = getParameter("session_id");
+        _client.setSession(session_id);
 
         // and our game id and game oid
         carddtr.setGameId(getIntParameter("game_id", -1), getIntParameter("game_oid", -1));

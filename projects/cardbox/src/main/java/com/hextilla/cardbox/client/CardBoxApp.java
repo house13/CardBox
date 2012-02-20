@@ -75,7 +75,7 @@ public class CardBoxApp
         // configure the client with some credentials and logon
         if (username != null && password != null) {
             // create and set our credentials
-            client.setCredentials(_client.createCredentials(username, password));
+            client.setCredentials(_client.createCredentials("derp"));
             client.logon();
         }
 

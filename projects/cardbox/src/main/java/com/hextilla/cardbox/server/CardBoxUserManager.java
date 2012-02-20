@@ -46,6 +46,18 @@ public class CardBoxUserManager
     {
     }
     
+    public FBUserRecord loadUser (String sessionHash)
+    		throws PersistenceException
+    {
+    	return _userrepo.loadUser(sessionHash);
+    }
+    
+    public SessionRecord loadSession (int userId)
+    		throws PersistenceException
+    {
+    	return _userrepo.loadSession(userId);
+    }
+    
 	/**
      * Prepares the cardbox user manager for operation.
      */
@@ -63,7 +75,8 @@ public class CardBoxUserManager
                     purgeSessions();
                 }
             };
-            _purgesesh.schedule(60 * 1000L, true);
+            _purgesesh.schedule(30 * 60 * 1000L, true);
+            log.info("Session culling task has been scheduled");
         }
 
         log.info("CardBoxManager ready [rsrcdir=" + CardBoxConfig.getResourceDir() + "].");
@@ -80,7 +93,6 @@ public class CardBoxUserManager
             public boolean invoke () {
                 try {
                 	int deleted = _userrepo.purgeSessions();
-                	log.info("Call to purgeSessions() removed " + deleted + " total expired session records for approx. " + (deleted/2) + " users.");
                 } catch (Exception e) {
                     log.warning("Failed to purge expired sessions", e);
                 }

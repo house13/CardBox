@@ -35,11 +35,14 @@ public class CardBoxSession extends CrowdSession
     {
         super.sessionWillStart();
 
-        // if we have auth data in the form of a token ring, use it (we set things directly here
+        // if we have auth data in the form of a token ring or session ID, use it (we set things directly here
         // rather than use the setter methods because the user object is not yet out in the wild)
         CardBoxUserObject user = (CardBoxUserObject)_clobj;
         if (_authdata instanceof TokenRing) {
             user.tokens = (TokenRing)_authdata;
+        } else if (_authdata instanceof String) {
+        	user.session = (String)_authdata;
+        	user.tokens = new TokenRing(0);
         } else {
             // otherwise give them zero privileges
             user.tokens = new TokenRing(0);
