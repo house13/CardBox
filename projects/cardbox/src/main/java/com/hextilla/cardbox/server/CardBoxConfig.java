@@ -59,14 +59,6 @@ public class CardBoxConfig
     }
 
     /**
-     * Instantiates and returns the authenticator to be used by the server.
-     */
-    public static Class<? extends Authenticator> getAuthenticator ()
-    {
-        return CardBoxAuthenticator.class;
-    }
-
-    /**
      * Returns the directory under which all resources are stored.
      */
     public static File getResourceDir ()
