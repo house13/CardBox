@@ -60,10 +60,6 @@ public class CardBoxUserObject extends BodyObject
     @Override //from BodyObject
     public Name getVisibleName ()
     {
-    	if (username instanceof CardBoxName) 
-    	{
-    		return ((CardBoxName)username).getFriendlyName();
-    	}
     	return username;
     }
     
