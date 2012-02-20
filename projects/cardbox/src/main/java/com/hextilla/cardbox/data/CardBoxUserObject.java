@@ -48,11 +48,8 @@ public class CardBoxUserObject extends BodyObject
     /** Indicates which access control tokens are held by this user. */
     public TokenRing tokens;
     
-    /** Indicates which access control tokens are held by this user. */
+    /** Authenticated session token held by this user. */
     public String session;
-    
-    /** Richer representation of user identity suitable for our social needs */
-    public CardBoxName cbname;
 
     @Override // from BodyObject
     public TokenRing getTokens ()
@@ -63,7 +60,11 @@ public class CardBoxUserObject extends BodyObject
     @Override //from BodyObject
     public Name getVisibleName ()
     {
-    	return cbname.getStrangerName();
+    	if (username instanceof CardBoxName) 
+    	{
+    		return ((CardBoxName)username).getFriendlyName();
+    	}
+    	return username;
     }
     
     public String getSession ()
@@ -73,7 +74,12 @@ public class CardBoxUserObject extends BodyObject
     
     public long getFacebookId ()
     {
-    	return cbname.getFacebookId();
+    	if (username instanceof CardBoxName) 
+    	{
+    		return ((CardBoxName)username).getFacebookId();
+    	}
+    	
+    	return 0;
     }
 
     // AUTO-GENERATED: METHODS START
@@ -109,27 +115,6 @@ public class CardBoxUserObject extends BodyObject
         requestAttributeChange(
             SESSION, value, ovalue);
         this.session = value;
-    }
-    
-    /**
-     * Requests that the <code>tokens</code> field be set to the
-     * specified value. The local value will be updated immediately and an
-     * event will be propagated through the system to notify all listeners
-     * that the attribute did change. Proxied copies of this object (on
-     * clients) will apply the value change when they received the
-     * attribute changed notification.
-     */
-    @Override @Generated(value={"com.threerings.presents.tools.GenDObjectTask"}) // from ClientObject
-    public void setUsername (Name value)
-    {
-    	if (value instanceof CardBoxName)
-    	{
-    		CardBoxName ovalue = this.cbname;
-            requestAttributeChange(
-                CBNAME, value, ovalue);
-            this.cbname = (CardBoxName)value;
-    	}
-        super.setUsername(value);
     }
     // AUTO-GENERATED: METHODS END
 }

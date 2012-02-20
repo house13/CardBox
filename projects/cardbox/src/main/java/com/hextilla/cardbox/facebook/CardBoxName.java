@@ -4,13 +4,13 @@ import com.threerings.util.Name;
 
 public class CardBoxName extends Name
 {
-	public CardBoxName (long fbId, String username, String first, String last)
+	public CardBoxName (long fbId, String first, String last, String username)
 	{
 		super(String.valueOf(fbId));
 		_fbId = fbId;
-		_username = username;
 		_first = first;
 		_last = last;
+		_username = username;
 	}
 	
 	public Name getFriendlyName ()
@@ -44,16 +44,17 @@ public class CardBoxName extends Name
 	 */
 	protected void toString (StringBuilder buf)
 	{
-	    buf.append("fbId=").append(_fbId);
+		String sep = ", ";
+	    buf.append("fbId=").append(_fbId).append(sep);
+	    buf.append("first=").append(_first).append(sep);
+	    buf.append("last=").append(_last).append(sep);
 	    buf.append("username=").append(_username);
-	    buf.append("first=").append(_first);
-	    buf.append("last=").append(_last);
 	}
 	
     // Numeric Facebook ID is stored as long and string (parent's _name)
 	protected long _fbId;
 	
-	protected String _username;
 	protected String _first;
 	protected String _last;
+	protected String _username;
 }
