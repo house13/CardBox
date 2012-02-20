@@ -63,19 +63,7 @@ public class CardBoxConfig
      */
     public static Class<? extends Authenticator> getAuthenticator ()
     {
-        String authclass = config.getValue("server_auth", "");
-        if (StringUtil.isBlank(authclass)) {
-            return DummyAuthenticator.class;
-        }
-
-        try {
-            @SuppressWarnings("unchecked") Class<? extends Authenticator> clazz =
-                (Class<? extends Authenticator>)Class.forName(authclass);
-            return clazz;
-        } catch (Exception e) {
-            log.warning("Failed to instantiate custom authenticator [class=" + authclass + "]", e);
-            return null;
-        }
+        return CardBoxAuthenticator.class;
     }
 
     /**
