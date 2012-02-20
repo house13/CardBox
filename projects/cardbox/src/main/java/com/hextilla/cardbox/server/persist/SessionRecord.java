@@ -42,7 +42,7 @@ public class SessionRecord extends PersistentRecord
     public static final ColumnExp EXPIRES = colexp(_R, "expires");
     // AUTO-GENERATED: FIELDS END
 
-    public static final int SCHEMA_VERSION = 1;
+    public static final int SCHEMA_VERSION = 2;
 
     @Id @Column(name="USER_ID")
     public int userId;
@@ -51,7 +51,7 @@ public class SessionRecord extends PersistentRecord
     public String authtoken;
 
     @Column(name="EXPIRES")
-    public Timestamp expires;
+    public long expires;
     
     public void init (int userId, String authtoken, long expires)
     {
@@ -62,7 +62,7 @@ public class SessionRecord extends PersistentRecord
     public void refresh (String authtoken, long expires)
     {
     	this.authtoken = authtoken;
-    	this.expires = new Timestamp(expires);
+    	this.expires = expires;
     }
     
     /**
