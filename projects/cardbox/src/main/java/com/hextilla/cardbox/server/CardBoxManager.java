@@ -63,6 +63,7 @@ import com.hextilla.cardbox.lobby.server.LobbyManager;
 
 import com.hextilla.cardbox.data.GameDefinition;
 import com.hextilla.cardbox.data.CardBoxGameConfig;
+import com.hextilla.cardbox.data.HexDeck;
 import com.hextilla.cardbox.server.persist.GameRecord.Status;
 import com.hextilla.cardbox.server.persist.GameRecord;
 import com.hextilla.cardbox.server.persist.SessionRecord;
@@ -341,7 +342,9 @@ public class CardBoxManager
         try {
         	if (config instanceof CardBoxGameConfig)
         	{
-        		((CardBoxGameConfig)config).setDeck(_cbcmgr.getCards());
+        		HexDeck deck = _cbcmgr.getCards();
+        		((CardBoxGameConfig)config).setDeck(deck);
+        		log.info("Creating a new game with cards loaded from DB", "deck", deck);
         	}
         	
             PlaceManager pmgr = _plreg.createPlace(config);

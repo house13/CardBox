@@ -19,10 +19,7 @@
 
 package com.hextilla.cardbox.data;
 
-import java.util.List;
-
 import com.google.common.base.Preconditions;
-import com.google.inject.Inject;
 
 import com.threerings.util.StreamableHashMap;
 
@@ -33,7 +30,6 @@ import com.threerings.parlor.game.client.GameConfigurator;
 import com.threerings.parlor.game.data.GameConfig;
 
 import com.hextilla.cardbox.client.CardBoxGameConfigurator;
-import com.hextilla.cardbox.server.CardBoxCardManager;
 
 /**
  * Provides configuration to CardBox games.
@@ -126,7 +122,7 @@ public class CardBoxGameConfig extends GameConfig
     
     public void setDeck (HexDeck cards)
     {
-    	if (cards != null) _cards = cards;
+    	_cards = cards;
     }
     
     public HexDeck getDeck ()

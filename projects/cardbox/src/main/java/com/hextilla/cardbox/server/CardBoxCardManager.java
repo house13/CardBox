@@ -2,6 +2,7 @@ package com.hextilla.cardbox.server;
 
 import static com.hextilla.cardbox.data.CardBoxCodes.TOYBOX_GROUP;
 import static com.threerings.presents.data.InvocationCodes.INTERNAL_ERROR;
+import static com.hextilla.cardbox.Log.log;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -70,9 +71,11 @@ public class CardBoxCardManager
     	if (_collection == null || _collection.isEmpty())
     	{
     		List<CardRecord> records = _cardmgr.supply();
+    		log.info("Records supplied: ", "Records", records.size());
     		for (CardRecord record : records)
     		{
     			_collection.add(transmuteCard(record));
+    			log.info("Getting card ", record);
     		}
     		_deck.setCards(_collection);
     	}
