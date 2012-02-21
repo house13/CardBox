@@ -68,7 +68,7 @@ public class CardBoxCardManager
     public HexDeck getCards()
     {
     	// If we have an empty set of cards, try to pull the set down from the repo
-    	if (_collection == null || _collection.isEmpty())
+    	if (_deck.size == 0 || _collection.isEmpty())
     	{
     		List<CardRecord> records = _cardmgr.supply();
     		log.info("Records supplied: ", "Records", records.size());
