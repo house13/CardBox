@@ -52,7 +52,7 @@ public class CardRecord extends PersistentRecord {
     public int southWestPower;
     
     /** The number associated with the top-right side of the card. */
-    @Column(name="NORHT_WEST_POWER")
+    @Column(name="NORTH_WEST_POWER")
     public int northWestPower;
     
     /** The element of the card. */
