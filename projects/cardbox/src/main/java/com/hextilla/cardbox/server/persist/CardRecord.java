@@ -17,11 +17,9 @@ public class CardRecord extends PersistentRecord {
     public static final ColumnExp<Integer> CARD_ID = colexp(_R, "cardID");
     public static final ColumnExp<Integer> NORTH_POWER = colexp(_R, "northPower");
     public static final ColumnExp<Integer> NORTH_EAST_POWER = colexp(_R, "northEastPower");
-    public static final ColumnExp<Integer> EAST_POWER = colexp(_R, "eastPower");
     public static final ColumnExp<Integer> SOUTH_EAST_POWER = colexp(_R, "southEastPower");
     public static final ColumnExp<Integer> SOUTH_POWER = colexp(_R, "southPower");
     public static final ColumnExp<Integer> SOUTH_WEST_POWER = colexp(_R, "southWestPower");
-    public static final ColumnExp<Integer> WEST_POWER = colexp(_R, "westPower");
     public static final ColumnExp<Integer> NORTH_WEST_POWER = colexp(_R, "northWestPower");
     public static final ColumnExp<Integer> ELEMENT = colexp(_R, "element");
     // AUTO-GENERATED: FIELDS END
@@ -39,10 +37,6 @@ public class CardRecord extends PersistentRecord {
     /** The number associated with the top-left side of the card. */
     @Column(name="NORTH_EAST_POWER")
     public int northEastPower;
-
-    /** The number associated with the left side of the card. */
-    @Column(name="EAST_POWER")
-    public int eastPower;
     
     /** The number associated with the bottom-left side of the card. */
     @Column(name="SOUTH_EAST_POWER")
@@ -55,10 +49,6 @@ public class CardRecord extends PersistentRecord {
     /** The number associated with the bottom-right side of the card. */
     @Column(name="SOUTH_WEST_POWER")
     public int southWestPower;
-    
-    /** The number associated with the right side of the card. */
-    @Column(name="WEST_POWER")
-    public int westPower;
     
     /** The number associated with the top-right side of the card. */
     @Column(name="NORHT_WEST_POWER")
