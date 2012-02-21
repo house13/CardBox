@@ -15,7 +15,8 @@ public class HexDeck implements Streamable
 	
 	public void setCards (List<HexCard> list)
 	{
-		cards = list.toArray(new HexCard[list.size()]);
+		size = list.size();
+		cards = list.toArray(new HexCard[size]);
 	}
 	
 	/** Generates a string representation of this instance. */
