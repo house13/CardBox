@@ -8,21 +8,13 @@ import com.google.inject.Singleton;
 import com.samskivert.depot.PersistenceContext;
 import com.samskivert.io.PersistenceException;
 
+import com.hextilla.cardbox.data.HexCard;
 import com.hextilla.cardbox.server.persist.CardRecord;
 import com.hextilla.cardbox.server.persist.GameSupplyRepository;
 
 @Singleton
 public class CardBoxCardManager 
 {
-	/** Most basic representation of our Card data structure.
-	 *  Used to abstract away from the Depot representation.
-	 */
-	public static final class Card
-	{
-		public int element;
-		public int[] sides = {0, 0, 0, 0, 0, 0};
-	}
-	
 	@Inject public CardBoxCardManager ()
     {
     }
@@ -40,7 +32,7 @@ public class CardBoxCardManager
     	_cardmgr.init(_cardrepo);
     }
     
-    public List<Card> getCards()
+    public List<HexCard> getCards()
     {
     	// If we have an empty set of cards, try to pull the set down from the repo
     	if (_collection.isEmpty())
@@ -48,18 +40,19 @@ public class CardBoxCardManager
     		List<CardRecord> records = _cardmgr.supply();
     		for (CardRecord record : records)
     		{
-    			_collection.add(transmute(record));
+    			_collection.add(transmuteCard(record));
     		}
     	}
     	
     	return _collection;
     }
     
-    protected Card transmute (CardRecord record)
+    protected HexCard transmuteCard (CardRecord record)
     {
-    	Card card = new Card();
+    	HexCard card = new HexCard();
     	if (record == null) return card;
     	
+    	card.index = record.cardID;
     	card.element = record.element;
     	for (int i = 0; i < 6; ++i)
     	{
@@ -79,5 +72,5 @@ public class CardBoxCardManager
     protected CardBoxSupplyManager<CardRecord> _cardmgr;
     protected GameSupplyRepository<CardRecord> _cardrepo;
     
-    protected List<Card> _collection;
+    protected List<HexCard> _collection;
 }

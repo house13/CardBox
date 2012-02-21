@@ -20,6 +20,7 @@
 package com.hextilla.cardbox.data;
 
 import com.google.common.base.Preconditions;
+import com.google.inject.Inject;
 
 import com.threerings.util.StreamableHashMap;
 
@@ -30,6 +31,7 @@ import com.threerings.parlor.game.client.GameConfigurator;
 import com.threerings.parlor.game.data.GameConfig;
 
 import com.hextilla.cardbox.client.CardBoxGameConfigurator;
+import com.hextilla.cardbox.server.CardBoxCardManager;
 
 /**
  * Provides configuration to CardBox games.
@@ -119,10 +121,18 @@ public class CardBoxGameConfig extends GameConfig
     {
         return _gameDef.manager;
     }
+    
+    public CardBoxCardManager getCardManager ()
+    {
+    	return _cardmgr;
+    }
 
     /** Our game's unique id. */
     protected int _gameId;
 
     /** Our game definition. */
     protected GameDefinition _gameDef;
+    
+    /** Our game's supply manager. */
+    @Inject protected CardBoxCardManager _cardmgr;
 }
