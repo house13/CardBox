@@ -59,7 +59,7 @@ public class FBUserRepository extends DepotRepository
   * The database identifier used when establishing a database connection. This value being
   * <code>default</code>.
   */
- public static final String USER_DB_IDENT = "default";
+ public static final String USER_DB_IDENT = "user";
 
  /**
   * Constructs a new repository with the specified persistence context.
