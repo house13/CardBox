@@ -22,6 +22,7 @@ import com.threerings.presents.util.PersistingUnit;
 import com.threerings.presents.util.ResultAdapter;
 
 import com.hextilla.cardbox.data.HexCard;
+import com.hextilla.cardbox.data.HexDeck;
 import com.hextilla.cardbox.server.persist.CardRecord;
 import com.hextilla.cardbox.server.persist.GameRecord;
 import com.hextilla.cardbox.server.persist.GameSupplyRepository;
@@ -35,6 +36,7 @@ public class CardBoxCardManager
         // register ourselves as providing the cardbox service
         invmgr.registerDispatcher(new CardBoxCardDispatcher(this), TOYBOX_GROUP);
         _collection = new ArrayList<HexCard>();
+        _deck = new HexDeck();
     }
 	
 	/**
@@ -55,14 +57,14 @@ public class CardBoxCardManager
         throws InvocationException
     {
         // look to see if we have already resolved a lobby for this game
-        List<HexCard> cards = getCards();
+        HexDeck cards = getCards();
         if (cards != null) {
             rl.requestProcessed(cards);
             return;
         }
     }
     
-    public List<HexCard> getCards()
+    public HexDeck getCards()
     {
     	// If we have an empty set of cards, try to pull the set down from the repo
     	if (_collection == null || _collection.isEmpty())
@@ -72,9 +74,10 @@ public class CardBoxCardManager
     		{
     			_collection.add(transmuteCard(record));
     		}
+    		_deck.setCards(_collection);
     	}
     	
-    	return _collection;
+    	return _deck;
     }
     
     protected HexCard transmuteCard (CardRecord record)
@@ -103,6 +106,7 @@ public class CardBoxCardManager
     protected GameSupplyRepository<CardRecord> _cardrepo;
     
     protected List<HexCard> _collection;
+    protected HexDeck _deck;
     
     /** Handles database business. */
     @Inject protected @MainInvoker Invoker _invoker;

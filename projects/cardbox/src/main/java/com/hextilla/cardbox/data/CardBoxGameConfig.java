@@ -124,14 +124,14 @@ public class CardBoxGameConfig extends GameConfig
         return _gameDef.manager;
     }
     
-    public void setCards (List<HexCard> cards)
+    public void setDeck (HexDeck cards)
     {
-    	if (cards != null) _cardlist = cards;
+    	if (cards != null) _cards = cards;
     }
     
-    public List<HexCard> getCards ()
+    public HexDeck getDeck ()
     {
-    	return _cardlist;
+    	return _cards;
     }
 
     /** Our game's unique id. */
@@ -141,5 +141,5 @@ public class CardBoxGameConfig extends GameConfig
     protected GameDefinition _gameDef;
     
     /** Our list of cards. */
-    protected List<HexCard> _cardlist;
+    protected HexDeck _cards;
 }

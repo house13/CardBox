@@ -341,7 +341,7 @@ public class CardBoxManager
         try {
         	if (config instanceof CardBoxGameConfig)
         	{
-        		((CardBoxGameConfig)config).setCards(_cbcmgr.getCards());
+        		((CardBoxGameConfig)config).setDeck(_cbcmgr.getCards());
         	}
         	
             PlaceManager pmgr = _plreg.createPlace(config);
