@@ -19,6 +19,8 @@
 
 package com.hextilla.cardbox.data;
 
+import java.util.List;
+
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 
@@ -122,9 +124,14 @@ public class CardBoxGameConfig extends GameConfig
         return _gameDef.manager;
     }
     
-    public CardBoxCardManager getCardManager ()
+    public void setCards (List<HexCard> cards)
     {
-    	return _cardmgr;
+    	if (cards != null) _cardlist = cards;
+    }
+    
+    public List<HexCard> getCards ()
+    {
+    	return _cardlist;
     }
 
     /** Our game's unique id. */
@@ -133,6 +140,6 @@ public class CardBoxGameConfig extends GameConfig
     /** Our game definition. */
     protected GameDefinition _gameDef;
     
-    /** Our game's supply manager. */
-    @Inject protected CardBoxCardManager _cardmgr;
+    /** Our list of cards. */
+    protected List<HexCard> _cardlist;
 }

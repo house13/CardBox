@@ -21,7 +21,7 @@ package com.hextilla.cardbox.server;
 
 import javax.annotation.Generated;
 
-import com.hextilla.cardbox.client.CardBoxService;
+import com.hextilla.cardbox.client.CardBoxCardService;
 
 import com.threerings.presents.client.InvocationService;
 import com.threerings.presents.data.ClientObject;
@@ -29,15 +29,15 @@ import com.threerings.presents.server.InvocationException;
 import com.threerings.presents.server.InvocationProvider;
 
 /**
- * Defines the server-side of the {@link CardBoxService}.
+ * Defines the server-side of the {@link CardBoxCardService}.
  */
 @Generated(value={"com.threerings.presents.tools.GenServiceTask"},
-           comments="Derived from CardBoxService.java.")
-public interface CardBoxProvider extends InvocationProvider
+           comments="Derived from CardBoxCardService.java.")
+public interface CardBoxCardProvider extends InvocationProvider
 {
     /**
-     * Handles a {@link CardBoxService#getLobbyOid} request.
+     * Handles a {@link CardBoxCardService#getCards} request.
      */
-    void getLobbyOid (ClientObject caller, int arg1, InvocationService.ResultListener arg2)
+    void getCards (ClientObject caller, int arg1, InvocationService.ResultListener arg2)
         throws InvocationException;
 }

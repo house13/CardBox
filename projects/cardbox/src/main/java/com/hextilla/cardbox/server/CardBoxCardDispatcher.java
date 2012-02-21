@@ -21,23 +21,50 @@ package com.hextilla.cardbox.server;
 
 import javax.annotation.Generated;
 
-import com.hextilla.cardbox.client.CardBoxService;
-
 import com.threerings.presents.client.InvocationService;
 import com.threerings.presents.data.ClientObject;
+import com.threerings.presents.server.InvocationDispatcher;
 import com.threerings.presents.server.InvocationException;
-import com.threerings.presents.server.InvocationProvider;
+
+import com.hextilla.cardbox.data.CardBoxCardMarshaller;
 
 /**
- * Defines the server-side of the {@link CardBoxService}.
+ * Dispatches requests to the {@link CardBoxCardProvider}.
  */
 @Generated(value={"com.threerings.presents.tools.GenServiceTask"},
-           comments="Derived from CardBoxService.java.")
-public interface CardBoxProvider extends InvocationProvider
+           comments="Derived from CardBoxCardService.java.")
+public class CardBoxCardDispatcher extends InvocationDispatcher<CardBoxCardMarshaller>
 {
     /**
-     * Handles a {@link CardBoxService#getLobbyOid} request.
+     * Creates a dispatcher that may be registered to dispatch invocation
+     * service requests for the specified provider.
      */
-    void getLobbyOid (ClientObject caller, int arg1, InvocationService.ResultListener arg2)
-        throws InvocationException;
+    public CardBoxCardDispatcher (CardBoxCardProvider provider)
+    {
+        this.provider = provider;
+    }
+
+    @Override
+    public CardBoxCardMarshaller createMarshaller ()
+    {
+        return new CardBoxCardMarshaller();
+    }
+
+    @Override
+    public void dispatchRequest (
+        ClientObject source, int methodId, Object[] args)
+        throws InvocationException
+    {
+        switch (methodId) {
+        case CardBoxCardMarshaller.GET_CARDS:
+            ((CardBoxCardProvider)provider).getCards(
+                source, ((Integer)args[0]).intValue(), (InvocationService.ResultListener)args[1]
+            );
+            return;
+
+        default:
+            super.dispatchRequest(source, methodId, args);
+            return;
+        }
+    }
 }

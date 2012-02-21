@@ -339,6 +339,11 @@ public class CardBoxManager
     {
         // TODO: various complicated bits to pass this request off to the standalone game server
         try {
+        	if (config instanceof CardBoxGameConfig)
+        	{
+        		((CardBoxGameConfig)config).setCards(_cbcmgr.getCards());
+        	}
+        	
             PlaceManager pmgr = _plreg.createPlace(config);
 
             // add a delegate that will record the game's playtime upon completion
@@ -403,6 +408,9 @@ public class CardBoxManager
 
     /** Handles distributed object business. */
     @Inject protected PresentsDObjectMgr _omgr;
+    
+    /** Handles management of our card set. */
+    @Inject protected CardBoxCardManager _cbcmgr;
 
     /** Handles database business. */
     @Inject protected @MainInvoker Invoker _invoker;

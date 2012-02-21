@@ -21,32 +21,32 @@ package com.hextilla.cardbox.data;
 
 import javax.annotation.Generated;
 
-import com.hextilla.cardbox.client.CardBoxService;
+import com.hextilla.cardbox.client.CardBoxCardService;
 
 import com.threerings.presents.client.InvocationService;
 import com.threerings.presents.data.InvocationMarshaller;
 
 /**
- * Provides the implementation of the {@link CardBoxService} interface
+ * Provides the implementation of the {@link CardBoxCardService} interface
  * that marshalls the arguments and delivers the request to the provider
  * on the server. Also provides an implementation of the response listener
  * interfaces that marshall the response arguments and deliver them back
  * to the requesting client.
  */
 @Generated(value={"com.threerings.presents.tools.GenServiceTask"},
-           comments="Derived from CardBoxService.java.")
-public class CardBoxMarshaller extends InvocationMarshaller
-    implements CardBoxService
+           comments="Derived from CardBoxCardService.java.")
+public class CardBoxCardMarshaller extends InvocationMarshaller
+    implements CardBoxCardService
 {
-    /** The method id used to dispatch {@link #getLobbyOid} requests. */
-    public static final int GET_LOBBY_OID = 1;
+    /** The method id used to dispatch {@link #getCards} requests. */
+    public static final int GET_CARDS = 1;
 
-    // from interface CardBoxService
-    public void getLobbyOid (int arg1, InvocationService.ResultListener arg2)
+    // from interface CardBoxCardService
+    public void getCards (int arg1, InvocationService.ResultListener arg2)
     {
         InvocationMarshaller.ResultMarshaller listener2 = new InvocationMarshaller.ResultMarshaller();
         listener2.listener = arg2;
-        sendRequest(GET_LOBBY_OID, new Object[] {
+        sendRequest(GET_CARDS, new Object[] {
             Integer.valueOf(arg1), listener2
         });
     }

@@ -171,7 +171,7 @@ public class CardBoxDirector extends BasicDirector
             }
         };
         log.debug("Requesting lobby oid", "game", _gameId);
-        _cardsvc.getLobbyOid(_gameId, rl);
+        _cboxsvc.getLobbyOid(_gameId, rl);
     }
 
     // documentation inherited
@@ -241,7 +241,8 @@ public class CardBoxDirector extends BasicDirector
     protected void fetchServices (Client client)
     {
         super.fetchServices(client);
-        _cardsvc = client.requireService(CardBoxService.class);
+        _cboxsvc = client.requireService(CardBoxService.class);
+        _cardsvc = client.requireService(CardBoxCardService.class);
     }
 
     /**
@@ -320,7 +321,8 @@ public class CardBoxDirector extends BasicDirector
     }
 
     protected CardBoxContext _ctx;
-    protected CardBoxService _cardsvc;
+    protected CardBoxService _cboxsvc;
+    protected CardBoxCardService _cardsvc;
 
     protected int _gameId = -1, _gameOid = -1;
     protected URL _resourceURL;
