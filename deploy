@@ -1,0 +1,14 @@
+#!/bin/bash
+
+jetty_home="/usr/share/jetty6"
+
+cp pages/client/card-client.jar ${jetty_home}/webapps/root/client/
+cp webapps/cardbook/dist/cardbook.war ${jetty_home}/webapps/
+cp ../Hextilla/dist/hextilla.jar ${jetty_home}/webapps/root/games/hextilla-1.jar
+
+if [ -d "/export/hextilla/pages/games" ]
+then
+    cp ../Hextilla/dist/hextilla.jar /export/hextilla/pages/games/hextilla-1.jar
+    chown hextilla:hextilla /export/hextilla/pages/games/hextilla-1.jar
+fi
+service jetty6 restart

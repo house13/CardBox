@@ -35,7 +35,7 @@ umask 002
 # Start with the deployment directory
 CLASSPATH="$GARDENS_HOME/dist"
 # Add all JAR files in $GARDENS_HOME/dist/lib to the CLASSPATH
-for jar in $GARDENS_HOME/lib/*.jar; do
+for jar in $GARDENS_HOME/dist/lib/*.jar; do
     if [ -e $jar ]; then
         CLASSPATH=$CLASSPATH:$jar
     fi

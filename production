@@ -1,0 +1,29 @@
+#!/bin/bash
+
+prod_root="/export"
+app_name="hextilla"
+mkdir -p "${prod_root}/${app_name}"
+mkdir -p "${prod_root}/${app_name}/dist/lib"
+mkdir -p "${prod_root}/${app_name}/run"
+mkdir -p "${prod_root}/${app_name}/log"
+mkdir -p "${prod_root}/${app_name}/bin"
+mkdir -p "${prod_root}/${app_name}/etc"
+mkdir -p "${prod_root}/${app_name}/pages/games"
+
+cp dist/cardbox.properties dist/gardens.conf dist/log4j.properties "${prod_root}/${app_name}/dist"
+
+cp dist/lib/*.jar "${prod_root}/${app_name}/dist/lib"
+
+cp bin/* "${prod_root}/${app_name}/bin"
+
+sed -e 's/@PREFIX@/\/export\/hextilla/' etc/gardens.policy.in > "${prod_root}/${app_name}/etc/gardens.policy"
+
+chown hextilla:hextilla "${prod_root}/${app_name}"
+
+chmod 755 "${prod_root}/${app_name}/log" "${prod_root}/${app_name}/run" "${prod_root}/${app_name}/pages/games"
+chown hextilla:hextilla "${prod_root}/${app_name}/log" "${prod_root}/${app_name}/run" "${prod_root}/${app_name}/pages/games"
+
+chmod 440 "${prod_root}/${app_name}/dist/cardbox.properties"
+chown hextilla:hextilla "${prod_root}/${app_name}/dist/cardbox.properties"
+
+chmod -R 555 "${prod_root}/${app_name}/bin"
