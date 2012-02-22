@@ -60,6 +60,7 @@ import com.threerings.parlor.client.ParlorDirector;
 import com.hextilla.cardbox.data.CardBoxGameConfig;
 import com.hextilla.cardbox.data.CardBoxCodes;
 import com.hextilla.cardbox.facebook.CardBoxCredentials;
+import com.hextilla.cardbox.facebook.client.SocialDirector;
 import com.hextilla.cardbox.util.CardBoxContext;
 
 import static com.hextilla.cardbox.Log.log;
@@ -242,6 +243,7 @@ public class CardBoxClient
         _chatdir = new ChatDirector(_ctx, ChatPanel.CHAT_MSGS);
         _pardtr = new ParlorDirector(_ctx);
         _carddtr = new CardBoxDirector(_ctx);
+        _socialdtr = new SocialDirector(_ctx); 
     }
 
     /**
@@ -327,6 +329,11 @@ public class CardBoxClient
         {
             return _client;
         }
+        
+        public String getSession ()
+        {
+        	return _session;
+        }
 
         public DObjectManager getDObjectManager ()
         {
@@ -379,6 +386,12 @@ public class CardBoxClient
         {
             return _carddtr;
         }
+        
+        @Override
+        public SocialDirector getSocialDirector ()
+        {
+            return _socialdtr;
+        }
 
         @Override
         public FrameManager getFrameManager ()
@@ -408,6 +421,7 @@ public class CardBoxClient
     protected ChatDirector _chatdir;
     protected ParlorDirector _pardtr;
     protected CardBoxDirector _carddtr;
+    protected SocialDirector _socialdtr;
     
     protected String _session;
 

@@ -77,6 +77,26 @@ public class CardBoxUserObject extends BodyObject
     	
     	return 0;
     }
+    
+    public Name getFriendlyName()
+    {
+    	if (username instanceof CardBoxName)
+    	{
+    		return ((CardBoxName)username).getFriendlyName();
+    	}
+    	
+    	return username;
+    }
+    
+    public Name getStrangerName()
+    {
+    	if (username instanceof CardBoxName)
+    	{
+    		return ((CardBoxName)username).getStrangerName();
+    	}
+    	
+    	return username;
+    }
 
     // AUTO-GENERATED: METHODS START
     /**
