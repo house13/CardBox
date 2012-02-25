@@ -15,7 +15,7 @@ import static com.hextilla.cardbook.Log.log;
 /**
  * Handles the logic behind creating and managing a game's metadata.
  */
-public class play extends UserLogic
+public class play_applet extends UserLogic
 {
     // documentation inherited
     public void invoke (InvocationContext ctx, CardbookApp app, FBUserRecord user)
