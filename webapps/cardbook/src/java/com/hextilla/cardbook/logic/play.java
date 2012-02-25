@@ -70,6 +70,7 @@ public class play extends UserLogic
 	 public void invoke (InvocationContext ctx, CardbookApp app, FBUserRecord user)
 	     throws Exception
 	 {
+		 ctx.put("fbauthed", true);
 	 }
 }
 
