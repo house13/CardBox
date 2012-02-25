@@ -1,13 +1,10 @@
 #set ($title = $i18n.xlate("browse.title"))
 #import ("/header.wm")
 
-#if ($fbtoken)
+#if ($fbauthed)
 <p>
-$fbtoken<br/>
-$fbexpires<br/>
-$fbid<br/>
-$fbname<br/>
-$fbemail<br/>
+<a href="/cardbook/play.wm">Play game in embedded applet</a> <br/>
+<a href="/cardbook/play_jnlp.wm">Play game in standalone application</a>
 #end
 
 #import ("/footer.wm")
