@@ -64,7 +64,7 @@ public class CardBoxServer extends CrowdServer
         @Override protected void configure () {
             super.configure();
             bind(PlaceRegistry.class).to(CardBoxPlaceRegistry.class);
-            bind(Authenticator.class).to(CardBoxAuthenticator.class);
+            bind(Authenticator.class).to(CardBoxConfig.getAuthenticator());
             bind(ConnectionProvider.class).toInstance(
                 new StaticConnectionProvider(CardBoxConfig.getJDBCConfig()));
         }

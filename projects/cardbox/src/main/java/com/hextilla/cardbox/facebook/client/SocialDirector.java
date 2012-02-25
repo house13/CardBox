@@ -5,6 +5,7 @@ import com.hextilla.cardbox.util.CardBoxContext;
 
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
+import com.samskivert.util.StringUtil;
 
 import com.threerings.presents.client.BasicDirector;
 
@@ -19,7 +20,8 @@ public class SocialDirector extends BasicDirector
 	{
 		CardBoxUserObject user = (CardBoxUserObject)_ctx.getClient().getClientObject();
 		_token = user.getSession();
-		_fbclient = new DefaultFacebookClient(_token);
+		_fbclient = StringUtil.isBlank(_token) ? null : new DefaultFacebookClient(_token);
+		
 	}
 	
 
