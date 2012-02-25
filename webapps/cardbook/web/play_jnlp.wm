@@ -12,7 +12,7 @@
      download and install the Sun JRE from http://java.sun.com/j2se/ -->
 
 <jnlp spec="1.0+" codebase="$codebase"
-      href="$base_path/game_${game.gameId}.jnlp">
+      href="$base_path/${game.name}.jnlp">
   <information>
     <title>$game.name</title>
     <vendor>Team Overload</vendor>

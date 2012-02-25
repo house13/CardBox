@@ -4,7 +4,7 @@
 #if ($fbauthed)
 <p>
 <a href="/cardbook/play.wm">Play game in embedded applet</a> <br/>
-<a href="/cardbook/play_jnlp.wm">Play game in standalone application</a>
+<a href="hextilla.jnlp">Play game in standalone application</a>
 #end
 
 #import ("/footer.wm")
