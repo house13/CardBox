@@ -16,7 +16,7 @@
   <information>
     <title>$game.name</title>
     <vendor>Team Overload</vendor>
-    <homepage href="$base_path"/>
+    <homepage href="http://hextilla.com"/>
     <description kind="short">
         The new smash hit card game
     </description>
@@ -26,6 +26,7 @@
     <icon kind="splash" href="splash.png"/>
     <icon href="icon.gif"/>
   </information>
+  <update check="always" policy="always"/>
   <security>
     <all-permissions/>
   </security>
