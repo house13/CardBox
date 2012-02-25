@@ -46,15 +46,16 @@ import static com.hextilla.cardbook.Log.log;
 /**
  * Provides a JNLP file for a particular game.
  */
-public class play_jnlp extends UserLogic
+public class play_jnlp implements Logic
 {
     // documentation inherited
-    public void invoke (InvocationContext ctx, CardbookApp app, FBUserRecord user)
+    public void invoke (Application app, InvocationContext ctx)
         throws Exception
     {
+    	CardbookApp cbapp = (CardbookApp)app;
         HttpServletRequest req = ctx.getRequest();
         int gameId = CardBoxConfig.getGameId();
-        GameRecord game = app.getCardBoxRepository().loadGame(gameId);
+        GameRecord game = cbapp.getCardBoxRepository().loadGame(gameId);
         if (game == null) {
             throw new FriendlyException("error.no_such_game");
         }
@@ -93,7 +94,7 @@ public class play_jnlp extends UserLogic
         ctx.put("server", game.host);
         ctx.put("port", CardBoxConfig.getServerPort());
         ctx.put("resource_url", CardBoxConfig.getResourceURL());
-        ctx.put("session_id", app.getUserManager().getSession(req));
+        ctx.put("session_id", cbapp.getUserManager().getSession(req));
 
         ctx.getResponse().setContentType("application/x-java-jnlp-file");
         ctx.getResponse().setCharacterEncoding("UTF-8");
