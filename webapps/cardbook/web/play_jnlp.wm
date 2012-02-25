@@ -18,10 +18,10 @@
     <vendor>Team Overload</vendor>
     <homepage href="$base_path"/>
     <description kind="short">
-        $string.restrictHTML($string.truncate($game.description, 120, "..."))
+        The new smash hit card game
     </description>
     <description>
-        $string.restrictHTML($game.description)
+        The new smash hit card game
     </description>
     <icon kind="splash" href="splash.png"/>
     <icon href="icon.gif"/>
