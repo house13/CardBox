@@ -96,6 +96,7 @@ public class play_jnlp extends UserLogic
         ctx.put("session_id", app.getUserManager().getSession(req));
 
         ctx.getResponse().setContentType("application/x-java-jnlp-file");
+        ctx.getResponse().setCharacterEncoding("UTF-8");
     }
 
     protected static final String CLIENT_PATH = "/client";
