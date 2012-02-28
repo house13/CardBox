@@ -44,7 +44,7 @@ public class CardbookDispatcher extends DispatcherServlet
         // differ only by query parameters)
         String path = ctx.getRequest().getServletPath();
         if (_jnlppat.matcher(path).matches()) {
-            path = "/game_jnlp.wm";
+            path = "/play_jnlp.wm";
         }
 
         if (_usingSiteLoading) {
@@ -59,10 +59,10 @@ public class CardbookDispatcher extends DispatcherServlet
     protected Logic resolveLogic (String path)
     {
         if (_jnlppat.matcher(path).matches()) {
-            path = "/game_jnlp.wm";
+            path = "/play_jnlp.wm";
         }
         return super.resolveLogic(path);
     }
 
-    protected Pattern _jnlppat = Pattern.compile("/game_[0-9]+.jnlp");
+    protected Pattern _jnlppat = Pattern.compile("/[A-Za-z0-9]+.jnlp");
 }

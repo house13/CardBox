@@ -97,6 +97,19 @@ public class CardBoxConfig
     {
         return config.getValue("game_id", 1);
     }
+    
+    /**
+     * 
+     */
+    public static Class<? extends Authenticator> getAuthenticator ()
+    {
+    	String authclass = config.getValue("server_auth", "");
+        if (StringUtil.isBlank(authclass)) {
+            return DummyAuthenticator.class;
+        }
+        
+        return CardBoxAuthenticator.class;
+    }
 
     /** Helper function for warning on undefined config elements. */
     protected static String requireValue (String key)

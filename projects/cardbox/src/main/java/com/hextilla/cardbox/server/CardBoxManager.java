@@ -340,7 +340,7 @@ public class CardBoxManager
     {
         // TODO: various complicated bits to pass this request off to the standalone game server
         try {
-        	if (config instanceof CardBoxGameConfig)
+        	if (config instanceof CardBoxGameConfig && config.getGameId() != -1)
         	{
         		HexDeck deck = _cbcmgr.getCards();
         		((CardBoxGameConfig)config).setDeck(deck);

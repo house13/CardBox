@@ -46,11 +46,14 @@ public class CardBoxCardManager
     public void init (PersistenceContext ctx)
         throws PersistenceException
     {
-    	_cardmgr = new CardBoxSupplyManager<CardRecord>();
-    	_cardrepo = new GameSupplyRepository<CardRecord>(ctx, CardRecord.class);
-    	
-    	ctx.initializeRepositories(true);
-    	_cardmgr.init(_cardrepo);
+    	if (ctx != null)
+    	{
+    		_cardmgr = new CardBoxSupplyManager<CardRecord>();
+        	_cardrepo = new GameSupplyRepository<CardRecord>(ctx, CardRecord.class);
+        	
+        	ctx.initializeRepositories(true);
+        	_cardmgr.init(_cardrepo);
+    	}
     }
     
  // documentation inherited from interface
@@ -67,6 +70,7 @@ public class CardBoxCardManager
     
     public HexDeck getCards()
     {
+    	if (_cardmgr == null) return null;
     	// If we have an empty set of cards, try to pull the set down from the repo
     	if (_deck.size == 0 || _collection.isEmpty())
     	{

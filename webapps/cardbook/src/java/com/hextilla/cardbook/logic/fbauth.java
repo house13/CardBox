@@ -86,8 +86,6 @@ public class fbauth extends OptionalUserLogic
 		 
 		 String accessToken = accessCreds.left;
 		 int expires = accessCreds.right;
-		 ctx.put("fbtoken", accessToken);
-		 ctx.put("fbexpires", expires);
 		 
 		 FacebookClient fbClient = new DefaultFacebookClient(accessToken);
 		 User fbUser = fbClient.fetchObject("me", User.class);
@@ -116,10 +114,8 @@ public class fbauth extends OptionalUserLogic
 				 log.warning("Creating new user: [user=" + fbUser.getId() + ",token=" + accessToken + "] failed due to exception", e);
 			 }
 		 }
-		 ctx.put("fbid", fbUser.getId());
-		 ctx.put("fbname", fbUser.getName());
-		 ctx.put("fbemail", fbUser.getEmail());
 		 
+		 ctx.put("fbauthed", true);
 		 rsp.sendRedirect("/cardbook/play.wm");
 	 }
 	 

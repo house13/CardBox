@@ -35,16 +35,19 @@ import static com.hextilla.cardbox.Log.log;
  */
 public class CardBoxApp
 {
-    public void init (String username, String gameId, String resourceURL)
+    public void init (String gameId, String resourceURL, String session)
         throws IOException
     {
         // create a frame
-        _frame = new CardBoxFrame("...", gameId, username);
+        _frame = new CardBoxFrame("...", gameId, "CardBoxUser");
         _framemgr = FrameManager.newInstance(_frame);
 
         // create and initialize our client instance
         _client = new CardBoxClient();
         _client.init(_frame);
+        
+        // Fill in our authenticated session id
+        _client.setSession(session);
 
         // configure our resource url
         CardBoxDirector carddtr = _client.getContext().getCardBoxDirector();
@@ -62,7 +65,7 @@ public class CardBoxApp
         }
     }
 
-    public void run (String server, int port, String username, String password)
+    public void run (String server, int port)
     {
         // show the frame
         _frame.setVisible(true);
@@ -72,13 +75,6 @@ public class CardBoxApp
         log.info("Using [server=" + server + ", port=" + port + "].");
         client.setServer(server, new int[] { port });
 
-        // configure the client with some credentials and logon
-        if (username != null && password != null) {
-            // create and set our credentials
-            client.setCredentials(_client.createCredentials("derp"));
-            client.logon();
-        }
-
         _framemgr.start();
     }
 
@@ -86,20 +82,21 @@ public class CardBoxApp
      * Performs the standard setup and starts the CardBox client application.
      */
     public static void start (
-        CardBoxApp app, String server, int port, String username, String password)
+        CardBoxApp app, String server, int port)
     {
         try {
             // initialize the app (use defaults that work when running in
             // development mode)
             String gid = System.getProperty("game_id", "-1");
             String rurl = System.getProperty("resource_url", "file://dist");
-            app.init(username, gid, rurl);
+            String sesh = System.getProperty("session_id", "");
+            app.init(gid, rurl, sesh);
         } catch (IOException ioe) {
             log.warning("Error initializing application.", ioe);
         }
 
         // and run it
-        app.run(server, port, username, password);
+        app.run(server, port);
     }
 
     public static void main (String[] args)
@@ -145,9 +142,7 @@ public class CardBoxApp
             }
         }
 
-        String username = (args.length > 2) ? args[2] : null;
-        String password = (args.length > 3) ? args[3] : null;
-        start(new CardBoxApp(), server, port, username, password);
+        start(new CardBoxApp(), server, port);
     }
 
     protected CardBoxClient _client;
