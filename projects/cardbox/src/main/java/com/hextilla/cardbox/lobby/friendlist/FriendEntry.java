@@ -2,6 +2,7 @@ package com.hextilla.cardbox.lobby.friendlist;
 
 import javax.swing.ImageIcon;
 import com.hextilla.cardbox.client.CardBoxUI;
+import com.hextilla.cardbox.facebook.UserWithPicture;
 
 // A friend object
 public class FriendEntry {
@@ -12,6 +13,13 @@ public class FriendEntry {
 	{
 		// For now just make it contain some text
 		_name = name;
+	}
+
+	public FriendEntry(UserWithPicture user)
+	{
+		// For now just make it contain some text
+		_name = user.getName();
+		_displayPic = user.getPicture();
 	}
 	
 	public String Name()

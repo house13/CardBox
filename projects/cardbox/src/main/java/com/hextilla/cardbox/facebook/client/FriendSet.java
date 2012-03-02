@@ -1,6 +1,8 @@
 package com.hextilla.cardbox.facebook.client;
 
+import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Set;
 
 import com.hextilla.cardbox.facebook.UserWithPicture;
 
@@ -25,4 +27,9 @@ public class FriendSet
 	}
 	
 	protected Hashtable<Long, UserWithPicture> _friends;
+	
+	public Set getFriends()
+	{
+		return _friends.keySet();
+	}
 }
