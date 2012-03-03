@@ -121,14 +121,6 @@ public class CardBoxDirector extends BasicDirector
         // resources from the game message bundles
         _ctx.getMessageManager().setClassLoader(_gameLoader);
     }
-    
-    /** 
-     * * @return Whether we're running our client in development mode
-     */
-    public boolean isDevMode ()
-    {
-    	return (_gameId == -1);
-    }
 
     /**
      * Configures the id of the game we're playing.

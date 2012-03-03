@@ -174,6 +174,22 @@ public class CardBoxClient
         return _cctrl;
     }
     
+    /** 
+     * @return Whether we're running our client in development mode
+     */
+    public boolean inDevMode ()
+    {
+    	return _devmode;
+    }
+    
+    /**
+     * Denote that the client is running in devmode. This will only ever be set once.
+     */
+    public void setDevMode ()
+    {
+    	_devmode = true;
+    }
+    
     /**
      * @param session_id The (encrypted) hex string identifying our session authenticated through Facebook
      */
@@ -424,6 +440,8 @@ public class CardBoxClient
     protected SocialDirector _socialdtr;
     
     protected String _session;
+    
+    protected boolean _devmode = false;
 
     /** The prefix prepended to localization bundle names before looking them up in the
      * classpath. */

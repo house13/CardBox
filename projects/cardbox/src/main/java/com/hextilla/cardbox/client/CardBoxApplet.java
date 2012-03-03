@@ -58,18 +58,23 @@ public class CardBoxApplet extends ManagedJApplet
         // create our frame manager
         _framemgr = FrameManager.newInstance(this);
 
+        // configure our server and port
+        String server = getParameter("server");
+        int port = getIntParameter("port", -1);
+        int game_id = getIntParameter("game_id", -1);
+        String session_id = getParameter("session_id");
+        String resourceURL = getParameter("resource_url");
+        
         try {
-            // create and initialize our client instance
+            // create and initialize our client instance, initializing in dev mode if applicable
             _client = createClient();
+            if (server.equalsIgnoreCase("localhost") && game_id == -1) _client.setDevMode();
             _client.init(this);
         } catch (IOException ioe) {
             log.warning("Failed to create CardBoxSession.", ioe);
             return;
         }
-
-        // configure our server and port
-        String server = getParameter("server");
-        int port = getIntParameter("port", -1);
+        
         if (server == null || port <= 0) {
             log.warning("Failed to obtain server and port parameters [server=" + server +
                         ", port=" + port + "].");
@@ -81,7 +86,7 @@ public class CardBoxApplet extends ManagedJApplet
 
         // and our resource url
         CardBoxDirector carddtr = _client.getContext().getCardBoxDirector();
-        String resourceURL = getParameter("resource_url");
+        
         try {
             carddtr.setResourceURL(new URL(resourceURL));
         } catch (Exception e) {
@@ -90,11 +95,10 @@ public class CardBoxApplet extends ManagedJApplet
         }
         
         // and our authenticated session ID
-        String session_id = getParameter("session_id");
         _client.setSession(session_id);
 
         // and our game id and game oid
-        carddtr.setGameId(getIntParameter("game_id", -1), getIntParameter("game_oid", -1));
+        carddtr.setGameId(game_id, getIntParameter("game_oid", -1));
     }
 
     @Override // from Applet
