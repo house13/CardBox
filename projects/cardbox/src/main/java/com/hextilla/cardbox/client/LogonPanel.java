@@ -117,6 +117,26 @@ public class LogonPanel extends JPanel
         JPanel hbox = new JPanel(hlay);
         hbox.setOpaque(false);
         box.add(hbox);
+        
+        _carddtr = _client.getContext().getCardBoxDirector();
+        if (_carddtr.isDevMode())
+        {
+        	// Create our token text box 
+        	VGroupLayout vlay = new VGroupLayout();
+        	vlay.setOffAxisJustification(VGroupLayout.RIGHT);
+        	JPanel subbox = new JPanel(vlay);
+        	subbox.setOpaque(false);
+        	hbox.add(subbox);
+        	JPanel bar = new JPanel(new HGroupLayout(GroupLayout.NONE));
+        	bar.add(new JLabel("Token"));
+        	bar.setOpaque(false);
+        	_token = new JTextField();
+        	_token.setPreferredSize(new Dimension(255, 20));
+        	_token.setActionCommand("logon");
+        	_token.addActionListener(this);
+        	bar.add(_token);
+        	subbox.add(bar);
+        }
 
         // create the logon button bar
         _logon = new JButton(_msgs.get("m.logon"));
@@ -241,7 +261,19 @@ public class LogonPanel extends JPanel
         String msg = MessageBundle.tcompose("m.logging_on", server, String.valueOf(port));
         _status.setText(_msgs.xlate(msg) + "\n");
 
-        // Since the CardBoxClient has its session identifier loaded by the applet,
+        if (_carddtr.isDevMode())
+        {
+        	// In dev mode, we get our session ID from the user, who kindly pasted it into
+        	// the provided text box. Take this opportunity to gather that info.
+        	String session_id = _token.getText().trim();
+        	if (!StringUtil.isBlank(session_id))
+        	{
+        		_client.setSession(session_id);
+        	}
+        	
+        }
+        
+    	// Since the CardBoxClient has its session identifier loaded by the applet,
         // that makes our job quite easy.
         Client client = _ctx.getClient();
         client.setCredentials(_client.createCredentials());
@@ -255,8 +287,10 @@ public class LogonPanel extends JPanel
 
     protected CardBoxContext _ctx;
     protected CardBoxClient _client;
+    protected CardBoxDirector _carddtr;
     protected MessageBundle _msgs;
     
+    protected JTextField _token;
     protected JButton _logon;
     protected MultiLineLabel _status;
 

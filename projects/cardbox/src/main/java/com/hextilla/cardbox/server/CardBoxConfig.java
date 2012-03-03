@@ -105,7 +105,7 @@ public class CardBoxConfig
     {
     	String authclass = config.getValue("server_auth", "");
         if (StringUtil.isBlank(authclass)) {
-            return DummyAuthenticator.class;
+            return CardBoxDummyAuthenticator.class;
         }
         
         return CardBoxAuthenticator.class;
