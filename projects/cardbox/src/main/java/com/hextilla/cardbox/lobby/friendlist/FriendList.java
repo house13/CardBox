@@ -31,7 +31,7 @@ public class FriendList extends JPanel
 	DefaultListModel _listModel;
 	
 	// TODO: reference to this "friend" object taken in constructor
-	public FriendList (CardBoxContext ctx)
+	public FriendList (CardBoxContext ctx, CardBoxGameConfig config)
 	{
         _ctx = ctx;
         

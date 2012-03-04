@@ -3,10 +3,7 @@ package com.hextilla.cardbox.lobby.matchmaking;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
@@ -119,17 +116,6 @@ public class MatchMakingPanel extends JPanel{
 		// Area for buttons when match is found (its an empty pane otherwise)
 		JPanel joinPane = new JPanel();
 		bottom.add(joinPane);
-		
-		// Button for accepting a match
-		_acceptButton = new JButton("Accept");
-		_acceptButton.addActionListener(
-			new ActionListener () {
-				public void actionPerformed(ActionEvent e) {
-					matchMaker.startGame();
-				}
-			});	
-		_acceptButton.setVisible(false);		
-		joinPane.add(_acceptButton);
 		
 		add(top);		
 		add(bottom);			

@@ -35,14 +35,10 @@ public class CardBoxUserObject extends BodyObject
     /** The field name of the <code>tokens</code> field. */
     @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public static final String TOKENS = "tokens";
-    
+
     /** The field name of the <code>session</code> field. */
     @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
     public static final String SESSION = "session";
-    
-    /** The field name of the <code>session</code> field. */
-    @Generated(value={"com.threerings.presents.tools.GenDObjectTask"})
-    public static final String CBNAME = "cbname";
     // AUTO-GENERATED: FIELDS END
 
     /** Indicates which access control tokens are held by this user. */
@@ -115,7 +111,7 @@ public class CardBoxUserObject extends BodyObject
             TOKENS, value, ovalue);
         this.tokens = value;
     }
-    
+
     /**
      * Requests that the <code>session</code> field be set to the
      * specified value. The local value will be updated immediately and an

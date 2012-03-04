@@ -201,19 +201,7 @@ public class LobbyPanel extends JPanel
     protected JComponent createGamePanel (
             CardBoxContext ctx, LobbyConfig config)
         {
-            GameDefinition gamedef = config.getGameDefinition();
-            CardBoxGameConfig gconfig = new CardBoxGameConfig(
-                config.getGameId(), gamedef);
-
-            // we avoid putting this code into MatchConfig itself as that
-            // introduces dependencies to all sorts of client side
-            // user-interface code for any code that parses game definitions
-            // or otherwise manipulates MatchConfig instances
-            if (gamedef.match instanceof TableMatchConfig) {
-                return new HextillaPanel(ctx, gconfig);
-            } else {
-                return null;
-            }
+            return new HextillaPanel(ctx, config);
         }    
 
     /** Giver of life and services. */

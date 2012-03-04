@@ -19,6 +19,8 @@
 
 package com.hextilla.cardbox.lobby.server;
 
+import static com.hextilla.cardbox.lobby.Log.log;
+
 import com.threerings.presents.dobj.RootDObjectManager;
 import com.threerings.presents.server.InvocationException;
 import com.threerings.presents.server.InvocationManager;
@@ -30,6 +32,8 @@ import com.threerings.parlor.game.data.GameObject;
 import com.threerings.parlor.game.server.GameManager;
 import com.threerings.parlor.server.TableManager;
 
+import com.hextilla.cardbox.data.CardBoxGameConfig;
+import com.hextilla.cardbox.facebook.CardBoxName;
 import com.hextilla.cardbox.server.CardBoxManager;
 
 
@@ -51,8 +55,8 @@ public class CardBoxTableManager extends TableManager
     protected int createGame (Table table)
         throws InvocationException
     {
-        // fill the players array into the game config
-        table.config.players = table.getPlayers();
+        // fill the players array into the game config  
+    	table.config.players = table.getPlayers();
 
         // pass the buck to the cardbox manager to create the game
         GameManager gmgr = _cardmgr.createGame(_lmgr.getGame(), table.config);

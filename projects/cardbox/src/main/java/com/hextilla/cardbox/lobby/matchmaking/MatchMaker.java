@@ -53,17 +53,6 @@ public class MatchMaker implements TableObserver, SeatednessObserver
         _tconfig.desiredPlayerCount = 2;
 	}
 
-	// Accept and start the currently matched game
-	public void startGame() {	
-		Table table = _tdtr.getSeatedTable();		
-		if (table != null){
-			log.info("Starting game: " + table.tableId);	
-        	_ctx.getLocationDirector().moveTo(table.gameOid);
-		} else {
-			//TODO: game canceled or something?
-		}
-	}
-
 	// Start searching for a game
 	public void startMatchMaking() {
 		log.info("Start Matchmaking...");		

@@ -5,17 +5,14 @@ import static com.hextilla.cardbox.lobby.Log.log;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import com.hextilla.cardbox.client.ChatPanel;
 import com.hextilla.cardbox.data.CardBoxGameConfig;
+import com.hextilla.cardbox.data.GameDefinition;
 import com.hextilla.cardbox.lobby.data.LobbyConfig;
 import com.hextilla.cardbox.lobby.data.LobbyObject;
 import com.hextilla.cardbox.lobby.friendlist.FriendList;
@@ -24,17 +21,23 @@ import com.hextilla.cardbox.lobby.matchmaking.MatchMakingPanel;
 import com.hextilla.cardbox.util.CardBoxContext;
 import com.threerings.crowd.client.PlaceView;
 import com.threerings.crowd.data.PlaceObject;
-import com.threerings.parlor.data.Table;
-import com.threerings.parlor.data.TableLobbyObject;
 
 public class HextillaPanel extends JPanel implements PlaceView {
 	JButton _matchButton;
 	MatchMakingPanel _matchMaker;
 	
-	public HextillaPanel (CardBoxContext ctx, CardBoxGameConfig config)
+	public HextillaPanel (CardBoxContext ctx, LobbyConfig config)
 	{
         _ctx = ctx;
-        _config = config;
+        
+        // Get the game definition from the lobby config
+        GameDefinition gamedef = config.getGameDefinition();
+        
+        // We need multiple copies of the game config because they differ slightly for friend games and 
+        // stranger/matchmaking games and AI games (how we display info/panels)
+        CardBoxGameConfig friendlyConfig = new CardBoxGameConfig(config.getGameId(), gamedef, "friendly");
+        CardBoxGameConfig strangerConfig = new CardBoxGameConfig(config.getGameId(), gamedef, "stranger");
+        CardBoxGameConfig aiConfig = new CardBoxGameConfig(config.getGameId(), gamedef, "ai");              
         
     	setLayout(new GridBagLayout());
     	GridBagConstraints c = new GridBagConstraints();
@@ -56,14 +59,14 @@ public class HextillaPanel extends JPanel implements PlaceView {
         leftPane.add(optsButton, buttonConstraints);     
         
         // Solo     
-        _cov = new ComputerOpponentView(_ctx, _config);     
+        _cov = new ComputerOpponentView(_ctx, aiConfig);     
         leftPane.add(_cov, buttonConstraints);
         
         // Add matchmaking info box here, takes up more space then other buttons
         buttonConstraints.gridheight = 2;
         buttonConstraints.weightx = 2;
         buttonConstraints.weighty = 2;            
-        _matchMaker = new MatchMakingPanel(ctx, config);      
+        _matchMaker = new MatchMakingPanel(ctx, strangerConfig);      
         leftPane.add(_matchMaker, buttonConstraints);   
         
         // Add the button panel
@@ -74,7 +77,7 @@ public class HextillaPanel extends JPanel implements PlaceView {
         add(leftPane, c);
         
         // Add the friendPanel (same size as button panel)
-        FriendList friendPanel = new FriendList(ctx);
+        FriendList friendPanel = new FriendList(ctx, friendlyConfig);
         friendPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         c.gridwidth = GridBagConstraints.REMAINDER;        
         add(friendPanel, c);  
@@ -101,9 +104,6 @@ public class HextillaPanel extends JPanel implements PlaceView {
 	
     /** Giver of life and services. */
     protected CardBoxContext _ctx;
-    
-    // Game config
-    protected CardBoxGameConfig _config;
     
     /** Our lobby distributed object. */
     protected LobbyObject _lobj;    

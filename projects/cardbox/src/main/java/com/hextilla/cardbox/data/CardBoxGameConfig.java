@@ -46,12 +46,13 @@ public class CardBoxGameConfig extends GameConfig
     }
 
     /** Constructs a game config based on the supplied game definition. */
-    public CardBoxGameConfig (int gameId, GameDefinition gameDef)
+    public CardBoxGameConfig (int gameId, GameDefinition gameDef, String gameMode)
     {
         Preconditions.checkNotNull(gameDef, "Missing GameDefinition");
 
         _gameId = gameId;
         _gameDef = gameDef;
+        _mode = gameMode;
 
         if (gameDef.params != null) {
             // set the default values for our parameters
@@ -129,6 +130,11 @@ public class CardBoxGameConfig extends GameConfig
     {
     	return _cards;
     }
+    
+    public String getGameMode()
+    {
+    	return _mode;
+    }
 
     /** Our game's unique id. */
     protected int _gameId;
@@ -138,4 +144,7 @@ public class CardBoxGameConfig extends GameConfig
     
     /** Our list of cards. */
     protected HexDeck _cards;
+    
+    /** The game mode*/
+    protected String _mode;
 }
