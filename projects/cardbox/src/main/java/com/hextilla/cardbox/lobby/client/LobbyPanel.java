@@ -63,7 +63,7 @@ import com.hextilla.cardbox.util.CardBoxContext;
 import com.hextilla.cardbox.lobby.data.LobbyCodes;
 import com.hextilla.cardbox.lobby.data.LobbyConfig;
 import com.hextilla.cardbox.lobby.data.LobbyObject;
-import com.hextilla.cardbox.lobby.hextillaPanel.HextillaPanel;
+import com.hextilla.cardbox.lobby.HextillaLobbyPanel.HextillaLobbyPanel;
 
 import static com.hextilla.cardbox.lobby.Log.log;
 
@@ -201,7 +201,7 @@ public class LobbyPanel extends JPanel
     protected JComponent createGamePanel (
             CardBoxContext ctx, LobbyConfig config)
         {
-            return new HextillaPanel(ctx, config);
+            return new HextillaLobbyPanel(ctx, config);
         }    
 
     /** Giver of life and services. */

@@ -1,4 +1,4 @@
-package com.hextilla.cardbox.lobby.hextillaPanel;
+package com.hextilla.cardbox.lobby.HextillaLobbyPanel;
 
 import static com.hextilla.cardbox.lobby.Log.log;
 
@@ -22,11 +22,11 @@ import com.hextilla.cardbox.util.CardBoxContext;
 import com.threerings.crowd.client.PlaceView;
 import com.threerings.crowd.data.PlaceObject;
 
-public class HextillaPanel extends JPanel implements PlaceView {
+public class HextillaLobbyPanel extends JPanel implements PlaceView {
 	JButton _matchButton;
 	MatchMakingPanel _matchMaker;
 	
-	public HextillaPanel (CardBoxContext ctx, LobbyConfig config)
+	public HextillaLobbyPanel (CardBoxContext ctx, LobbyConfig config)
 	{
         _ctx = ctx;
         
