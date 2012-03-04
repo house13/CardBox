@@ -1,14 +1,36 @@
 package com.hextilla.cardbox.facebook.client;
 
 import java.util.Hashtable;
+import java.util.LinkedList;
+
+import javax.swing.ImageIcon;
 
 import com.hextilla.cardbox.facebook.UserWithPicture;
 
 public class FriendSet 
 {
+	class Downloader implements Runnable
+	{
+	  public Downloader(){}
+	  public void run() {
+		  ImageIcon icon;
+		  String username;
+		  while(true) {
+			  while(!_downloadList.isEmpty()) {
+				   Long fbId = _downloadList.pop();
+				   username = _friends.get(fbId).getId();
+				   icon = new ImageIcon("https://graph.facebook.com/"+username+"/picture");
+			       _pictures.put(fbId, icon);
+			  }  
+		  }
+	  }
+	}
 	public FriendSet ()
 	{
 		_friends = new Hashtable<Long, UserWithPicture>();
+		_pictures = new Hashtable<Long, ImageIcon>();
+		Thread t = new Thread(new Downloader());
+		t.run();
 	}
 	
 	public void add (UserWithPicture friend)
@@ -17,6 +39,7 @@ public class FriendSet
 		{
 			_friends.put(Long.valueOf(friend.getId()), friend);
 		}
+		
 	}
 	
 	public boolean isFriend (long fbId)
@@ -24,5 +47,15 @@ public class FriendSet
 		return _friends.containsKey(new Long(fbId));
 	}
 	
+	public ImageIcon getImage(long fbId){
+		if (_pictures.containsKey(new Long(fbId)))
+		{
+		  return _pictures.get(new Long(fbId));
+		}
+		return null;
+	}
+	
 	protected Hashtable<Long, UserWithPicture> _friends;
+	protected LinkedList<Long> _downloadList;
+	protected Hashtable<Long, ImageIcon> _pictures;
 }
