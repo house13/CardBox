@@ -19,9 +19,6 @@ import javax.swing.SwingConstants;
 
 import com.hextilla.cardbox.client.CardBoxUI;
 import com.hextilla.cardbox.data.CardBoxGameConfig;
-import com.hextilla.cardbox.facebook.UserWithPicture;
-import com.hextilla.cardbox.facebook.client.FriendSet;
-import com.hextilla.cardbox.facebook.client.SocialDirector;
 import com.hextilla.cardbox.util.CardBoxContext;
 import com.samskivert.swing.util.SwingUtil;
 
@@ -37,8 +34,6 @@ public class FriendList extends JPanel
 	public FriendList (CardBoxContext ctx)
 	{
         _ctx = ctx;
-        SocialDirector sd = ctx.getSocialDirector();
-        FriendSet fs = sd.getFriends();
         
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setBackground(Color.BLACK);
@@ -65,9 +60,9 @@ public class FriendList extends JPanel
 		add(scrollin);	
 		
 		// Cheat and add some friends for testing
-		for(Object user: fs.getFriends().toArray())
+		for (int i = 0; i < 50; ++i)
 		{
-			addFriend((UserWithPicture)user);
+			addFriend("Friend " + i);
 		}	
 	}
 	
@@ -76,11 +71,6 @@ public class FriendList extends JPanel
 	public void addFriend(String name)
 	{
 		_listModel.addElement(new FriendEntry(name));		
-	}
-	
-	public void addFriend(UserWithPicture user)
-	{
-		_listModel.addElement(new FriendEntry(user));
 	}
 
 	public void actionPerformed(ActionEvent e) {
