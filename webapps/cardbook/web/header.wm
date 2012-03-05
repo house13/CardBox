@@ -22,23 +22,23 @@
 	<!-- CSS
   ================================================== -->
 	<link href='http://fonts.googleapis.com/css?family=Lato:400,400italic,700' rel='stylesheet' type='text/css'>
-	<link rel="stylesheet" href="stylesheets/base.css">
-	<link rel="stylesheet" href="stylesheets/skeleton.css">
-	<link rel="stylesheet" href="stylesheets/layout.css">
+	<link rel="stylesheet" href="/stylesheets/base.css">
+	<link rel="stylesheet" href="/stylesheets/skeleton.css">
+	<link rel="stylesheet" href="/stylesheets/layout.css">
 
 	<!-- Favicons
 	================================================== -->
-	<link rel="shortcut icon" href="images/favicon.ico">
-	<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-	<link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
-	<link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+	<link rel="shortcut icon" href="/images/favicon.ico">
+	<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="/images/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="/images/apple-touch-icon-114x114.png">
 
 </head>
 <body>
 	<div id="header-container">
 		<div class="container">
 			<header class="sixteen columns">
-				<h1 class="remove-bottom four columns alpha" id="site-title"><a href="#"><img src="images/logo.png" alt="Hextilla" title="Hextilla"></a></h1>
+				<h1 class="remove-bottom four columns alpha" id="site-title"><a href="#"><img src="/images/logo.png" alt="Hextilla" title="Hextilla"></a></h1>
 				<nav class="twelve columns omega">
 					<ul>
 						<li><a href="/cardbook/play.wm">Play</a></li>

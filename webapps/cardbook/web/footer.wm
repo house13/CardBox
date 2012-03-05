@@ -13,8 +13,8 @@
 
 	<!-- JS
 	================================================== -->
-	<script src="javascripts/jquery-1.7.1.min.js" type="text/javascript"></script> 
-	<script src="javascripts/hextilla.js" type="text/javascript"></script>
+	<script src="/javascripts/jquery-1.7.1.min.js" type="text/javascript"></script> 
+	<script src="/javascripts/hextilla.js" type="text/javascript"></script>
 
 <!-- End Document
 ================================================== -->
