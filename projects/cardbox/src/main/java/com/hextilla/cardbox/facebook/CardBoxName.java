@@ -34,9 +34,7 @@ public class CardBoxName extends Name
 	@Override
 	public String toString ()
 	{
-	    StringBuilder buf = new StringBuilder("[");
-	    toString(buf);
-	    return buf.append("]").toString();
+	    return getStrangerName().toString();
 	}
 
 	/**
