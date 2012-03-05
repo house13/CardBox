@@ -1,10 +1,33 @@
-#set ($title = $i18n.xlate("browse.title"))
 #import ("/header.wm")
 
-#if ($fbauthed)
-<p>
-<a href="/cardbook/play_applet.wm">Play game in embedded applet</a> <br/>
-<a href="Hextilla.jnlp">Play game in standalone application</a>
+#if ($game)
+<div id="play" class="rounded-corners">
+<!--[if !IE]>-->
+<object id="game"
+classid="java:com/hextilla/cardbox/client/CardBoxApplet.class" 
+type="application/x-java-applet" archive="/client/card-client.jar">
+<param name="server" value="$game.host"/>
+<param name="port" value="$port"/>
+<param name="resource_url" value="$resource_url"/>
+<param name="game_id" value="$game.gameId"/>
+<param name="session_id" value="$session_id"/>
+<!--<![endif]-->
+<object id="game"
+classid="clsid:8AD9C840-044E-11D1-B3E9-00805F499D93" 
+codebase="http://java.sun.com/update/1.6.0/jinstall-6u22-windows-i586.cab"> 
+<param name="code" value="com/hextilla/cardbox/client/CardBoxApplet"/>
+<param name="archive" value="/client/card-client.jar"/>
+<param name="server" value="$game.host"/>
+<param name="port" value="$port"/>
+<param name="resource_url" value="$resource_url"/>
+<param name="game_id" value="$game.gameId"/>
+<param name="session_id" value="$session_id"/>
+Install the Javer.
+</object> 
+<!--[if !IE]>-->
+</object>
+<!--<![endif]-->
+</div>
 #end
 
 #import ("/footer.wm")

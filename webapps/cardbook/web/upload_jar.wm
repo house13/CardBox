@@ -1,8 +1,0 @@
-#set ($title = $i18n.xlate("upload_jar.title"))
-#import ("/header.wm")
-
-#if ($gameid)
-<p><a href="$website_url/cardbook/view_game.wm?gameid=$gameid">$i18n.xlate("upload_jar.back_to_game")</a>
-#end
-
-#import ("/footer.wm")

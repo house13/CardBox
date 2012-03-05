@@ -1,10 +1,3 @@
-#set ($title = $i18n.xlate("browse.title"))
 #import ("/header.wm")
-
-#if ($fbauthed)
-<p>
-<a href="/cardbook/play_applet.wm">Play game in embedded applet</a> <br/>
-<a href="Hextilla.jnlp">Play game in standalone application</a>
-#end
 
 #import ("/footer.wm")
