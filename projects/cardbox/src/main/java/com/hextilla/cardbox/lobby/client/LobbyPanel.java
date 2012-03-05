@@ -52,9 +52,9 @@ import com.threerings.util.MessageBundle;
 import com.threerings.crowd.client.PlaceView;
 import com.threerings.crowd.data.PlaceObject;
 
-import com.hextilla.cardbox.client.ChatPanel;
 import com.hextilla.cardbox.client.OccupantList;
 import com.hextilla.cardbox.client.CardBoxUI;
+import com.hextilla.cardbox.client.chat.ChatPanel;
 import com.hextilla.cardbox.data.GameDefinition;
 import com.hextilla.cardbox.data.TableMatchConfig;
 import com.hextilla.cardbox.data.CardBoxGameConfig;

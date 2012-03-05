@@ -10,7 +10,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import com.hextilla.cardbox.client.ChatPanel;
+import com.hextilla.cardbox.client.chat.ChatPanel;
+import com.hextilla.cardbox.client.chat.DynamicNameTransformer;
 import com.hextilla.cardbox.data.CardBoxGameConfig;
 import com.hextilla.cardbox.data.GameDefinition;
 import com.hextilla.cardbox.lobby.data.LobbyConfig;

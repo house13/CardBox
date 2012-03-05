@@ -33,6 +33,7 @@ import javax.swing.JTabbedPane;
 import com.threerings.media.SafeScrollPane;
 import com.threerings.util.MessageBundle;
 
+import com.hextilla.cardbox.client.chat.ChatPanel;
 import com.hextilla.cardbox.util.CardBoxContext;
 
 import static com.hextilla.cardbox.data.CardBoxCodes.TOYBOX_MSGS;

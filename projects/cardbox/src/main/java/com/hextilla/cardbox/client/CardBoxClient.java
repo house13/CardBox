@@ -57,6 +57,7 @@ import com.threerings.crowd.data.PlaceConfig;
 
 import com.threerings.parlor.client.ParlorDirector;
 
+import com.hextilla.cardbox.client.chat.ChatPanel;
 import com.hextilla.cardbox.data.CardBoxGameConfig;
 import com.hextilla.cardbox.data.CardBoxCodes;
 import com.hextilla.cardbox.facebook.CardBoxCredentials;

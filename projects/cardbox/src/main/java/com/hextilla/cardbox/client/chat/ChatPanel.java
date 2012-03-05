@@ -17,7 +17,7 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-package com.hextilla.cardbox.client;
+package com.hextilla.cardbox.client.chat;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -70,7 +70,9 @@ import com.threerings.crowd.client.PlaceView;
 import com.threerings.crowd.data.OccupantInfo;
 import com.threerings.crowd.data.PlaceObject;
 
+import com.hextilla.cardbox.client.CardBoxUI;
 import com.hextilla.cardbox.data.CardBoxCodes;
+import com.hextilla.cardbox.facebook.CardBoxName;
 import com.hextilla.cardbox.util.CardBoxContext;
 
 import static com.hextilla.cardbox.Log.log;
@@ -90,6 +92,9 @@ public class ChatPanel extends JPanel
     {
         // keep this around for later
         _ctx = ctx;
+        
+        // Transforms the name to a user friendly version
+        _nameTransformer = new defaultNameTransformer();
 
         // create our chat director and register ourselves with it
         _chatdtr = ctx.getChatDirector();
@@ -244,13 +249,13 @@ public class ChatPanel extends JPanel
     // documentation inherited
     public void occupantEntered (OccupantInfo info)
     {
-        displayOccupantMessage("*** " + info.username + " entered.");
+        displayOccupantMessage("*** " + _nameTransformer.transform((CardBoxName)info.username) + " entered.");
     }
 
     // documentation inherited
     public void occupantLeft (OccupantInfo info)
     {
-        displayOccupantMessage("*** " + info.username + " left.");
+        displayOccupantMessage("*** " + _nameTransformer.transform((CardBoxName)info.username) + " left.");
     }
 
     // documentation inherited
@@ -295,9 +300,9 @@ public class ChatPanel extends JPanel
             if (msg.mode == ChatCodes.BROADCAST_MODE) {
                 msgStyle = _noticeStyle;
             }
-
-            String speaker = MessageBundle.tcompose(type, msg.speaker);
-            speaker = _ctx.xlate(CHAT_MSGS, speaker);
+            
+            String speaker = MessageBundle.tcompose(type, _nameTransformer.transform((CardBoxName)msg.speaker));
+            speaker = _ctx.xlate(CHAT_MSGS, speaker);          
             appendAndScroll(speaker, msg.message, msgStyle);
             return true;
 
@@ -386,6 +391,11 @@ public class ChatPanel extends JPanel
         size.width = PREFERRED_WIDTH;
         return size;
     }
+    
+    public void setNameTransformer(NameTransformer nameTransformer)
+    {
+    	_nameTransformer = nameTransformer;
+    }
 
     protected CardBoxContext _ctx;
     protected ChatDirector _chatdtr;
@@ -404,6 +414,8 @@ public class ChatPanel extends JPanel
     protected Style _errStyle;
     protected Style _noticeStyle;
     protected Style _feedbackStyle;
+    
+    protected NameTransformer _nameTransformer;
 
     /** A width that isn't so skinny that the text is teeny. */
     protected static final int PREFERRED_WIDTH = 200;
