@@ -1,9 +1,3 @@
-#set ($title = $i18n.xlate("browse.title"))
 #import ("/header.wm")
-
-#if ($fbauthed)
-<p>
-<a href="/cardbook/play.wm">Play!</a> <br/>
-#end
 
 #import ("/footer.wm")
