@@ -19,6 +19,7 @@ import javax.swing.SwingConstants;
 
 import com.hextilla.cardbox.client.CardBoxUI;
 import com.hextilla.cardbox.data.CardBoxGameConfig;
+import com.hextilla.cardbox.facebook.client.FriendSet;
 import com.hextilla.cardbox.util.CardBoxContext;
 import com.samskivert.swing.util.SwingUtil;
 
@@ -80,4 +81,10 @@ public class FriendList extends JPanel
 
 	/** Giver of life and services. */
 	protected CardBoxContext _ctx;
+
+	// Returns the friendSet used by the friendPanel (used to initialize the friend chat)
+	public FriendSet getFriends() {
+		// TODO: Fill this out once friends are working properly
+		return null;
+	}
 }

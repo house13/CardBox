@@ -38,6 +38,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.JViewport;
+import javax.swing.ScrollPaneConstants;
 
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
@@ -115,7 +116,7 @@ public class ChatPanel extends JPanel
 
         // we need to create an ultra-custom scroll pane that combines the
         // safe-scroll-pane stuff with a painted background image
-        add(new JScrollPane(_text) {
+        add(new JScrollPane(_text, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED) {
             @Override
             protected JViewport createViewport () {
                 JViewport vp = new JViewport() {

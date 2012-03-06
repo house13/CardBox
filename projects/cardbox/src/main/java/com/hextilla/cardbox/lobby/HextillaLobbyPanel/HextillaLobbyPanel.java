@@ -3,15 +3,19 @@ package com.hextilla.cardbox.lobby.HextillaLobbyPanel;
 import static com.hextilla.cardbox.lobby.Log.log;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.ScrollPaneConstants;
 
 import com.hextilla.cardbox.client.chat.ChatPanel;
 import com.hextilla.cardbox.client.chat.DynamicNameTransformer;
+import com.hextilla.cardbox.client.chat.FriendChatPanel;
 import com.hextilla.cardbox.data.CardBoxGameConfig;
 import com.hextilla.cardbox.data.GameDefinition;
 import com.hextilla.cardbox.lobby.data.LobbyConfig;
@@ -30,6 +34,7 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView {
 	public HextillaLobbyPanel (CardBoxContext ctx, LobbyConfig config)
 	{
         _ctx = ctx;
+        _lobj = null;
         
         // Get the game definition from the lobby config
         GameDefinition gamedef = config.getGameDefinition();
@@ -72,9 +77,9 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView {
         
         // Add the button panel
         c.weightx = 1.0;
-        c.weighty = 10.0;
+        c.weighty = 5.0;
         c.gridwidth = 1; 
-        c.gridheight = 10;       
+        c.gridheight = 5;       
         add(leftPane, c);
         
         // Add the friendPanel (same size as button panel)
@@ -83,12 +88,25 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView {
         c.gridwidth = GridBagConstraints.REMAINDER;        
         add(friendPanel, c);  
         
-        // Add the chat panel
-        c.weightx = 3.0;
-        c.weighty = 3.0;
-        c.gridwidth = GridBagConstraints.REMAINDER;
-        c.gridheight = GridBagConstraints.REMAINDER;             
-        add(new ChatPanel(ctx, true), c);  	
+        // Add the chat panel, use a tabbed pane
+        c.weightx = 2.0;
+        c.weighty = 5.0;
+        c.gridwidth = 2;
+        c.gridheight = 5;
+        JTabbedPane tabbedPane = new JTabbedPane();
+        _friendChat = new FriendChatPanel(ctx, true, friendPanel.getFriends());
+        _friendChat.setPreferredSize(new Dimension(200,100));
+        _globalChat = new ChatPanel(ctx, true);      
+        _globalChat.setPreferredSize(new Dimension(200,100));        
+        add(tabbedPane, c);
+        tabbedPane.addTab("All", null, _globalChat, "Global Chat");
+        tabbedPane.addTab("Friends", null, _friendChat, "Friend Only Chat");
+	}
+	
+	public void init(PlaceObject place) {
+		willEnterPlace(place);
+		_friendChat.willEnterPlace(place);
+		_globalChat.willEnterPlace(place);
 	}
 	
 	// Entering and leaving the Hextilla panel
@@ -102,6 +120,10 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView {
 		_cov.leavePlace(place);
 		MatchMakingPanel.matchMaker.leavePlace(place);
 	}		
+	
+	/** ChatPanel objects **/
+	protected ChatPanel _friendChat;
+	protected ChatPanel _globalChat;
 	
     /** Giver of life and services. */
     protected CardBoxContext _ctx;

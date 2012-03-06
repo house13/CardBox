@@ -184,10 +184,10 @@ public class LobbyPanel extends JPanel
         JComponent hextillaView = createGamePanel(_ctx, config);
         if (hextillaView != null) {
         	_main.add(hextillaView);
-            if (hextillaView instanceof PlaceView) {
+            if (hextillaView instanceof HextillaLobbyPanel) {
                 // because we're adding our match making view after we've
                 // already entered our place, we need to fake an entry
-                ((PlaceView)hextillaView).willEnterPlace(_lobj);
+                ((HextillaLobbyPanel) hextillaView).init(_lobj);
             }
             // properly configure all of our components (limiting to a
             // depth of six is a giant hack but I'm too lazy to do the
