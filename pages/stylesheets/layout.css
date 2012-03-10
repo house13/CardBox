@@ -155,6 +155,40 @@ span.key {
 	border-radius: 10px;
 }
 
+.field-row {
+	float: left;
+	width: 100%;
+}
+
+.field-row > *:first-child, .field-row > *:first-child + * {
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	float: left;
+	display: block;
+}
+
+.field-row > *:first-child {
+	width: 30%;
+
+}
+
+.field-row > *:first-child + * {
+	width: 60%;
+}
+
+.form-description {
+	margin-top: 0;
+	margin-bottom: 10px;
+	font-size: 0.9em;
+	color: #777;
+	clear: both;
+}
+
+.hextilla-form {
+	margin-top: 20px;
+}
+
 /* #Media Queries
 ================================================== */
 
