@@ -36,7 +36,7 @@ public class FriendListPanel extends JPanel
 {
 	// Main panel containing the list of friends
 	JList _friendList;
-	DefaultListModel _listModel;
+	FriendListModel _listModel;
 	
 	// TODO: reference to this "friend" object taken in constructor
 	public FriendListPanel (CardBoxContext ctx, CardBoxGameConfig config)
@@ -55,7 +55,7 @@ public class FriendListPanel extends JPanel
 		add(friendTitle);
 		
 		// Setup the friend list objects and custom renderers
-		_listModel  = new DefaultListModel();
+		_listModel  = new FriendListModel();
 		_friendList = new JList(_listModel);
 		_friendList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		_friendList.setLayoutOrientation(JList.VERTICAL);		
