@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
 
+import com.hextilla.cardbox.client.HextillaButton;
 import com.hextilla.cardbox.data.CardBoxGameConfig;
 import com.hextilla.cardbox.data.TableMatchConfig;
 import com.hextilla.cardbox.lobby.table.TableItem;
@@ -52,7 +53,7 @@ public class ComputerOpponentView extends JPanel
 	        // add ourselves as a seatedness observer
 	        _tdtr.addSeatednessObserver(this);
 	        
-	        _playButton = new JButton(SOLOPLAY_BUTTON_TEXT);
+	        _playButton = new HextillaButton(SOLOPLAY_BUTTON_TEXT);
 	        _playButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
 					startAIMatch(_difficultyLevel);

@@ -138,7 +138,7 @@ public class LogonPanel extends JPanel
         }
 
         // create the logon button bar
-        _logon = new JButton(_msgs.get("m.logon"));
+        _logon = new HextillaButton(_msgs.get("m.logon"));
         _logon.setActionCommand("logon");
         _logon.addActionListener(this);
         hbox.add(_logon);
