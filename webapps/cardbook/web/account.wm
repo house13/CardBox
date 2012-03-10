@@ -20,7 +20,7 @@ $form.fixedHidden("action", $action)
 <tr><td align="left">$i18n.xlate("account.anonymous")</td>
 <td align="right">$form.fixedCheckbox("anonymous", $user.anonymous)</td></tr>
 
-<tr><td class="small">$i18n.xlate("account.whyanon")</td></tr>
+<tr><td colspan="2">$i18n.xlate("account.whyanon")</td></tr>
 
 #if ($action == "update")
 <tr><td colspan="2" align="center">
