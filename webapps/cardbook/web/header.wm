@@ -41,8 +41,16 @@
 				<h1 class="remove-bottom four columns alpha" id="site-title"><a href="#"><img src="/images/logo.png" alt="Hextilla" title="Hextilla"></a></h1>
 				<nav class="twelve columns omega">
 					<ul>
+						#if ($page && $page == "play")
 						<li><a href="#play" class="selected">Play</a></li>
-						<li><a href="#howto">How To Play</a></li>
+						#else
+						<li><a href="/cardbook/play.wm#play" class="selected">Play</a></li>
+						#end
+						#if ($page && $page == "account")
+						<li><a href="#account">Account</a></li>
+						#else
+						<li><a href="/cardbook/account.wm">Account</a></li>
+						#end
 						<li><a href="#about">About</a></li>
 					</ul>
 				</nav>

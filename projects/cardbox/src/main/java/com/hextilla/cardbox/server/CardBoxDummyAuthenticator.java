@@ -30,7 +30,7 @@ public class CardBoxDummyAuthenticator extends Authenticator
      Credentials creds = conn.getAuthRequest().getCredentials();
      if (creds instanceof CardBoxCredentials) {
     	 CardBoxCredentials cbcreds = (CardBoxCredentials)creds;
-         conn.setAuthName(new CardBoxName(genRandomId(), "Errol", "Hornsby", "Airhornsman"));
+         conn.setAuthName(new CardBoxName(genRandomId(), "Errol", "Hornsby", "Airhornsman", true));
          rsp.authdata = cbcreds.getSession();
      } else {
          conn.setAuthName(new Name(conn.getInetAddress().getHostAddress()));

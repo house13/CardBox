@@ -106,8 +106,15 @@ header nav ul li a.selected {
 	-moz-box-shadow: 1px 1px 3px #ddd;
 	-webkit-box-shadow: 1px 1px 3px #ddd;
 	box-shadow: 1px 1px 3px #ddd;
-	margin: 40px 10px 0 10px;
+	margin: 40px auto 0 auto;
 	text-align: center;
+	display: block;
+	width: 920px;
+	height: 620px;
+}
+
+#play {
+
 }
 
 #bottom {

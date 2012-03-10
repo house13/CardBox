@@ -2,6 +2,9 @@ package com.hextilla.cardbook.auth;
 
 import java.util.Calendar;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -104,6 +107,16 @@ public class FBUserManager
         }
         return user;
     }
+    
+    public boolean updateUser (FBUserRecord user)
+    {
+    	if (user != null)
+    	{
+    		int updated = _repository.update(user);
+    		return updated > 0;
+    	}
+    	return false;
+    }
 
     /**
      * Fetches the necessary authentication information from the http request and loads the user
@@ -119,10 +132,16 @@ public class FBUserManager
         FBUserRecord user = loadUser(req);
         // if no user was loaded, we need to redirect these fine people to the login page
         if (user == null) {
-            // first construct the redirect URL
-            String target = CardBoxFacebookConfig.getLoginRedirectURL();
+        	String target;
+        	String topage = getTargetPage(req);
+        	if (!StringUtil.isBlank(topage)) {
+        		target = CardBoxFacebookConfig.getLoginRedirectURL(topage);
+        	} else {
+        		target = CardBoxFacebookConfig.getLoginRedirectURL();
+        	}
             if (USERMGR_DEBUG) {
-                log.info("No user found in require, redirecting", "to", target);
+                log.info("No user found in require, redirecting", "to", target,
+                		"target", StringUtil.isBlank(topage) ? "unknown" : topage);
             }
             throw new RedirectException(target);
         }
@@ -217,6 +236,20 @@ public class FBUserManager
         c.setMaxAge(0);
         rsp.addCookie(c);
     }
+    
+    protected String getTargetPage (HttpServletRequest req)
+    {
+    	String query = req.getRequestURI();
+    	Matcher pl = _playpat.matcher(query);
+    	if (pl.matches()) {
+    		return "play";
+    	} else {
+    		Matcher ac = _acctpat.matcher(query);
+    		if (ac.matches()) 
+    			return "account";
+    	}
+    	return null;
+    }
 
     /**
      * Called by the user manager to create the user repository. Derived classes can override this
@@ -251,4 +284,8 @@ public class FBUserManager
 
     /** Change this to true and recompile to debug cookie handling. */
     protected static final boolean USERMGR_DEBUG = false;
+    
+    /** We should know about the authorized pages so we can intelligently redirect users */
+    protected static final Pattern _playpat = Pattern.compile("play.wm");
+    protected static final Pattern _acctpat = Pattern.compile("account.wm");
 }

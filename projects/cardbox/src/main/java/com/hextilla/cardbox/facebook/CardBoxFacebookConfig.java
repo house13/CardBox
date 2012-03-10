@@ -23,10 +23,16 @@ public class CardBoxFacebookConfig
 	{
 		return _perms;
 	}
-	 
+	
 	public static String getLoginRedirectURL() {
+		return "https://www.facebook.com/dialog/oauth?client_id=" + _clientId +
+			   "&redirect_uri=" + _redirectUri + "&scope=" + _perms;
+	}
+	 
+	public static String getLoginRedirectURL(String state) {
 	    return "https://www.facebook.com/dialog/oauth?client_id=" + _clientId +
-	    	   "&redirect_uri=" + _redirectUri + "&scope=" + _perms;
+	    	   "&redirect_uri=" + _redirectUri + "&scope=" + _perms +
+	    	   "&state=" + state;
 	}
 	
 	public static String getAuthURL(String authCode) {

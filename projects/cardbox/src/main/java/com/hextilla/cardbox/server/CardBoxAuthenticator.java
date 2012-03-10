@@ -64,7 +64,7 @@ public class CardBoxAuthenticator extends Authenticator
         }
 
         // configure their auth name using their facebook record data
-        conn.setAuthName(new CardBoxName(user.fbId, user.firstname, user.lastname, user.username));
+        conn.setAuthName(new CardBoxName(user.fbId, user.firstname, user.lastname, user.username, user.anonymous));
 
         SessionRecord session = _usermgr.loadSession(user.userId);
         if (session == null) {

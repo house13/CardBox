@@ -51,11 +51,12 @@ public class FBUserRecord extends PersistentRecord
     public static final ColumnExp FIRSTNAME = colexp(_R, "firstname");
     public static final ColumnExp LASTNAME = colexp(_R, "lastname");
     public static final ColumnExp EMAIL = colexp(_R, "email");
+    public static final ColumnExp ANONYMOUS = colexp(_R, "anonymous");
     public static final ColumnExp CREATED = colexp(_R, "created");
     public static final ColumnExp LAST_ACTIVE = colexp(_R, "lastActive");
     // AUTO-GENERATED: FIELDS END
 
-    public static final int SCHEMA_VERSION = 1;
+    public static final int SCHEMA_VERSION = 2;
     
     /** Defines the possible values for {@link #status}. */
     public enum Status { NEW, ONLINE, OFFLINE, DEAD }
@@ -88,6 +89,10 @@ public class FBUserRecord extends PersistentRecord
     /** The user's email address. */
     @Column(name="EMAIL")
     public String email;
+    
+    /** How this user appears to strangers */
+    @Column(name="ANONYMOUS")
+    public boolean anonymous;
     
     /** The date this user record was created. */
     @Column(name="CREATED")
@@ -133,6 +138,7 @@ public class FBUserRecord extends PersistentRecord
     	this.firstname = fbuser.getFirstName();
     	this.lastname = fbuser.getLastName();
     	this.email = fbuser.getEmail();
+    	this.anonymous = false;
     	this.created = new Date(created);
     	this.lastActive = new Date(created);
     	setStatus(Status.NEW);

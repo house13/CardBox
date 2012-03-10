@@ -1,0 +1,36 @@
+#import ("/header.wm")
+
+#if ($user)
+
+<div id="main" class="container">
+  <div class="sixteen columns" id="account">
+  <h2>Account</h2>
+  
+<form action="account.wm" method="POST">
+$form.fixedHidden("action", $action)
+<table>
+
+#macro (tinput $name $cols $defvalue)
+<tr><td align="left">$i18n.xlate("account.$name")</td>
+<td align="right">$form.textarea($name, "rows='1' cols='$cols'", $defvalue)</td></tr>
+#end
+
+#tinput("username" 15 $user.username)
+
+<tr><td align="left">$i18n.xlate("account.anonymous")</td>
+<td align="right">$form.fixedCheckbox("anonymous", $user.anonymous)</td></tr>
+
+#if ($action == "update")
+<tr><td colspan="2">
+$form.submit($i18n.xlate("account.update"))
+</td></tr>
+#end
+
+</table>
+</form>
+  </div>
+</div>
+
+#end
+
+#import ("/footer.wm")

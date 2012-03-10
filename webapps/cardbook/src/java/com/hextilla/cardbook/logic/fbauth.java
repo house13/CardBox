@@ -21,8 +21,6 @@ package com.hextilla.cardbook.logic;
 
 import java.util.Calendar;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -72,6 +70,7 @@ public class fbauth extends OptionalUserLogic
 	 {
 	     HttpServletRequest req = ctx.getRequest();
 	     HttpServletResponse rsp = ctx.getResponse();
+	     
 	     String fbcode = req.getParameter("code");
 		 if (StringUtil.isBlank(fbcode))
 		 {
@@ -116,7 +115,19 @@ public class fbauth extends OptionalUserLogic
 		 }
 		 
 		 ctx.put("fbauthed", true);
-		 rsp.sendRedirect("/cardbook/play.wm");
+		 
+		 // Handle redirection flow somewhat nicely
+	     String pgState = req.getParameter("state");
+	     // By default, take 'em to the play page.
+	     String target = "/cardbook/play.wm#play";
+	     
+    	 if (StringUtil.isBlank(pgState) || pgState.equals(_play)) {
+    		 target = "/cardbook/play.wm#play";
+    	 } else if (pgState.equals(_acct)) {
+    		 target = "/cardbook/account.wm";
+    	 }
+	     
+		 rsp.sendRedirect(target);
 	 }
 	 
 	 /** Performs the raw act of Facebook authentication, getting the token/expiry
@@ -169,7 +180,8 @@ public class fbauth extends OptionalUserLogic
 			return CardBoxConfig.config.getValue("default_username", "Anonymous");
 	}
 	
-	protected Pattern _jnlppat = Pattern.compile("/game_([0-9]+).jnlp");
+	protected static final String _play = "play";
+	protected static final String _acct = "account";
 	
 	protected static final String CLIENT_PATH = "/client";
 }
