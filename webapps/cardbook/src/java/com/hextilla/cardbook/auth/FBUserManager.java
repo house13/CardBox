@@ -239,7 +239,7 @@ public class FBUserManager
     
     protected String getTargetPage (HttpServletRequest req)
     {
-    	String query = req.getRequestURI();
+    	String query = req.getServletPath();
     	Matcher pl = _playpat.matcher(query);
     	if (pl.matches()) {
     		return "play";
@@ -286,6 +286,6 @@ public class FBUserManager
     protected static final boolean USERMGR_DEBUG = false;
     
     /** We should know about the authorized pages so we can intelligently redirect users */
-    protected static final Pattern _playpat = Pattern.compile("play.wm");
-    protected static final Pattern _acctpat = Pattern.compile("account.wm");
+    protected static final Pattern _playpat = Pattern.compile("/play.wm");
+    protected static final Pattern _acctpat = Pattern.compile("/account.wm");
 }

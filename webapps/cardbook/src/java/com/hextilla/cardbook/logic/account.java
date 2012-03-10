@@ -13,6 +13,7 @@ import com.hextilla.cardbox.server.persist.FBUserRecord;
 import com.samskivert.servlet.util.ParameterUtil;
 import com.samskivert.servlet.util.FriendlyException;
 import com.samskivert.text.MessageUtil;
+import com.samskivert.util.StringUtil;
 
 import com.samskivert.velocity.InvocationContext;
 
@@ -29,6 +30,7 @@ public class account extends UserLogic
 		HttpServletRequest req = ctx.getRequest();
 		ctx.put("user", user);
 		ctx.put("action", "update");
+		ctx.put("page", "account");
 		
 		String action = ParameterUtil.getParameter(req, "action", false);
         if (action.equals("update")) {
@@ -45,8 +47,8 @@ public class account extends UserLogic
 		user.username = requireString(req, "username", 15, true);
 		
 		// Process the boolean parameter from the checkbox
-		String anon = requireString(req, "anonymous", 5, false);
-		user.anonymous = Boolean.valueOf(anon);
+		String anon = req.getParameter("anonymous");
+		user.anonymous = StringUtil.isBlank(anon);
 	}
 
     protected String requireString (

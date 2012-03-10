@@ -28,6 +28,7 @@ public class play extends UserLogic
             throw new FriendlyException("error.no_such_game");
         }
         ctx.put("game", game);
+        ctx.put("page", "play");
         ctx.put("players", app.getCardBoxRepository().getOnlineCount(gameId));
         try {
             ctx.put("single_player", game.parseGameDefinition().isSinglePlayerPlayable());
