@@ -90,7 +90,7 @@ public class CardBoxUI
         HextillaFontMedium = HextillaFont.deriveFont(Font.PLAIN, 30);
         HextillaFontSmall = HextillaFont.deriveFont(Font.PLAIN, 20);
     }
-
+    
     protected static CardBoxContext _ctx;
 
     /** The boring default font used if the custom font can't be loaded. */

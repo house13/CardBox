@@ -43,6 +43,7 @@ public class HextillaButton extends JButton implements MouseListener {
 		FontMetrics metrics = g.getFontMetrics(this.getFont());
 		int textHeight = metrics.getHeight();
 		int textWidth = metrics.stringWidth(this.getText());
+		g.setFont(this.getFont());
 		g.drawString(this.getText(), (this.getWidth()-textWidth)/2, (this.getHeight()+textHeight)/2-metrics.getDescent());
 	}
 
