@@ -24,14 +24,12 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 
-import java.io.File;
 import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 import com.hextilla.cardbox.util.CardBoxContext;
-import com.threerings.media.image.BufferedMirage;
 
 import static com.hextilla.cardbox.Log.log;
 
@@ -41,8 +39,11 @@ import static com.hextilla.cardbox.Log.log;
 public class CardBoxUI
 {
     /** The fancy cursive font we use to display game names. */
-    public static Font fancyFont;
-
+    public static Font HextillaFontLarge;
+    public static Font HextillaFontMedium;
+    public static Font HextillaFontSmall;
+    public static Font HextillaFont;
+    
     /** The nice blue background we use for scrolly bits. */
     public static final Color LIGHT_BLUE = new Color(0xC8E1E9);
     
@@ -78,14 +79,16 @@ public class CardBoxUI
         // try to load our fancy font
         try {
             InputStream in =
-                CardBoxUI.class.getClassLoader().getResourceAsStream("rsrc/media/quadrtic.ttf");
-            fancyFont = Font.createFont(Font.TRUETYPE_FONT, in);
-            fancyFont = fancyFont.deriveFont(Font.PLAIN, 52);
+                CardBoxUI.class.getClassLoader().getResourceAsStream("rsrc/media/League Gothic.ttf");
+            HextillaFont = Font.createFont(Font.TRUETYPE_FONT, in);
             in.close();
         } catch (Exception e) {
             log.warning("Failed to load custom font, falling back to default.", e);
-            fancyFont = BORING_DEFAULT;
+            HextillaFont = BORING_DEFAULT;
         }
+        HextillaFontLarge = HextillaFont.deriveFont(Font.PLAIN, 52);
+        HextillaFontMedium = HextillaFont.deriveFont(Font.PLAIN, 30);
+        HextillaFontSmall = HextillaFont.deriveFont(Font.PLAIN, 20);
     }
 
     protected static CardBoxContext _ctx;
