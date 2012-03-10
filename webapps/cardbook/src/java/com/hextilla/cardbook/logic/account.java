@@ -48,7 +48,7 @@ public class account extends UserLogic
 		
 		// Process the boolean parameter from the checkbox
 		String anon = req.getParameter("anonymous");
-		user.anonymous = StringUtil.isBlank(anon);
+		user.anonymous = !StringUtil.isBlank(anon);
 	}
 
     protected String requireString (

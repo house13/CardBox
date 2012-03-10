@@ -57,3 +57,15 @@
 			</header>
 		</div>
 	</div>
+	
+#if ($error || $status)
+<div id="top" class="container">
+  <div class="sixteen columns" id="message">
+#if ($error)
+<font color="#FF0000">$error</font>
+#elseif ($status)
+<font color="#0066FF">$i18n.xlate($status)</font>
+#end
+  </div>
+</div>
+#end

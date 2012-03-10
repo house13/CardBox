@@ -10,17 +10,17 @@
 $form.fixedHidden("action", $action)
 <table>
 
-#macro (tinput $name $cols $defvalue)
+#macro (tinput $name $defvalue)
 <tr><td align="left">$i18n.xlate("account.$name")</td>
-<td align="right">$form.fixedText($name, "rows='1' cols='$cols'", $defvalue)</td></tr>
+<td align="right">$form.fixedText($name, "", $defvalue)</td></tr>
 #end
 
-#tinput("username" 15 $user.username)
+#tinput("username" $user.username)
 
 <tr><td align="left">$i18n.xlate("account.anonymous")</td>
 <td align="right">$form.fixedCheckbox("anonymous", $user.anonymous)</td></tr>
 
-<tr><td>$i18n.xlate("account.whyanon")
+<tr><td class="small">$i18n.xlate("account.whyanon")</td></tr>
 
 #if ($action == "update")
 <tr><td colspan="2" align="center">
