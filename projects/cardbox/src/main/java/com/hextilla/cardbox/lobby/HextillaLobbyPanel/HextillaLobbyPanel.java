@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.Timer;
 
+import com.hextilla.cardbox.client.HextillaButton;
 import com.hextilla.cardbox.client.chat.ChatPanel;
 import com.hextilla.cardbox.client.chat.FriendChatPanel;
 import com.hextilla.cardbox.data.CardBoxGameConfig;
@@ -62,7 +63,7 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView {
         _soloPlay = new ComputerOpponentView(_ctx, aiConfig);      
         
         // FriendPlay    
-		_friendPlay = new JButton(FRIENDPLAY_BUTTON_TEXT);
+		_friendPlay = new HextillaButton(FRIENDPLAY_BUTTON_TEXT);
         
 		// Action listener to update _strangerPlay button elipses while searching for matches
 		ActionListener elipseUpdater = new ActionListener() {
@@ -97,7 +98,7 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView {
 		_matchMaker.AddMatchListener(matchFound);			
 		       
 		// Stranger Play button, engages matchmaker	
-		_strangerPlay = new JButton(MATCHMAKING_BUTTON_TEXT);
+		_strangerPlay = new HextillaButton(MATCHMAKING_BUTTON_TEXT);
 		_strangerPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				// Toggle text on the button
@@ -207,8 +208,8 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView {
     
     // Buttons
     protected ComputerOpponentView _soloPlay;
-    protected JButton _friendPlay;
-    protected JButton _strangerPlay;   
+    protected HextillaButton _friendPlay;
+    protected HextillaButton _strangerPlay;   
     	
     // Button text
     protected static String MATCHMAKING_BUTTON_TEXT = "Play with a Stranger";
