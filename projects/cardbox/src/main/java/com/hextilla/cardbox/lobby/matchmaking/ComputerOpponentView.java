@@ -8,9 +8,13 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ButtonGroup;
+import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.SwingConstants;
 
 import com.hextilla.cardbox.data.CardBoxGameConfig;
 import com.hextilla.cardbox.data.TableMatchConfig;
@@ -48,50 +52,67 @@ public class ComputerOpponentView extends JPanel
 	        // add ourselves as a seatedness observer
 	        _tdtr.addSeatednessObserver(this);
 	        
-	        _randomButton = new JButton("Easy Opponent");
-	        _randomButton.addActionListener(new ActionListener() {
+	        _playButton = new JButton(SOLOPLAY_BUTTON_TEXT);
+	        _playButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
-					startAIMatch(0);
-				}
-			}); 
-	        _aggressiveButton = new JButton("Aggressive Opponent");
-	        _aggressiveButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent evt) {
-					startAIMatch(2);
-				}
-			}); 
-	        _defensiveButton = new JButton("Defensive Opponent");
-	        _defensiveButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent evt) {
-					startAIMatch(1);
+					startAIMatch(_difficultyLevel);
 				}
 			}); 
 	        
-	        setLayout(new GridBagLayout());
-		
-	        GridBagConstraints c = new GridBagConstraints();  
-	        c.weightx = 1;
-	        c.weighty = 0.1;             
-	        c.gridheight = 1;
-	        c.fill = GridBagConstraints.HORIZONTAL;
-	        c.insets = new Insets(0, 5, 0, 5);
-	        c.gridx = 0;
-	        c.gridy = 0;
-	        c.gridwidth = 3;
-	        add(new JLabel("Computer Opponents"), c);
+	        // Different AI radio buttons, set the difficulty level
+	        JRadioButton _randomButton = new JRadioButton("Easy", true);
+	        _randomButton.setOpaque(false);
+	        _randomButton.addActionListener(new ActionListener() {	
+				public void actionPerformed(ActionEvent arg0) {
+					_difficultyLevel = 0;
+				}
+			});
 	        
-	        c.gridx = 0;
-	        c.gridy = 1;
-	        c.fill = GridBagConstraints.BOTH;
-	        c.gridwidth = 1;
-	        c.weighty = 0.9;
-	        add(_randomButton, c);
-	        c.gridx = 1;
-	        c.gridy = 1;
-	        add(_aggressiveButton, c);
-	        c.gridx = 2;
-	        c.gridy = 1;
-	        add(_defensiveButton, c);
+	        JRadioButton _aggressiveButton = new JRadioButton("Hard");
+	        _aggressiveButton.setOpaque(false);
+	        _aggressiveButton.addActionListener(new ActionListener() {	
+				public void actionPerformed(ActionEvent arg0) {
+					_difficultyLevel = 1;
+				}
+			});
+	        
+	        JRadioButton _defensiveButton = new JRadioButton("Medium");
+	        _defensiveButton.setOpaque(false);
+	        _defensiveButton.addActionListener(new ActionListener() {	
+				public void actionPerformed(ActionEvent arg0) {
+					_difficultyLevel = 2;
+				}
+			});	 
+	        
+	        // Group the radio buttons
+	        ButtonGroup buttonGroup = new ButtonGroup();
+	        buttonGroup.add(_randomButton);
+	        buttonGroup.add(_defensiveButton);
+	        buttonGroup.add(_aggressiveButton);
+	        
+	        // Add the buttons and such to the pane
+	        GroupLayout layout = new GroupLayout(this);        
+	        this.setLayout(layout);  
+	        
+	        // Horizontal Grouping
+	        layout.setHorizontalGroup(
+	        		layout.createParallelGroup(GroupLayout.Alignment.CENTER, true)
+	        			.addComponent(_playButton)
+	        			.addGroup(layout.createSequentialGroup()
+	        					.addComponent(_randomButton)
+	        					.addComponent(_defensiveButton)
+	        					.addComponent(_aggressiveButton))
+		    		);    
+	        
+	        // Vertical Grouping
+	        layout.setVerticalGroup(
+	        		layout.createSequentialGroup()
+        			.addComponent(_playButton)
+        			.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER, true)
+        					.addComponent(_randomButton)
+        					.addComponent(_defensiveButton)
+        					.addComponent(_aggressiveButton))
+	    		);        
 	    }
 
 	    // documentation inherited
@@ -149,9 +170,7 @@ public class ComputerOpponentView extends JPanel
 	    public void seatednessDidChange (boolean isSeated)
 	    {
 	        // update the create table button
-	    	_randomButton.setEnabled(!isSeated);
-	    	_aggressiveButton.setEnabled(!isSeated);
-	    	_defensiveButton.setEnabled(!isSeated);
+	    	_playButton.setEnabled(!isSeated);
 	    }
 
 	    /**
@@ -172,11 +191,15 @@ public class ComputerOpponentView extends JPanel
 	    protected TableDirector _tdtr;
 
 	    /** Our create table button. */
-	    protected JButton _randomButton;
-	    protected JButton _aggressiveButton;
-	    protected JButton _defensiveButton;
+	    public JButton _playButton;
 
 	    /** Our number of players indicator. */
 	    protected JLabel _pcount;
+	    
+	    // Play Button 
+	    protected static String SOLOPLAY_BUTTON_TEXT = "Play by Yourself";	   
+	    
+	    // The AI difficulty level
+	    protected static int _difficultyLevel = 0;
 	    
 	}
