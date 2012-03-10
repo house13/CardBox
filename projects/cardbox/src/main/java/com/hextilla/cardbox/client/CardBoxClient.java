@@ -21,12 +21,16 @@ package com.hextilla.cardbox.client;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Enumeration;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Font;
 import java.awt.Window;
 
 import javax.swing.JPanel;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
 
 import com.samskivert.servlet.user.Password;
 import com.samskivert.swing.Controller;
@@ -109,7 +113,8 @@ public class CardBoxClient
 
         // load up our user interface bits
         CardBoxUI.init(_ctx);
-
+        initFonts();
+        
         // use the game name as our title if we have one
         String title = _ctx.xlate(CardBoxCodes.TOYBOX_MSGS, "m.app_title");
         try {
@@ -423,6 +428,26 @@ public class CardBoxClient
         }
     }
 
+    private void initFonts()
+    {
+    	UIDefaults defaults = UIManager.getLookAndFeelDefaults();
+
+		//  Build of Map of items and a Map of attributes for each item
+
+		for ( @SuppressWarnings("rawtypes")
+		Enumeration enumm = defaults.keys(); enumm.hasMoreElements(); )
+		{
+			Object key = enumm.nextElement();
+			Object value = defaults.get( key );
+
+			if (value instanceof Font)
+			{
+				UIManager.getDefaults().put(key.toString(), CardBoxUI.HextillaFontSmall);
+			}
+			
+		}
+    }
+    
     protected CardBoxContext _ctx;
     protected Shell _shell;
     protected RootPanel _root = new RootPanel();

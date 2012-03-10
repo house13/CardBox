@@ -93,7 +93,7 @@ public class LobbyPanel extends JPanel
     	
     	// Add the page title
         _title = new MultiLineLabel("", MultiLineLabel.CENTER);
-        _title.setFont(CardBoxUI.fancyFont);
+        _title.setFont(CardBoxUI.HextillaFontLarge);
         c.weightx = 1.0;
         c.weighty = 1.0;
         c.gridwidth = GridBagConstraints.REMAINDER;
