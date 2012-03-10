@@ -20,7 +20,7 @@ import com.hextilla.cardbox.data.CardBoxGameConfig;
 import com.hextilla.cardbox.data.GameDefinition;
 import com.hextilla.cardbox.lobby.data.LobbyConfig;
 import com.hextilla.cardbox.lobby.data.LobbyObject;
-import com.hextilla.cardbox.lobby.friendlist.FriendList;
+import com.hextilla.cardbox.lobby.friendlist.FriendListPanel;
 import com.hextilla.cardbox.lobby.matchmaking.ComputerOpponentView;
 import com.hextilla.cardbox.lobby.matchmaking.MatchListener;
 import com.hextilla.cardbox.lobby.matchmaking.MatchMaker;
@@ -45,12 +45,12 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView {
         CardBoxGameConfig aiConfig = new CardBoxGameConfig(config.getGameId(), gamedef, "ai");                   
         
         // Add the friendPanel (same size as button panel)
-        FriendList friendPanel = new FriendList(ctx, friendlyConfig);
+        FriendListPanel friendPanel = new FriendListPanel(ctx, friendlyConfig);
         friendPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));     
         
         // Setup he chat panel, use a tabbed pane
         JTabbedPane chatPane = new JTabbedPane();
-        _friendChat = new FriendChatPanel(ctx, true, friendPanel.getFriends());      
+        _friendChat = new FriendChatPanel(ctx, true, _ctx.getSocialDirector().getFriends());      
         _globalChat = new ChatPanel(ctx, true);             
         chatPane.addTab("All", null, _globalChat, "Global Chat");
         chatPane.addTab("Friends", null, _friendChat, "Friend Only Chat");                       			

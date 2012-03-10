@@ -14,6 +14,7 @@ import java.util.List;
 import com.samskivert.util.StringUtil;
 
 import com.threerings.presents.client.BasicDirector;
+import com.threerings.presents.client.Client;
 
 public class SocialDirector extends BasicDirector 
 {
@@ -22,12 +23,18 @@ public class SocialDirector extends BasicDirector
 		_ctx = ctx;
 	}
 	
-	public void init ()
+	public void init (Client client)
 	{
-		CardBoxUserObject user = (CardBoxUserObject)_ctx.getClient().getClientObject();
+		CardBoxUserObject user = (CardBoxUserObject)client.getClientObject();
 		_token = user.getSession();
 		_fbclient = StringUtil.isBlank(_token) ? null : new DefaultFacebookClient(_token);
-		
+	}
+	
+	@Override
+	public void clientDidLogon (Client client)
+	{
+		super.clientDidLogon(client);
+		init(client);
 	}
 	
 	public FriendSet getFriends ()

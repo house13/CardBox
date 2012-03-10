@@ -19,20 +19,25 @@ import javax.swing.SwingConstants;
 
 import com.hextilla.cardbox.client.CardBoxUI;
 import com.hextilla.cardbox.data.CardBoxGameConfig;
+import com.hextilla.cardbox.facebook.CardBoxName;
 import com.hextilla.cardbox.facebook.client.FriendSet;
 import com.hextilla.cardbox.util.CardBoxContext;
 import com.samskivert.swing.util.SwingUtil;
+import com.threerings.crowd.client.OccupantObserver;
+import com.threerings.crowd.client.PlaceView;
+import com.threerings.crowd.data.OccupantInfo;
+import com.threerings.crowd.data.PlaceObject;
 
 // Class to show the list of Facebook friends
-public class FriendList extends JPanel 
-	implements ActionListener
+public class FriendListPanel extends JPanel 
+	implements PlaceView, OccupantObserver
 {
 	// Main panel containing the list of friends
 	JList _friendList;
 	DefaultListModel _listModel;
 	
 	// TODO: reference to this "friend" object taken in constructor
-	public FriendList (CardBoxContext ctx, CardBoxGameConfig config)
+	public FriendListPanel (CardBoxContext ctx, CardBoxGameConfig config)
 	{
         _ctx = ctx;
         
@@ -58,33 +63,81 @@ public class FriendList extends JPanel
 		// Create the scroll Bar	
 		JScrollPane scrollin = new JScrollPane(_friendList);
 		scrollin.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
-		add(scrollin);	
+		add(scrollin);
 		
-		// Cheat and add some friends for testing
-		for (int i = 0; i < 50; ++i)
+		_friends = _ctx.getSocialDirector().getFriends();
+		_ctx.getOccupantDirector().addOccupantObserver(this);
+	}
+	
+	public void addFriend(OccupantInfo info)
+	{
+		if (info.username instanceof CardBoxName)
 		{
-			addFriend("Friend " + i);
-		}	
+			CardBoxName name = (CardBoxName) info.username;
+			if (_friends.isFriend(name.getFacebookId()))
+				addFriend(name);
+		}
 	}
 	
 	// Add a friend to the friend list
-	//TODO: take reference to a friend object, pass it to constructor
-	public void addFriend(String name)
+	public void addFriend(CardBoxName name)
 	{
 		_listModel.addElement(new FriendEntry(name));		
 	}
-
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
+	
+	public void removeFriend(OccupantInfo info)
+	{
+		if (info.username instanceof CardBoxName)
+		{
+			CardBoxName name = (CardBoxName) info.username;
+			if (_friends.isFriend(name.getFacebookId()))
+				removeFriend(name);
+		}
+	}
+	
+	// Remove a friend from the friend list
+	public void removeFriend(CardBoxName name)
+	{
+		_listModel.removeElement(name);
 	}
 
+	@Override
+	public void occupantEntered(OccupantInfo info)
+	{
+		addFriend(info);
+	}
+
+	@Override
+	public void occupantLeft(OccupantInfo info)
+	{
+		removeFriend(info);
+	}
+
+	@Override
+	public void occupantUpdated(OccupantInfo oldinfo, OccupantInfo newinfo)
+	{
+		// no-op for now
+	}
+
+	@Override
+	public void willEnterPlace(PlaceObject plobj)
+	{
+		// add all of the occupants of the place to our list
+        for (OccupantInfo info : plobj.occupantInfo) {
+        	addFriend(info);
+        }
+	}
+
+	@Override
+	public void didLeavePlace(PlaceObject plobj)
+	{
+		// clear out our occupant entries
+        _listModel.clear();
+	}
+	
 	/** Giver of life and services. */
 	protected CardBoxContext _ctx;
-
-	// Returns the friendSet used by the friendPanel (used to initialize the friend chat)
-	public FriendSet getFriends() {
-		// TODO: Fill this out once friends are working properly
-		return null;
-	}
+	
+	/** List of friend data from Facebook */
+	protected FriendSet _friends;
 }

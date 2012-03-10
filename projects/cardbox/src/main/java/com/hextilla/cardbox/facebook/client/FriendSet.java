@@ -14,12 +14,12 @@ public class FriendSet
 	  public Downloader(){}
 	  public void run() {
 		  ImageIcon icon;
-		  String username;
+		  String picture;
 		  while(true) {
 			  while(!_downloadList.isEmpty()) {
 				   Long fbId = _downloadList.pop();
-				   username = _friends.get(fbId).getId();
-				   icon = new ImageIcon("https://graph.facebook.com/"+username+"/picture");
+				   picture = getFriend(fbId).getPicture();
+				   icon = new ImageIcon(picture);
 			       _pictures.put(fbId, icon);
 			  }  
 		  }
@@ -29,8 +29,8 @@ public class FriendSet
 	{
 		_friends = new Hashtable<Long, UserWithPicture>();
 		_pictures = new Hashtable<Long, ImageIcon>();
-		Thread t = new Thread(new Downloader());
-		t.run();
+		//Thread t = new Thread(new Downloader());
+		//t.run();
 	}
 	
 	public void add (UserWithPicture friend)
@@ -40,6 +40,11 @@ public class FriendSet
 			_friends.put(Long.valueOf(friend.getId()), friend);
 		}
 		
+	}
+	
+	public UserWithPicture getFriend (Long fbId)
+	{
+		return _friends.get(fbId);
 	}
 	
 	public boolean isFriend (long fbId)

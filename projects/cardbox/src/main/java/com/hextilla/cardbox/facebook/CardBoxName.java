@@ -10,13 +10,14 @@ public class CardBoxName extends Name
 		_fbId = fbId;
 		_first = first;
 		_last = last;
+		_full = first + " " + last;
 		_username = new Name(username);
 		_anonymous = anonymous;
 	}
 	
 	public Name getFriendlyName ()
 	{
-		return new Name(_first + " " + _last);
+		return new Name(_full);
 	}
 	
 	public Name getStrangerName ()
@@ -38,6 +39,22 @@ public class CardBoxName extends Name
 		return _fbId;
 	}
 	
+    /**
+     * Gives this name a chance to override the default comparison in a symmetric fashion.
+     *
+     * @return the result of the comparison, or null for no override.
+     */
+	@Override
+    protected Integer overrideCompareTo (Name other)
+    {
+		if (other instanceof CardBoxName)
+		{
+			CardBoxName cbn = (CardBoxName) other;
+			return getFriendlyName().compareTo(cbn.getFriendlyName());
+		}
+        return null;
+    }
+	
 	/**
      * By default, 
      */
@@ -46,6 +63,24 @@ public class CardBoxName extends Name
 	{
 	    return getStrangerName().toString();
 	}
+	
+	// from interface Comparable<Name>
+    public int compareTo (CardBoxName other)
+    {
+        Integer override = overrideCompareTo(other);
+        if (override != null) {
+            return override;
+        } else if ((override = other.overrideCompareTo(this)) != null) {
+            return -override;
+        }
+        Class<?> c = getClass();
+        Class<?> oc = other.getClass();
+        if (c == oc || c.getName().equals(oc.getName())) {
+            return getNormal().compareTo(other.getNormal());
+        } else {
+            return c.getName().compareTo(oc.getName());
+        }
+    }
 
 	/**
 	 * An easily extensible method via which derived classes can add to {@link #toString}'s output.
@@ -64,6 +99,7 @@ public class CardBoxName extends Name
 	protected long _fbId;
 	protected String _first;
 	protected String _last;
+	protected String _full;
 	protected Name _username;
 	protected boolean _anonymous;
 }

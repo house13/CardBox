@@ -31,8 +31,8 @@ public class FriendListRenderer extends JLabel implements ListCellRenderer
 		cell.add(this);
 		
 		// Add border, text and icon
-		setIcon(((FriendEntry)value).DisplayPic());
-		setText(((FriendEntry)value).Name());
+		setIcon(((FriendEntry)value).getDisplayPic());
+		setText(((FriendEntry)value).getName().toString());
 		setBorder(BorderFactory.createEmptyBorder(5, 1, 5, 1));
 		
 		// Change colour when selected
