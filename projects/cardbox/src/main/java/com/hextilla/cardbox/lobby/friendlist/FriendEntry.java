@@ -1,5 +1,7 @@
 package com.hextilla.cardbox.lobby.friendlist;
 
+import java.awt.MediaTracker;
+
 import javax.swing.ImageIcon;
 import com.hextilla.cardbox.client.CardBoxUI;
 import com.hextilla.cardbox.facebook.CardBoxName;
@@ -17,6 +19,12 @@ public class FriendEntry
 		_name = name;
 	}
 	
+	public FriendEntry(CardBoxName name, ImageIcon pic)
+	{
+		_name = name;
+		_displayPic = pic;
+	}
+	
 	public CardBoxName getName()
 	{
 		return _name;
@@ -24,7 +32,7 @@ public class FriendEntry
 	
 	public ImageIcon getDisplayPic()
 	{
-		if (_displayPic == null)
+		if (_displayPic == null || _displayPic.getImageLoadStatus() != MediaTracker.COMPLETE)
 		{
 			return CardBoxUI.getDefaultDisplayPic();
 		}

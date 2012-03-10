@@ -84,7 +84,7 @@ public class FriendListPanel extends JPanel
 	// Add a friend to the friend list
 	public void addFriend(CardBoxName name)
 	{
-		_listModel.addElement(new FriendEntry(name));		
+		_listModel.addElement(new FriendEntry(name, _friends.getImage(name.getFacebookId())));		
 	}
 	
 	public void removeFriend(OccupantInfo info)
