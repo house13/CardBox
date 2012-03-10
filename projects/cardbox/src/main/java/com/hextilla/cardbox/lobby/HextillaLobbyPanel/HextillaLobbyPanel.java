@@ -45,8 +45,8 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView {
         CardBoxGameConfig aiConfig = new CardBoxGameConfig(config.getGameId(), gamedef, "ai");                   
         
         // Add the friendPanel (same size as button panel)
-        FriendListPanel friendPanel = new FriendListPanel(ctx, friendlyConfig);
-        friendPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));     
+        _friendList = new FriendListPanel(ctx, friendlyConfig);
+        _friendList.setBorder(BorderFactory.createLineBorder(Color.BLACK));     
         
         // Setup he chat panel, use a tabbed pane
         JTabbedPane chatPane = new JTabbedPane();
@@ -135,8 +135,8 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView {
         _globalChat.setPreferredSize(CHAT_MAX_SIZE);
         _globalChat.setMinimumSize(CHAT_MIN_SIZE);        
         
-        friendPanel.setPreferredSize(LIST_MAX_SIZE);
-        friendPanel.setMinimumSize(LIST_MIN_SIZE);          
+        _friendList.setPreferredSize(LIST_MAX_SIZE);
+        _friendList.setMinimumSize(LIST_MIN_SIZE);          
 		
 		// Layout Manager woop-a-doop
         GroupLayout layout = new GroupLayout(this);
@@ -153,7 +153,7 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView {
 	    		    				  .addComponent(_friendPlay)
 	    		    				  .addComponent(_strangerPlay)
 	    		    				  .addComponent(_soloPlay))
-		    				  .addComponent(friendPanel))
+		    				  .addComponent(_friendList))
 					  .addComponent(chatPane)
 	    		);    
         
@@ -166,7 +166,7 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView {
 	    		    				  .addComponent(_friendPlay)
 	    		    				  .addComponent(_strangerPlay)
 	    		    				  .addComponent(_soloPlay))
-		    				  .addComponent(friendPanel))
+		    				  .addComponent(_friendList))
 					  .addComponent(chatPane)
 	    		);
 	}
@@ -175,6 +175,7 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView {
 		willEnterPlace(place);
 		_friendChat.willEnterPlace(place);
 		_globalChat.willEnterPlace(place);
+		_friendList.willEnterPlace(place);
 	}
 	
 	// Entering and leaving the Hextilla panel
@@ -188,6 +189,8 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView {
 		_soloPlay.leavePlace(place);
 		_matchMaker.leavePlace(place);
 	}		
+	
+	protected FriendListPanel _friendList;
 	
 	/** ChatPanel objects **/
 	protected ChatPanel _friendChat;

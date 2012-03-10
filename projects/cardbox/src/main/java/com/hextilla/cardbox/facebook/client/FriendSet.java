@@ -39,7 +39,6 @@ public class FriendSet
 		{
 			_friends.put(Long.valueOf(friend.getId()), friend);
 		}
-		
 	}
 	
 	public UserWithPicture getFriend (Long fbId)

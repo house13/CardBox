@@ -37,25 +37,29 @@ public class SocialDirector extends BasicDirector
 		init(client);
 	}
 	
-	public FriendSet getFriends ()
+	public synchronized FriendSet getFriends ()
 	{
 		if (_fbclient == null) return null;
-		
-		FriendSet friends = new FriendSet();
-		Connection<UserWithPicture> friendList = _fbclient.fetchConnection("me/friends", 
-				UserWithPicture.class, Parameter.with("fields", "id, name, picture"));
-		
-		for (List<UserWithPicture> friendPage : friendList) {
-			for (UserWithPicture friend : friendPage) {
-				friends.add(friend);
-;			}
+		if (_friends == null)
+		{
+			FriendSet friends = new FriendSet();
+			Connection<UserWithPicture> friendList = _fbclient.fetchConnection("me/friends", 
+					UserWithPicture.class, Parameter.with("fields", "id, name, picture"));
+			
+			for (List<UserWithPicture> friendPage : friendList) {
+				for (UserWithPicture friend : friendPage) {
+					friends.add(friend);
+				}
+			}
+			_friends = friends;
 		}
-		
-		return friends;
+		return _friends;
 	}
 	
 
 	protected String _token;
+	
+	protected FriendSet _friends = null;
 	
 	protected CardBoxContext _ctx;
 	protected FacebookClient _fbclient;
