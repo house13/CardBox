@@ -76,7 +76,7 @@ public class FriendListPanel extends JPanel
 		if (info.username instanceof CardBoxName)
 		{
 			CardBoxName name = (CardBoxName) info.username;
-			//if (_friends.isFriend(name.getFacebookId()))
+			if (_friends.isFriend(name.getFacebookId()))
 				addFriend(name);
 		}
 	}
@@ -92,7 +92,7 @@ public class FriendListPanel extends JPanel
 		if (info.username instanceof CardBoxName)
 		{
 			CardBoxName name = (CardBoxName) info.username;
-			//if (_friends.isFriend(name.getFacebookId()))
+			if (_friends.isFriend(name.getFacebookId()))
 				removeFriend(name);
 		}
 	}
