@@ -28,6 +28,8 @@ import com.threerings.crowd.client.PlaceView;
 import com.threerings.crowd.data.OccupantInfo;
 import com.threerings.crowd.data.PlaceObject;
 
+import static com.hextilla.cardbox.Log.log;
+
 // Class to show the list of Facebook friends
 public class FriendListPanel extends JPanel 
 	implements PlaceView, OccupantObserver
@@ -74,7 +76,7 @@ public class FriendListPanel extends JPanel
 		if (info.username instanceof CardBoxName)
 		{
 			CardBoxName name = (CardBoxName) info.username;
-			if (_friends.isFriend(name.getFacebookId()))
+			//if (_friends.isFriend(name.getFacebookId()))
 				addFriend(name);
 		}
 	}
@@ -90,7 +92,7 @@ public class FriendListPanel extends JPanel
 		if (info.username instanceof CardBoxName)
 		{
 			CardBoxName name = (CardBoxName) info.username;
-			if (_friends.isFriend(name.getFacebookId()))
+			//if (_friends.isFriend(name.getFacebookId()))
 				removeFriend(name);
 		}
 	}
@@ -98,7 +100,7 @@ public class FriendListPanel extends JPanel
 	// Remove a friend from the friend list
 	public void removeFriend(CardBoxName name)
 	{
-		_listModel.removeElement(name);
+		_listModel.removeElement(new FriendEntry(name));
 	}
 
 	@Override
@@ -124,6 +126,7 @@ public class FriendListPanel extends JPanel
 	{
 		// add all of the occupants of the place to our list
         for (OccupantInfo info : plobj.occupantInfo) {
+        	log.info("Determining whether user ", info.username, " is a friend of ours");
         	addFriend(info);
         }
 	}
