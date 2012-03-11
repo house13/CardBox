@@ -34,12 +34,13 @@ public class SocialDirector extends BasicDirector
 	public void clientDidLogon (Client client)
 	{
 		super.clientDidLogon(client);
-		init(client);
+		if (_ctx.isFacebookEnabled())
+			init(client);
 	}
 	
 	public synchronized FriendSet getFriends ()
 	{
-		if (_fbclient == null) return null;
+		if (_fbclient == null) return new FriendSet();
 		if (_friends == null)
 		{
 			FriendSet friends = new FriendSet();
@@ -62,5 +63,5 @@ public class SocialDirector extends BasicDirector
 	protected FriendSet _friends = null;
 	
 	protected CardBoxContext _ctx;
-	protected FacebookClient _fbclient;
+	protected FacebookClient _fbclient = null;
 }

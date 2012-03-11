@@ -76,7 +76,7 @@ public class FriendListPanel extends JPanel
 		if (info.username instanceof CardBoxName)
 		{
 			CardBoxName name = (CardBoxName) info.username;
-			if (_friends.isFriend(name.getFacebookId()))
+			if (isFriend(name.getFacebookId()))
 				addFriend(name);
 		}
 	}
@@ -92,7 +92,7 @@ public class FriendListPanel extends JPanel
 		if (info.username instanceof CardBoxName)
 		{
 			CardBoxName name = (CardBoxName) info.username;
-			if (_friends.isFriend(name.getFacebookId()))
+			if (isFriend(name.getFacebookId()))
 				removeFriend(name);
 		}
 	}
@@ -137,6 +137,20 @@ public class FriendListPanel extends JPanel
 		// clear out our occupant entries
         _listModel.clear();
 	}
+	
+	public boolean isFriend(long fbId)
+	{
+		if (_devmode || _friends == null) {
+			return true;
+		} else if (_friends.isFriend(fbId)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/** The whole world is your friend in dev mode! */
+	protected boolean _devmode;
 	
 	/** Giver of life and services. */
 	protected CardBoxContext _ctx;

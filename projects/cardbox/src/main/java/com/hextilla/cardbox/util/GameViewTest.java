@@ -149,6 +149,10 @@ public abstract class GameViewTest extends ManagedJFrame
         public KeyDispatcher getKeyDispatcher () {
             return _keydisp;
         }
+        @Override
+        public boolean isFacebookEnabled() {
+        	return false;
+        }
     }
 
     protected MessageManager _msgmgr;

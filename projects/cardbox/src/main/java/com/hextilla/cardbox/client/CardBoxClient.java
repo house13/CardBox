@@ -356,6 +356,12 @@ public class CardBoxClient
         {
         	return _session;
         }
+        
+        @Override
+        public boolean isFacebookEnabled()
+        {
+        	return !inDevMode();
+        }
 
         public DObjectManager getDObjectManager ()
         {
