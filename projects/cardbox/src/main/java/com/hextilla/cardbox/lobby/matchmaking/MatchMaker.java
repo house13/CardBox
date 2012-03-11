@@ -2,6 +2,7 @@ package com.hextilla.cardbox.lobby.matchmaking;
 
 import static com.hextilla.cardbox.lobby.Log.log;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -28,11 +29,11 @@ public class MatchMaker implements TableObserver, SeatednessObserver
 
 	// Use an enum to indicate status, we may need to change this if we need more info
 	public enum MatchStatus {
-		AVAILABLE,	// Match found! Press Accept!
-		CANCELED	// Match was cancelled (you or someone else did not accept)
+		STOPPED,		// Matchmaking stopped and tables cleaned up
+		AVAILABLE
 	}
 
-	public MatchMaker(CardBoxContext ctx, CardBoxGameConfig config, TableFilter filter) {
+	public MatchMaker(CardBoxContext ctx, CardBoxGameConfig config, MatchMakerDirector mdtr, TableFilter filter) {
 		listeners = new Vector<MatchListener>();
         _config = config;
         _ctx = ctx;
@@ -41,9 +42,10 @@ public class MatchMaker implements TableObserver, SeatednessObserver
         // Initiate Lists
         _openList = new Vector<Table>();
         _playList = new Vector<Table>();
-        
+                
         // Engage table director
-        _tdtr = new TableDirector(ctx, LobbyObject.TABLE_SET, this);
+        mdtr.addObserver(this);
+        _tdtr = mdtr.getTableDirector();
 
         // Set addSeatednessObserver to stun
         _tdtr.addSeatednessObserver(this);      
@@ -57,17 +59,13 @@ public class MatchMaker implements TableObserver, SeatednessObserver
 	// Start searching for a game
 	public void startMatchMaking() {
 		log.info("Start Matchmaking...");		
-
-		// Load-up the table lists		
-        for (Table table : _tlobj.getTables()) {
-            tableAdded(table);
-        }	
-        
+		
 		// Search for open games
 	    for (Table table : _openList) {
 	    	// Try to join at the next open position (Join at position 2, host sits in 1)
 	    	//TODO: may need to keep track of open seats using seatedness observer
 	    	//TODO: We need to try again if join fails (how to detect this...?)
+	    	
             _tdtr.joinTable(table.tableId, 1);
             return;
 	    }
@@ -78,17 +76,22 @@ public class MatchMaker implements TableObserver, SeatednessObserver
 
 	// Stop Searching for a game
 	public void stopMatchMaking() {
-		log.info("Leaving Matchmaking...");
+		log.info("Stop Matchmaking...");
 		Table table = _tdtr.getSeatedTable();
 		
 		// Leave the table if sitting at one
 		if (table != null){
+			// Save the table id so we can check for when its finally removed
+			_currentTableID = table.tableId;
+
+			// Leave the table
 			_tdtr.leaveTable(table.tableId);
 		}
-		
-        // clear out our table lists
-        _openList.clear();
-        _playList.clear();			
+		else
+		{
+            // Notify the user cleanup is complete.
+            NotifyMatchListeners(MatchStatus.STOPPED, -1);
+		}		
 	}
 
 	// Add listener
@@ -101,10 +104,16 @@ public class MatchMaker implements TableObserver, SeatednessObserver
 		listeners.remove(listener);		
 	}	
 	
-	// Update all the listeners of the change
-	public void NotifyMatchListeners(MatchStatus status) {
-	    for (MatchListener listener : listeners) {
-	    	listener.update(status);
+	// Update all the listeners of the change, remove those which return true
+	public void NotifyMatchListeners(MatchStatus status, int tableId) {
+		Iterator<MatchListener> it = listeners.iterator();
+		while(it.hasNext()) 
+		{
+			MatchListener currentListener = it.next();
+	    	if (currentListener.update(status, tableId))
+	    	{
+	    		it.remove();
+	    	}
 	    }
 	}
 
@@ -127,12 +136,21 @@ public class MatchMaker implements TableObserver, SeatednessObserver
 	}
 
 	// Clean up references to tables when one is removed
-	public void tableRemoved(int id) {			
-		log.info("Table removed: " + id);
+	public void tableRemoved(int id) {
 		// Search inplay list
 	    for (Table table : _playList) {
 	    	if (table.tableId == id) {
+	    		log.info("Table removed: " + id);
 	    		_playList.remove(table);
+	    		
+	    		// Notify people who are waiting when the current table is deleted
+	    		if (_currentTableID == id)
+	    		{
+	    			_currentTableID = -1;
+	    			
+	                // Notify the user that the game they were in was removed and cleanup is complete.
+	                NotifyMatchListeners(MatchStatus.STOPPED, id);
+	    		}
 	    		return;
 	    	}
 	    }
@@ -141,6 +159,17 @@ public class MatchMaker implements TableObserver, SeatednessObserver
 	    for (Table table : _openList) {
 	    	if (table.tableId == id) {
 	    		_openList.remove(table);
+	    		log.info("Table removed: " + id);
+	    		
+	    		// Notify people who are waiting when the current table is deleted
+	    		if (_currentTableID == id)
+	    		{
+	    			_currentTableID = -1;
+	    			
+	                // Notify the user that the game they were in was removed and cleanup is complete.
+	                NotifyMatchListeners(MatchStatus.STOPPED, id);
+	    		}
+	    		
 	    		return;
 	    	}
 	    }	    
@@ -173,7 +202,7 @@ public class MatchMaker implements TableObserver, SeatednessObserver
 	                _playList.add(updatedTable);
 	                
 	                // Notify the user that they have been matched
-	                NotifyMatchListeners(MatchStatus.AVAILABLE);
+	                NotifyMatchListeners(MatchStatus.AVAILABLE, table.tableId);
 	    			
     			// Otherwise just update the current entry	    			
 	    		} else {
@@ -188,17 +217,23 @@ public class MatchMaker implements TableObserver, SeatednessObserver
 	// Entering and leaving the match maker
 	public void setPlace(PlaceObject place) {
         log.info("Entering MatchMaker");
-        _tlobj = (TableLobbyObject)place;        
+        _tlobj = (TableLobbyObject)place;          
         
-        // pass the good word on to our table director
-        _tdtr.setTableObject(place);	
+		// Load-up the table lists		
+        for (Table table : _tlobj.getTables()) 
+        {        	
+        	// Only add the ones that pass the filter
+        	if (!_filter.filter(table)) continue;
+        	
+            tableAdded(table);
+        }	        
 	}
 
 	public void leavePlace(PlaceObject place) {
         log.info("Leaving MatchMaker");
-        
-        // pass the good word on to our table director
-        _tdtr.clearTableObject();
+
+        _openList.clear();
+        _playList.clear();
 	}	
 	
 	// Vector of listeners
@@ -229,6 +264,10 @@ public class MatchMaker implements TableObserver, SeatednessObserver
     
     // Table configuration object
     protected TableConfig _tconfig;   
+
+    // The id of the current table we are seated at. Used to make sure the table was
+    // deleted before starting matchmaking again.
+    protected int _currentTableID = -1;
     
     // Reference to the lobby
     TableLobbyObject _tlobj;    
