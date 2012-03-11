@@ -3,6 +3,8 @@ package com.hextilla.cardbox.client;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -20,25 +22,35 @@ public class HextillaButton extends JButton implements MouseListener {
 	}
 
 	public void paint(Graphics g) {
-		Color highlight;
-		if (m_mouseInside) {
-			highlight = Color.LIGHT_GRAY;
-		} else {
-			highlight = Color.DARK_GRAY;
-		}
-		g.setColor(Color.BLACK);
+		Graphics2D g2d = (Graphics2D)g;
+
+        // Enable antialiasing for shapes
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                             RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
+        					 RenderingHints.VALUE_ANTIALIAS_ON);
+
+        // Enable antialiasing for text
+        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                             RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        
+		g.setColor(Color.DARK_GRAY);
 		g.fillRoundRect(0, 0, this.getWidth()-1, this.getHeight()-1, 16, 16);
-		g.setColor(highlight);
-		g.drawRoundRect(0, 0, this.getWidth()-1, this.getHeight()-1, 16, 16);
+
+		if (m_mouseInside) {
+			g.setColor(new Color(145, 185, 215));
+		} else {
+			g.setColor(new Color(225, 235, 250));
+		}
+		g.fillRoundRect(2, 2, this.getWidth()-5, this.getHeight()-5, 12, 12);
+		
 		if (m_pressed) {
 			g.setColor(new Color(190, 205, 225));
 		} else {
 			g.setColor(new Color(225, 235, 250));
 		}
-		g.fillRoundRect(2, 2, this.getWidth()-5, this.getHeight()-5, 12, 12);
-		g.setColor(highlight);
-		g.drawRoundRect(2, 2, this.getWidth()-5, this.getHeight()-5, 12, 12);
-
+		g.fillRoundRect(4, 4, this.getWidth()-9, this.getHeight()-9, 10, 10);
+		
 		g.setColor(Color.DARK_GRAY);
 		FontMetrics metrics = g.getFontMetrics(this.getFont());
 		int textHeight = metrics.getHeight();

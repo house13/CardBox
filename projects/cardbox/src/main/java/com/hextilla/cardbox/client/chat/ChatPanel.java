@@ -72,6 +72,7 @@ import com.threerings.crowd.data.OccupantInfo;
 import com.threerings.crowd.data.PlaceObject;
 
 import com.hextilla.cardbox.client.CardBoxUI;
+import com.hextilla.cardbox.client.HextillaButton;
 import com.hextilla.cardbox.data.CardBoxCodes;
 import com.hextilla.cardbox.facebook.CardBoxName;
 import com.hextilla.cardbox.util.CardBoxContext;
@@ -170,7 +171,7 @@ public class ChatPanel extends JPanel
         _entry.addActionListener(this);
         _entry.setEnabled(false);
 
-        _send = new JButton(_ctx.xlate(CardBoxCodes.TOYBOX_MSGS, "m.send"));
+        _send = new HextillaButton(_ctx.xlate(CardBoxCodes.TOYBOX_MSGS, "m.send"));
         _send.setEnabled(false);
         _send.addActionListener(this);
         _send.setActionCommand("send");
@@ -406,7 +407,7 @@ public class ChatPanel extends JPanel
 
     protected JComboBox _roombox;
     protected JTextPane _text;
-    protected JButton _send;
+    protected HextillaButton _send;
     protected JTextField _entry;
     protected BufferedImage _bgimg;
 

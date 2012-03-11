@@ -10,19 +10,15 @@ import com.hextilla.cardbox.facebook.CardBoxName;
 public class FriendEntry
 	implements Comparable<FriendEntry>
 {
-	private CardBoxName _name = null;
-	private ImageIcon _displayPic = null;
-	// Also encapsulate game/table data if any
-	
 	public FriendEntry(CardBoxName name)
 	{
-		_name = name;
+		this(name, null);
 	}
 	
 	public FriendEntry(CardBoxName name, ImageIcon pic)
 	{
 		_name = name;
-		_displayPic = pic;
+		_pic = pic;
 	}
 	
 	public CardBoxName getName()
@@ -32,11 +28,24 @@ public class FriendEntry
 	
 	public ImageIcon getDisplayPic()
 	{
-		if (_displayPic == null || _displayPic.getImageLoadStatus() != MediaTracker.COMPLETE)
+		if (_pic == null || _pic.getImageLoadStatus() != MediaTracker.COMPLETE)
 		{
 			return CardBoxUI.getDefaultDisplayPic();
 		}
-		return _displayPic;
+		return _pic;
+	}
+	
+	public boolean update(FriendEntry other)
+	{
+		boolean changed = false;
+		if (this.equals(other)) {
+			if (!_pic.equals(other.getDisplayPic())) {
+				_pic = other.getDisplayPic();
+				changed = true;
+			}
+			// Also potentially update game data
+		}
+		return changed;
 	}
 
 	@Override
@@ -59,4 +68,7 @@ public class FriendEntry
 		return false;
 	}
 	
+	protected CardBoxName _name = null;
+	protected ImageIcon _pic = null;
+	// Also encapsulate game/table data if any
 }
