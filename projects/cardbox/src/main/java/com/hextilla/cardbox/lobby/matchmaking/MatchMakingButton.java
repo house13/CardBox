@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import javax.swing.Timer;
 import com.hextilla.cardbox.client.HextillaButton;
 
+@SuppressWarnings("serial")
 public class MatchMakingButton extends HextillaButton {
 	
 	public MatchMakingButton(String text, MatchMaker matchMaker)
