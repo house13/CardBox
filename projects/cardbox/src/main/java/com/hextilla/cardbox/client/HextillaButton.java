@@ -22,18 +22,6 @@ public class HextillaButton extends JButton implements MouseListener {
 	}
 
 	public void paint(Graphics g) {
-		Graphics2D g2d = (Graphics2D)g;
-
-        // Enable antialiasing for shapes
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                             RenderingHints.VALUE_ANTIALIAS_ON);
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
-        					 RenderingHints.VALUE_ANTIALIAS_ON);
-
-        // Enable antialiasing for text
-        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                             RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        
 		g.setColor(Color.DARK_GRAY);
 		g.fillRoundRect(0, 0, this.getWidth()-1, this.getHeight()-1, 16, 16);
 
