@@ -28,7 +28,8 @@ import com.hextilla.cardbox.util.CardBoxContext;
 import com.threerings.crowd.client.PlaceView;
 import com.threerings.crowd.data.PlaceObject;
 
-public class HextillaLobbyPanel extends JPanel implements PlaceView {
+public class HextillaLobbyPanel extends JPanel implements PlaceView 
+{
 	
 	public HextillaLobbyPanel (CardBoxContext ctx, LobbyConfig config)
 	{
@@ -42,7 +43,11 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView {
         // stranger/matchmaking games and AI games (how we display info/panels)
         CardBoxGameConfig friendlyConfig = new CardBoxGameConfig(config.getGameId(), gamedef, "friendly");
         CardBoxGameConfig strangerConfig = new CardBoxGameConfig(config.getGameId(), gamedef, "stranger");
-        CardBoxGameConfig aiConfig = new CardBoxGameConfig(config.getGameId(), gamedef, "ai");                   
+        CardBoxGameConfig aiConfig = new CardBoxGameConfig(config.getGameId(), gamedef, "ai");    
+        
+        // We need to know whether we're running in development mode
+        // If so, then don't bother initializing our social services
+        _devmode = (config.getGameId() == -1);
         
         // Add the friendPanel (same size as button panel)
         _friendList = new FriendListPanel(ctx, friendlyConfig);
@@ -173,9 +178,9 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView {
 	
 	public void init(PlaceObject place) {
 		willEnterPlace(place);
+		_friendList.willEnterPlace(place);
 		_friendChat.willEnterPlace(place);
 		_globalChat.willEnterPlace(place);
-		_friendList.willEnterPlace(place);
 	}
 	
 	// Entering and leaving the Hextilla panel
@@ -190,8 +195,6 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView {
 		_matchMaker.leavePlace(place);
 	}		
 	
-	protected FriendListPanel _friendList;
-	
 	/** ChatPanel objects **/
 	protected ChatPanel _friendChat;
 	protected ChatPanel _globalChat;
@@ -201,6 +204,9 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView {
     
     /** Our lobby distributed object. */
     protected LobbyObject _lobj;
+    
+    /** The Almighty Friend List */
+    protected FriendListPanel _friendList;
         
 	// The underlying matchmaking class
 	public static MatchMaker _matchMaker;    
@@ -224,6 +230,9 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView {
 	// Animates the "..." in searching
 	protected Timer elipseTimer;
 	protected int elipses = 0; 
+	
+	// Whether we're running in development mode (i.e. gameId = -1)
+	protected boolean _devmode = false;
 
     // Button sizes
     protected static Dimension BUTTON_MAX_SIZE = new Dimension(400, 100);

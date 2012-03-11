@@ -38,7 +38,7 @@
 	<div id="header-container">
 		<div class="container">
 			<header class="sixteen columns">
-				<h1 class="remove-bottom four columns alpha" id="site-title"><a href="#"><img src="/images/logo.png" alt="Hextilla" title="Hextilla"></a></h1>
+				<h1 class="remove-bottom four columns alpha" id="site-title"><a href="/"><img src="/images/logo.png" alt="Hextilla" title="Hextilla"></a></h1>
 				<nav class="twelve columns omega">
 					<ul>
 						#if ($page && $page == "play")

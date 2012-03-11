@@ -71,6 +71,11 @@ public abstract class CardBoxContext implements ParlorContext
     public abstract KeyDispatcher getKeyDispatcher ();
 
     /**
+     * Returns whether our social services are active.
+     */
+    public abstract boolean isFacebookEnabled();
+    
+    /**
      * Returns the resource manager which is used to load media resources.
      */
     public ResourceManager getResourceManager ()
