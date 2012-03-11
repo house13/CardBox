@@ -104,18 +104,9 @@ public class CardBoxApplet extends ManagedJApplet
         _client.setSession(session_id);
 
         // and our game id and game oid
-        carddtr.setGameId(game_id, getIntParameter("game_oid", -1));
+        carddtr.setGameId(game_id, getIntParameter("game_oid", -1));  
         
-        // We'll ask the width and height by this 
-        dim = getSize(); 
-        setBackground(Color.black); 
-        // Create an offscreen image to draw on 
-        // Make it the size of the applet, this is just perfect larger 
-        // size could slow it down unnecessary. 
-        offscreen = createImage(dim.width,dim.height); 
-        // by doing this everything that is drawn by bufferGraphics 
-        // will be written on the offscreen image. 
-        bufferGraphics = offscreen.getGraphics();
+        setBackground(Color.black);         
     }
 
     @Override // from Applet
@@ -123,6 +114,16 @@ public class CardBoxApplet extends ManagedJApplet
     {
         super.start();
         _framemgr.start();
+        
+        // We'll ask the width and height by this 
+        dim = getSize(); 
+        // Create an offscreen image to draw on 
+        // Make it the size of the applet, this is just perfect larger 
+        // size could slow it down unnecessary. 
+        offscreen = createImage(dim.width,dim.height); 
+        // by doing this everything that is drawn by bufferGraphics 
+        // will be written on the offscreen image. 
+        bufferGraphics = offscreen.getGraphics();        
     }
 
     @Override // from Applet
