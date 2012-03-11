@@ -39,11 +39,11 @@ import static com.hextilla.cardbox.Log.log;
 public class CardBoxUI
 {
     /** The fancy cursive font we use to display game names. */
-	public static Font TitleFont;
-    public static Font HextillaFontLarge;
-    public static Font HextillaFontMedium;
-    public static Font HextillaFontSmall;
-    public static Font HextillaFont;
+	public static Font HextillaFont;
+    public static Font AppFontLarge;
+    public static Font AppFontMedium;
+    public static Font AppFontSmall;
+    public static Font AppFont;
     
     /** The nice blue background we use for scrolly bits. */
     public static final Color LIGHT_BLUE = new Color(0xC8E1E9);
@@ -81,25 +81,25 @@ public class CardBoxUI
         try {
             InputStream in =
                 CardBoxUI.class.getClassLoader().getResourceAsStream("rsrc/media/jargon.ttf");
-            HextillaFont = Font.createFont(Font.TRUETYPE_FONT, in);
+            AppFont = Font.createFont(Font.TRUETYPE_FONT, in);
             in.close();
+        } catch (Exception e) {
+            log.warning("Failed to load custom font, falling back to default.", e);
+            AppFont = BORING_DEFAULT;
+        }
+        AppFontLarge = AppFont.deriveFont(Font.PLAIN, 52);
+        AppFontMedium = AppFont.deriveFont(Font.PLAIN, 30);
+        AppFontSmall = AppFont.deriveFont(Font.PLAIN, 20);
+        try {
+        	InputStream in =
+                    CardBoxUI.class.getClassLoader().getResourceAsStream("rsrc/media/League Gothic.ttf");
+                HextillaFont = Font.createFont(Font.TRUETYPE_FONT, in);
+                in.close();  
         } catch (Exception e) {
             log.warning("Failed to load custom font, falling back to default.", e);
             HextillaFont = BORING_DEFAULT;
         }
-        HextillaFontLarge = HextillaFont.deriveFont(Font.PLAIN, 52);
-        HextillaFontMedium = HextillaFont.deriveFont(Font.PLAIN, 30);
-        HextillaFontSmall = HextillaFont.deriveFont(Font.PLAIN, 20);
-        try {
-        	InputStream in =
-                    CardBoxUI.class.getClassLoader().getResourceAsStream("rsrc/media/League Gothic.ttf");
-                TitleFont = Font.createFont(Font.TRUETYPE_FONT, in);
-                in.close();  
-        } catch (Exception e) {
-            log.warning("Failed to load custom font, falling back to default.", e);
-            TitleFont = BORING_DEFAULT;
-        }
-        TitleFont = TitleFont.deriveFont(Font.PLAIN, 52);
+        HextillaFont = HextillaFont.deriveFont(Font.PLAIN, 52);
     }
     
     protected static CardBoxContext _ctx;

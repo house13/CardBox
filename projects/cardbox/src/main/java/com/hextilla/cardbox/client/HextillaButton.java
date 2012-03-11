@@ -3,6 +3,7 @@ package com.hextilla.cardbox.client;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -20,11 +21,7 @@ public class HextillaButton extends JButton implements MouseListener {
 	}
 
 	public void paint(Graphics g) {
-		//if (m_mouseInside) {
-			g.setColor(Color.DARK_GRAY);
-		//} else {
-		//	g.setColor(new Color(145, 185, 215));
-		//}
+		g.setColor(Color.DARK_GRAY);
 		g.fillRoundRect(0, 0, this.getWidth()-1, this.getHeight()-1, 16, 16);
 
 		if (m_mouseInside) {

@@ -448,7 +448,7 @@ public class CardBoxClient
 
 			if (value instanceof Font)
 			{
-				UIManager.getDefaults().put(key.toString(), CardBoxUI.HextillaFontSmall);
+				UIManager.getDefaults().put(key.toString(), CardBoxUI.AppFontSmall);
 			}
 			
 		}
