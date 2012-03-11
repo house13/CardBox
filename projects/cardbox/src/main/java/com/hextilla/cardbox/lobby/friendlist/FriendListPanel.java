@@ -115,6 +115,12 @@ public class FriendListPanel extends JPanel
 	}
 	
 	@Override
+	public void imageUpdated(CardBoxName name) 
+	{
+		_listModel.updateElement(new FriendEntry(name, _friends.getImage(name.getFacebookId())));
+	}
+	
+	@Override
 	public void occupantEntered(OccupantInfo info)
 	{
 		addFriend(info);

@@ -34,6 +34,9 @@ public class SocialDirector extends BasicDirector
 		
 		/** Need to provide a means for iterating over our list of online friends */
 		public FriendIterator getOnlineFriendIterator();
+		
+		/** Need to provide a means to update the view when a user's display pic changes. */
+		public void imageUpdated(CardBoxName friend);
 	}
 
 	public SocialDirector (CardBoxContext ctx) {
@@ -91,6 +94,13 @@ public class SocialDirector extends BasicDirector
 	public FriendIterator getOnlineFriendIterator()
 	{
 		return (_tracker == null) ? null : _tracker.getOnlineFriendIterator();
+	}
+	
+	/** Delegate responsibility to the FriendTracker, if available */
+	public void imageUpdated(CardBoxName friend)
+	{
+		if (_tracker != null)
+			_tracker.imageUpdated(friend);
 	}
 	
 
