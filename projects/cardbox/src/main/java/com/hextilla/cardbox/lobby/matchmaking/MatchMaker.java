@@ -32,10 +32,11 @@ public class MatchMaker implements TableObserver, SeatednessObserver
 		CANCELED	// Match was cancelled (you or someone else did not accept)
 	}
 
-	public MatchMaker(CardBoxContext ctx, CardBoxGameConfig config) {
+	public MatchMaker(CardBoxContext ctx, CardBoxGameConfig config, TableFilter filter) {
 		listeners = new Vector<MatchListener>();
         _config = config;
         _ctx = ctx;
+        _filter = filter;
         
         // Initiate Lists
         _openList = new Vector<Table>();
@@ -113,6 +114,10 @@ public class MatchMaker implements TableObserver, SeatednessObserver
 
 	// Table added to table manager
 	public void tableAdded(Table table) {
+		if (!_filter.filter(table)) return;
+		
+		//TODO Add listener for updates here (for friend list stuff)		
+		
 		log.info("Table added: " + table.tableId);
 		if (table.inPlay()){
 			_playList.add(table);
@@ -122,7 +127,7 @@ public class MatchMaker implements TableObserver, SeatednessObserver
 	}
 
 	// Clean up references to tables when one is removed
-	public void tableRemoved(int id) {
+	public void tableRemoved(int id) {			
 		log.info("Table removed: " + id);
 		// Search inplay list
 	    for (Table table : _playList) {
@@ -143,6 +148,10 @@ public class MatchMaker implements TableObserver, SeatednessObserver
 
 	// Update tables
 	public void tableUpdated(Table updatedTable) {
+		if (!_filter.filter(updatedTable)) return;
+		
+		//TODO Add listener for updates here (for friend list stuff)
+		
 		log.info("Table updated: " + updatedTable.tableId);
 		// Search inplay list
 	    for (Table table : _playList) {
@@ -159,7 +168,7 @@ public class MatchMaker implements TableObserver, SeatednessObserver
 	    		// Move the table to the other list if the game is transitioning to in play
 	    		if (table.gameOid != -1){     
 	    			log.info("Possible match found...");
-	                // Move table to playin tables
+	                // Move table to playing tables
 	                _openList.remove(table);
 	                _playList.add(updatedTable);
 	                
@@ -208,7 +217,12 @@ public class MatchMaker implements TableObserver, SeatednessObserver
     protected List<Table> _playList;
     
     /** The list of tables with open spaces */
-    protected List<Table> _openList;  
+    protected List<Table> _openList;
+    
+    /** Filter which filters out tables from updates, such as no friend tables
+     * or stranger only tables
+     */
+    protected TableFilter _filter;
     
     /** The interface used to configure a table before creating it. */
     protected GameConfigurator _figger;    
