@@ -6,6 +6,7 @@ import javax.swing.Timer;
 import com.hextilla.cardbox.client.HextillaButton;
 import com.hextilla.cardbox.lobby.matchmaking.MatchMaker.MatchStatus;
 
+@SuppressWarnings("serial")
 public class MatchMakingButton extends HextillaButton {
 	public enum State {
 		MATCHING,	// MatchMaker is running

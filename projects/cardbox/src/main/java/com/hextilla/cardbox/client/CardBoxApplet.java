@@ -58,6 +58,9 @@ public class CardBoxApplet extends ManagedJApplet
     {
         super.init();
 
+        System.setProperty("awt.useSystemAAFontSettings","on");
+        System.setProperty("swing.aatext", "true");
+        
         log.info("Java: " + System.getProperty("java.version") +
             ", " + System.getProperty("java.vendor") + ")");
 
@@ -160,10 +163,10 @@ public class CardBoxApplet extends ManagedJApplet
     }
 
     public void paint(Graphics g)  
-    { 
-         bufferGraphics.clearRect(0,0,dim.width,dim.width); 
-         super.paintAll(bufferGraphics); 
-         g.drawImage(offscreen,0,0,this); 
+    {    
+    	bufferGraphics.clearRect(0,0,dim.width,dim.width); 
+        super.paintAll(bufferGraphics); 
+        g.drawImage(offscreen,0,0,this); 
     }
 
     // Always required for good double-buffering. 
