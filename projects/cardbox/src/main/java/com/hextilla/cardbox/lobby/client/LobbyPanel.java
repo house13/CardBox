@@ -19,14 +19,13 @@
 
 package com.hextilla.cardbox.lobby.client;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Graphics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Insets;
 import java.io.InputStream;
 
 import javax.imageio.ImageIO;
@@ -51,15 +50,9 @@ import com.threerings.util.MessageBundle;
 
 import com.threerings.crowd.client.PlaceView;
 import com.threerings.crowd.data.PlaceObject;
-
-import com.hextilla.cardbox.client.OccupantList;
-import com.hextilla.cardbox.client.CardBoxUI;
-import com.hextilla.cardbox.client.chat.ChatPanel;
-import com.hextilla.cardbox.data.GameDefinition;
-import com.hextilla.cardbox.data.TableMatchConfig;
-import com.hextilla.cardbox.data.CardBoxGameConfig;
 import com.hextilla.cardbox.util.CardBoxContext;
 
+import com.hextilla.cardbox.client.CardBoxUI;
 import com.hextilla.cardbox.lobby.data.LobbyCodes;
 import com.hextilla.cardbox.lobby.data.LobbyConfig;
 import com.hextilla.cardbox.lobby.data.LobbyObject;
@@ -85,28 +78,17 @@ public class LobbyPanel extends JPanel
         // we want a five pixel border around everything
     	setBorder(BorderFactory.createEmptyBorder(5, 10, 10, 10));
 
-    	// Gridbag layout lets us do some wise shit
-    	setLayout(new GridBagLayout());
-    	GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.BOTH;
-        c.insets = new Insets(5, 5, 5, 5);        
+    	// GroupLayout ftw
+    	setLayout(new BorderLayout());   
     	
     	// Add the page title
         _title = new MultiLineLabel("", MultiLineLabel.CENTER);
         _title.setFont(CardBoxUI.HextillaFont);
-        c.weightx = 1.0;
-        c.weighty = 1.5;
-        c.gridwidth = GridBagConstraints.REMAINDER;
-        c.gridheight = 1;
-        add(_title, c);
+        add(_title, BorderLayout.NORTH);
         
         // Main Panel, populated based on the games download progress
         _main = new JPanel(new GridLayout(1,1));
-        c.weightx = 1.0;
-        c.weighty = 10.0;
-        c.gridwidth = GridBagConstraints.REMAINDER; 
-        c.gridheight = 10;      
-        add(_main, c);        
+        add(_main, BorderLayout.CENTER);
 
         // load up our background image
         try {

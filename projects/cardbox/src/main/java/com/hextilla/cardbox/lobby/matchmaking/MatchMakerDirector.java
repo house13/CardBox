@@ -17,7 +17,7 @@ import com.threerings.parlor.data.TableLobbyObject;
 
 // Sits between the table director and the matchmaking views, passes information
 // to all matchmakers who are listening.
-public class MatchMakerDirector  implements TableObserver, SeatednessObserver{
+public class MatchMakerDirector implements TableObserver, SeatednessObserver{
 
 	public MatchMakerDirector(CardBoxContext ctx) {
 		observers = new Vector<MatchMaker>();
