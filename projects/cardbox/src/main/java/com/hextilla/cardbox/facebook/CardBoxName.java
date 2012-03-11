@@ -63,24 +63,6 @@ public class CardBoxName extends Name
 	{
 	    return getStrangerName().toString();
 	}
-	
-	// from interface Comparable<Name>
-    public int compareTo (CardBoxName other)
-    {
-        Integer override = overrideCompareTo(other);
-        if (override != null) {
-            return override;
-        } else if ((override = other.overrideCompareTo(this)) != null) {
-            return -override;
-        }
-        Class<?> c = getClass();
-        Class<?> oc = other.getClass();
-        if (c == oc || c.getName().equals(oc.getName())) {
-            return getNormal().compareTo(other.getNormal());
-        } else {
-            return c.getName().compareTo(oc.getName());
-        }
-    }
 
 	/**
 	 * An easily extensible method via which derived classes can add to {@link #toString}'s output.
