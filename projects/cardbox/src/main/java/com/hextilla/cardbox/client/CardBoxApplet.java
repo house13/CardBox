@@ -19,6 +19,12 @@
 
 package com.hextilla.cardbox.client;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
 import java.io.IOException;
 import java.net.URL;
 
@@ -32,13 +38,13 @@ import static com.hextilla.cardbox.Log.log;
 /**
  * Launches a CardBox game from an applet.
  */
+@SuppressWarnings("serial")
 public class CardBoxApplet extends ManagedJApplet
     implements CardBoxClient.Shell
 {
     // from interface CardBoxSession.Shell
     public void setTitle (String title)
     {
-        // TODO
     }
 
     // from interface CardBoxSession.Shell
@@ -99,6 +105,17 @@ public class CardBoxApplet extends ManagedJApplet
 
         // and our game id and game oid
         carddtr.setGameId(game_id, getIntParameter("game_oid", -1));
+        
+        // We'll ask the width and height by this 
+        dim = getSize(); 
+        setBackground(Color.black); 
+        // Create an offscreen image to draw on 
+        // Make it the size of the applet, this is just perfect larger 
+        // size could slow it down unnecessary. 
+        offscreen = createImage(dim.width,dim.height); 
+        // by doing this everything that is drawn by bufferGraphics 
+        // will be written on the offscreen image. 
+        bufferGraphics = offscreen.getGraphics();
     }
 
     @Override // from Applet
@@ -141,6 +158,32 @@ public class CardBoxApplet extends ManagedJApplet
         return new CardBoxClient();
     }
 
+    public void paint(Graphics g)  
+    { 
+         bufferGraphics.clearRect(0,0,dim.width,dim.width); 
+         super.paintAll(bufferGraphics); 
+         g.drawImage(offscreen,0,0,this); 
+    }
+
+    // Always required for good double-buffering. 
+    // This will cause the applet not to first wipe off 
+    // previous drawings but to immediately repaint. 
+    // the wiping off also causes flickering. 
+    // Update is called automatically when repaint() is called.
+
+    public void update(Graphics g) 
+    { 
+         paint(g); 
+    } 
+    
     protected CardBoxClient _client;
     protected FrameManager _framemgr;
+    
+    Graphics bufferGraphics; 
+    // The image that will contain everything that has been drawn on 
+    // bufferGraphics. 
+    Image offscreen; 
+    // To get the width and height of the applet. 
+    Dimension dim; 
+    int curX, curY;
 }
