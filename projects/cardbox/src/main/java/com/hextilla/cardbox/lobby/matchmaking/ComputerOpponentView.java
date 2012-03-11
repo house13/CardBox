@@ -54,11 +54,6 @@ public class ComputerOpponentView extends JPanel
 	        _tdtr.addSeatednessObserver(this);
 	        
 	        _playButton = new HextillaButton(SOLOPLAY_BUTTON_TEXT);
-	        _playButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent evt) {
-					startAIMatch(_difficultyLevel);
-				}
-			}); 
 	        
 	        // Different AI radio buttons, set the difficulty level
 	        JRadioButton _randomButton = new JRadioButton("Easy", true);
@@ -147,7 +142,7 @@ public class ComputerOpponentView extends JPanel
 	    }
 
 	    // documentation inherited
-	    public void startAIMatch (int AISkill)
+	    public void startAIMatch ()
 	    {
 	        // the create table button was clicked. use the game config as configured by the
 	        // configurator to create a table
@@ -155,7 +150,7 @@ public class ComputerOpponentView extends JPanel
 	        
 	        //Add the AI player
 	        GameAI ai = new GameAI();
-	        ai.skill = AISkill;
+	        ai.skill = _difficultyLevel;
 	        ai.personality = 0;
 	        
 	        config.ais = new GameAI[1];
@@ -180,6 +175,11 @@ public class ComputerOpponentView extends JPanel
 	    protected TableItem getTableItem (int tableId)
 	    {
 	        return null;
+	    }
+	    
+	    public void addActionListener(ActionListener listener)
+	    {
+	    	_playButton.addActionListener(listener);
 	    }
 
 	    /** A reference to the client context. */
