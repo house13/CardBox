@@ -49,7 +49,8 @@ public class FriendChatPanel extends ChatPanel {
 	private boolean filter(UserMessage message, boolean alreadyShown) 
 	{
 		// If the speaker is in the friend list then display it normally
-		if (_friendSet != null && _friendSet.isFriend(((CardBoxName)message.speaker).getFacebookId()))
+		if ((message.speaker.equals(_ctx.getClient().getClientObject().username)) || 
+				(_friendSet != null && _friendSet.isFriend(((CardBoxName)message.speaker).getFacebookId())))
 		{
 			return super.displayMessage(message, alreadyShown);
 		}

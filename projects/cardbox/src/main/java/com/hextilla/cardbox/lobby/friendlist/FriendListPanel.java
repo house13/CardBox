@@ -21,6 +21,8 @@ import com.hextilla.cardbox.client.CardBoxUI;
 import com.hextilla.cardbox.data.CardBoxGameConfig;
 import com.hextilla.cardbox.facebook.CardBoxName;
 import com.hextilla.cardbox.facebook.client.FriendSet;
+import com.hextilla.cardbox.facebook.client.SocialDirector;
+import com.hextilla.cardbox.facebook.client.SocialDirector.FriendIterator;
 import com.hextilla.cardbox.util.CardBoxContext;
 import com.samskivert.swing.util.SwingUtil;
 import com.threerings.crowd.client.OccupantObserver;
@@ -32,12 +34,8 @@ import static com.hextilla.cardbox.Log.log;
 
 // Class to show the list of Facebook friends
 public class FriendListPanel extends JPanel 
-	implements PlaceView, OccupantObserver
+	implements PlaceView, OccupantObserver, SocialDirector.FriendTracker
 {
-	// Main panel containing the list of friends
-	JList _friendList;
-	FriendListModel _listModel;
-	
 	// TODO: reference to this "friend" object taken in constructor
 	public FriendListPanel (CardBoxContext ctx, CardBoxGameConfig config)
 	{
@@ -69,6 +67,7 @@ public class FriendListPanel extends JPanel
 		
 		_friends = _ctx.getSocialDirector().getFriends();
 		_ctx.getOccupantDirector().addOccupantObserver(this);
+		_ctx.getSocialDirector().setFriendTracker(this);
 	}
 	
 	public void addFriend(OccupantInfo info)
@@ -103,6 +102,18 @@ public class FriendListPanel extends JPanel
 		_listModel.removeElement(new FriendEntry(name));
 	}
 
+	@Override
+	public boolean isOnlineFriend(CardBoxName friend)
+	{
+		return _listModel.contains(new FriendEntry(friend));
+	}
+
+	@Override
+	public FriendIterator getOnlineFriendIterator()
+	{
+		return new FriendListIterator(_listModel.iterator());
+	}
+	
 	@Override
 	public void occupantEntered(OccupantInfo info)
 	{
@@ -155,6 +166,12 @@ public class FriendListPanel extends JPanel
 	/** Giver of life and services. */
 	protected CardBoxContext _ctx;
 	
-	/** List of friend data from Facebook */
+	/** The sorted model that represents our list. */
+	protected FriendListModel _listModel;
+	
+	/** JComponent representation of the friend list */
+	protected JList _friendList;
+	
+	/** Set of raw friend data from Facebook */
 	protected FriendSet _friends;
 }

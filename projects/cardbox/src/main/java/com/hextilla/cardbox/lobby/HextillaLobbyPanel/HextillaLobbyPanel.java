@@ -25,6 +25,9 @@ import com.hextilla.cardbox.lobby.friendlist.FriendListPanel;
 import com.hextilla.cardbox.lobby.matchmaking.ComputerOpponentView;
 import com.hextilla.cardbox.lobby.matchmaking.MatchListener;
 import com.hextilla.cardbox.lobby.matchmaking.MatchMaker;
+import com.hextilla.cardbox.lobby.matchmaking.MatchMakingButton;
+import com.hextilla.cardbox.lobby.matchmaking.StrangerTableFilter;
+import com.hextilla.cardbox.lobby.matchmaking.FriendTableFilter;
 import com.hextilla.cardbox.util.CardBoxContext;
 import com.threerings.crowd.client.PlaceView;
 import com.threerings.crowd.data.PlaceObject;
@@ -60,64 +63,53 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
         _globalChat = new ChatPanel(ctx, true);             
         chatPane.addTab("All", null, _globalChat, "Global Chat");
         chatPane.addTab("Friends", null, _friendChat, "Friend Only Chat");                       			
-        
-        // Class which handles match making, uses stranger config (matchmaking is against randoms)
-		_matchMaker = new MatchMaker(ctx, strangerConfig);              
-        
+             
         // SoloPlay   	
-        _soloPlay = new ComputerOpponentView(_ctx, aiConfig);      
+        _soloPlay = new ComputerOpponentView(_ctx, aiConfig);
         
-        // FriendPlay    
-		_friendPlay = new HextillaButton(FRIENDPLAY_BUTTON_TEXT);
-        
-		// Action listener to update _strangerPlay button elipses while searching for matches
-		ActionListener elipseUpdater = new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				_strangerPlay.setText(SEARCHING_TEXT[elipses]);				
-				if (elipses == 3) {
-					elipses = 0;
-				}
-				else
-				{
-					++elipses;
-				}
-			}
-		};		
-		elipseTimer = new Timer(1000, elipseUpdater);
-		
-		// Add a listener for successful matches
-		MatchListener matchFound = new MatchListener() {
-			public void update(MatchMaker.MatchStatus status) {
-				switch (status) {
-				case AVAILABLE:
-					elipses = 0;
-					elipseTimer.stop();				
-					break;
-				case CANCELED:
-					break;
-				default:
-					break;
-				}
-			}
-		};	
-		_matchMaker.AddMatchListener(matchFound);			
+        // Classes to handle match making
+		_strangerMatchMaker = new MatchMaker(ctx, strangerConfig, new StrangerTableFilter());
+		_friendlyMatchMaker = new MatchMaker(ctx, friendlyConfig, new FriendTableFilter(ctx, _ctx.getSocialDirector().getFriends()));		         
 		       
-		// Stranger Play button, engages matchmaker	
-		_strangerPlay = new HextillaButton(MATCHMAKING_BUTTON_TEXT);
+		// Stranger Play button
+		_strangerPlay = new MatchMakingButton(STRANGER_BUTTON_TEXT, _strangerMatchMaker);
 		_strangerPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				// Toggle text on the button
-				if (_strangerPlay.getText() == MATCHMAKING_BUTTON_TEXT){
-					elipseTimer.start();					
-					_matchMaker.startMatchMaking();   					
+				
+				// Start Matchmaking
+				if (_strangerPlay.getText() == STRANGER_BUTTON_TEXT){
+					// Stop friend matchmaking if it is in progress
+					if (_friendPlay.getText() != FRIENDPLAY_BUTTON_TEXT){
+						_friendPlay.stopMatchMaking();
+					}					
+					_strangerPlay.startMatchMaking();
+					
+				// Stop Matchmaking 
 				} else {
-					elipses = 0;
-					elipseTimer.stop();
-					_strangerPlay.setText(MATCHMAKING_BUTTON_TEXT);					
-					_matchMaker.stopMatchMaking();   					
+					_strangerPlay.stopMatchMaking();
 				}
 			}
-		});
+		});	
+		
+        // Friend Play button   
+		_friendPlay = new MatchMakingButton(FRIENDPLAY_BUTTON_TEXT, _friendlyMatchMaker);
+		_friendPlay.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				
+				// Start Matchmaking
+				if (_friendPlay.getText() == FRIENDPLAY_BUTTON_TEXT){
+					// Stop friend matchmaking if it is in progress
+					if (_strangerPlay.getText() != STRANGER_BUTTON_TEXT){
+						_strangerPlay.stopMatchMaking();
+					}					
+					_friendPlay.startMatchMaking();
+					
+				// Stop Matchmaking 
+				} else {
+					_friendPlay.stopMatchMaking();
+				}
+			}
+		});		
         
         // Create the page layout
 		// Set the max/min/preferred sizes
@@ -188,12 +180,14 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
 	public void willEnterPlace(PlaceObject place) {
 		_lobj = (LobbyObject)place;
 		_soloPlay.setPlace(place);
-		_matchMaker.setPlace(place);
+		_strangerMatchMaker.setPlace(place);
+		_friendlyMatchMaker.setPlace(place);
 	}
 
 	public void didLeavePlace(PlaceObject place) {
 		_soloPlay.leavePlace(place);
-		_matchMaker.leavePlace(place);
+		_strangerMatchMaker.leavePlace(place);
+		_friendlyMatchMaker.leavePlace(place);
 	}		
 	
 	/** ChatPanel objects **/
@@ -209,28 +203,18 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
     /** The Almighty Friend List */
     protected FriendListPanel _friendList;
         
-	// The underlying matchmaking class
-	public static MatchMaker _matchMaker;    
+	// Matchmaking classes
+	public static MatchMaker _strangerMatchMaker;
+	public static MatchMaker _friendlyMatchMaker;  	
     
     // Buttons
     protected ComputerOpponentView _soloPlay;
-    protected HextillaButton _friendPlay;
-    protected HextillaButton _strangerPlay;   
+    protected MatchMakingButton _friendPlay;
+    protected MatchMakingButton _strangerPlay;   
     	
     // Button text
-    protected static String MATCHMAKING_BUTTON_TEXT = "Play with a Stranger";
+    protected static String STRANGER_BUTTON_TEXT = "Play with a Stranger";
     protected static String FRIENDPLAY_BUTTON_TEXT = "Play with a Friend";
-    
-    // Searching text
-    protected static String[] SEARCHING_TEXT = {
-			"Searching",
-			"Searching.",
-			"Searching..",
-			"Searching..."};		    
-	
-	// Animates the "..." in searching
-	protected Timer elipseTimer;
-	protected int elipses = 0; 
 	
 	// Whether we're running in development mode (i.e. gameId = -1)
 	protected boolean _devmode = false;
