@@ -25,6 +25,14 @@ $(function() {
 	// Resize the applet on page launch
 	resize();
 
+    // Fade out errors and status messages
+    var timeoutMs = 5000;
+    if ($("#top")[0]) {
+        setTimeout(function() {
+            $("#top").fadeOut();
+        }, timeoutMs);
+    }
+
 	// Setup event handler for window resize to call resize() above
 	$(window).on("resize", function() {
 		resize();
