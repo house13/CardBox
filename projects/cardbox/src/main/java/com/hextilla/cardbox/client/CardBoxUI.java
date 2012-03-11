@@ -39,6 +39,7 @@ import static com.hextilla.cardbox.Log.log;
 public class CardBoxUI
 {
     /** The fancy cursive font we use to display game names. */
+	public static Font TitleFont;
     public static Font HextillaFontLarge;
     public static Font HextillaFontMedium;
     public static Font HextillaFontSmall;
@@ -79,7 +80,7 @@ public class CardBoxUI
         // try to load our fancy font
         try {
             InputStream in =
-                CardBoxUI.class.getClassLoader().getResourceAsStream("rsrc/media/League Gothic.ttf");
+                CardBoxUI.class.getClassLoader().getResourceAsStream("rsrc/media/jargon.ttf");
             HextillaFont = Font.createFont(Font.TRUETYPE_FONT, in);
             in.close();
         } catch (Exception e) {
@@ -89,6 +90,16 @@ public class CardBoxUI
         HextillaFontLarge = HextillaFont.deriveFont(Font.PLAIN, 52);
         HextillaFontMedium = HextillaFont.deriveFont(Font.PLAIN, 30);
         HextillaFontSmall = HextillaFont.deriveFont(Font.PLAIN, 20);
+        try {
+        	InputStream in =
+                    CardBoxUI.class.getClassLoader().getResourceAsStream("rsrc/media/League Gothic.ttf");
+                TitleFont = Font.createFont(Font.TRUETYPE_FONT, in);
+                in.close();  
+        } catch (Exception e) {
+            log.warning("Failed to load custom font, falling back to default.", e);
+            TitleFont = BORING_DEFAULT;
+        }
+        TitleFont = TitleFont.deriveFont(Font.PLAIN, 52);
     }
     
     protected static CardBoxContext _ctx;
