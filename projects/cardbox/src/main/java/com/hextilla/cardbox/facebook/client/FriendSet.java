@@ -25,6 +25,7 @@ public class FriendSet
 		  }
 	  }
 	}
+	
 	public FriendSet ()
 	{
 		_friends = new Hashtable<Long, UserWithPicture>();
@@ -52,11 +53,13 @@ public class FriendSet
 	}
 	
 	public ImageIcon getImage(long fbId){
-		if (_pictures.containsKey(new Long(fbId)))
+		Long friendId = new Long(fbId);
+		if (!_pictures.containsKey(new Long(fbId)))
 		{
-		  return _pictures.get(new Long(fbId));
+			ImageIcon pic = new ImageIcon(getFriend(friendId).getPicture());
+			_pictures.put(friendId, pic);
 		}
-		return null;
+		return _pictures.get(friendId);
 	}
 	
 	protected Hashtable<Long, UserWithPicture> _friends;
