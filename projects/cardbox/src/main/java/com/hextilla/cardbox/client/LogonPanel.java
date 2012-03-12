@@ -107,7 +107,7 @@ public class LogonPanel extends JPanel
         }
 
         // create a big fat label
-        MultiLineLabel title = new MultiLineLabel(tstr, MultiLineLabel.CENTER);
+        MultiLineLabel title = new MultiLineLabel(tstr.toUpperCase(), MultiLineLabel.CENTER);
         title.setFont(CardBoxUI.TitleFontLarge);
         box.add(title);
 

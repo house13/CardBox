@@ -19,6 +19,7 @@ import javax.swing.SwingConstants;
 import com.hextilla.cardbox.client.CardBoxButton;
 import com.hextilla.cardbox.data.CardBoxGameConfig;
 import com.hextilla.cardbox.data.TableMatchConfig;
+import com.hextilla.cardbox.lobby.data.LobbyCodes;
 import com.hextilla.cardbox.lobby.table.TableItem;
 import com.hextilla.cardbox.util.CardBoxContext;
 import com.threerings.crowd.data.PlaceObject;
@@ -28,6 +29,7 @@ import com.threerings.parlor.client.TableObserver;
 import com.threerings.parlor.data.Table;
 import com.threerings.parlor.data.TableConfig;
 import com.threerings.parlor.game.data.GameAI;
+import com.threerings.util.MessageBundle;
 
 public class ComputerOpponentView extends JPanel
 	    implements TableObserver, SeatednessObserver
@@ -46,6 +48,7 @@ public class ComputerOpponentView extends JPanel
 	        // keep track of these
 	        _config = config;
 	        _ctx = ctx;
+	        _msgs = _ctx.getMessageManager().getBundle(LobbyCodes.LOBBY_MSGS);
 
 	        // create our table director
 	        _tdtr = new TableDirector(ctx, "aiTableSet", this);
@@ -53,7 +56,7 @@ public class ComputerOpponentView extends JPanel
 	        // add ourselves as a seatedness observer
 	        _tdtr.addSeatednessObserver(this);
 	        
-	        _playButton = new CardBoxButton(SOLOPLAY_BUTTON_TEXT);
+	        _playButton = new CardBoxButton(_msgs.xlate("m.ai"));
 	        
 	        // Different AI radio buttons, set the difficulty level
 	        JRadioButton _randomButton = new JRadioButton("Easy", true);
@@ -184,6 +187,9 @@ public class ComputerOpponentView extends JPanel
 
 	    /** A reference to the client context. */
 	    protected CardBoxContext _ctx;
+	    
+	    /** Our translation messages. */
+	    protected MessageBundle _msgs;
 
 	    /** The configuration for the game that we're match-making. */
 	    protected CardBoxGameConfig _config;
