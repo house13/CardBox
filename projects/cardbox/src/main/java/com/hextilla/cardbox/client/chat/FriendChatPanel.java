@@ -34,6 +34,8 @@ public class FriendChatPanel extends ChatPanel {
 		
 		// All friends here!
         _nameTransformer = new FriendNameTransformer();
+        
+       _friends = _sdtr.getFriends();
 	}
 	
 	@Override public boolean displayMessage (ChatMessage message, boolean alreadyShown)
@@ -88,7 +90,7 @@ public class FriendChatPanel extends ChatPanel {
 	@Override public void occupantLeft (OccupantInfo info)
     {
 		// Only display information about friends		
-		if (_sdtr.isOnlineFriend((CardBoxName)info.username))
+		if (_friends.isFriend(((CardBoxName)info.username).getFacebookId()))
 		{
 			displayOccupantMessage("*** " + _nameTransformer.transform((CardBoxName)info.username) + " left.");
 		}
@@ -96,5 +98,7 @@ public class FriendChatPanel extends ChatPanel {
 	
 	// The set of friends to compare messages against
 	protected SocialDirector _sdtr;
-
+	
+	// Reference to the set of all friends, used for friends who just logged off (not in online friends set)
+	protected FriendSet _friends;
 }
