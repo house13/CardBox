@@ -11,17 +11,20 @@ import java.awt.event.MouseListener;
 import javax.swing.JButton;
 
 @SuppressWarnings("serial")
-public class HextillaButton extends JButton implements MouseListener {
+public class CardBoxButton extends JButton implements MouseListener {
 	
 	private boolean m_mouseInside = false;
 	private boolean m_pressed = false;
 	
-	public HextillaButton(String text) {
+	public CardBoxButton(String text) {
 		super(text);
 		addMouseListener(this);
 	}
 
 	public void paint(Graphics g) {
+		Graphics2D gfx = (Graphics2D)g;
+		gfx.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		
 		g.setColor(Color.DARK_GRAY);
 		g.fillRoundRect(0, 0, this.getWidth()-1, this.getHeight()-1, 16, 16);
 

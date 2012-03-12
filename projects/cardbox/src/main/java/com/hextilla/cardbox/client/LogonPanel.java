@@ -108,7 +108,7 @@ public class LogonPanel extends JPanel
 
         // create a big fat label
         MultiLineLabel title = new MultiLineLabel(tstr, MultiLineLabel.CENTER);
-        title.setFont(CardBoxUI.HextillaFont);
+        title.setFont(CardBoxUI.TitleFontLarge);
         box.add(title);
 
         // float the logon bits side-by-side inside the wider panel
@@ -138,7 +138,7 @@ public class LogonPanel extends JPanel
         }
 
         // create the logon button bar
-        _logon = new HextillaButton(_msgs.get("m.logon"));
+        _logon = new CardBoxButton(_msgs.get("m.logon"));
         _logon.setActionCommand("logon");
         _logon.addActionListener(this);
         hbox.add(_logon);

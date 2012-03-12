@@ -47,7 +47,7 @@ public class FriendListPanel extends JPanel
 		// Title the entry
 		JLabel friendTitle = new JLabel("Friends", JLabel.CENTER);
 		friendTitle.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-		friendTitle.setFont(new Font("Serif", Font.BOLD, 24));
+		friendTitle.setFont(CardBoxUI.AppFontLarge);
 		friendTitle.setForeground(Color.DARK_GRAY);
 		friendTitle.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 		add(friendTitle);
