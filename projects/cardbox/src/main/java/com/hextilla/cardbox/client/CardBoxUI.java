@@ -52,31 +52,47 @@ public class CardBoxUI
     public static final Color LIGHT_BLUE = new Color(0xC8E1E9);
     
     public static ImageIcon getDefaultDisplayPic(){
+    	
+    	return getImageIcon(defaultDisplayPic, DEFAULT_DISPLAY_PIC_PATH, 64, 64, 32, 32);
+    }
+    
+    public static ImageIcon getGlobalChatIcon(){
+    	
+    	return getImageIcon(globalChatPic, GLOBAL_CHAT_PIC_PATH, 32, 32, 16, 16);
+    }
+    
+    public static ImageIcon getFriendChatIcon(){
+    	
+    	return getImageIcon(friendChatPic, FRIEND_CHAT_PIC_PATH, 32, 32, 16, 16);
+    }    
+
+    private static ImageIcon getImageIcon(ImageIcon icon, String icon_path, 
+    		int width, int height, int scaleW, int scaleH) {
         
     	// Load the pic if it hasn't been loaded yet
-    	if (defaultDisplayPic == null){
+    	if (icon == null){
 	        // Try to load the default friend display picture
 	        BufferedImage image = null;  
 	        try {
 	        	// Load and scale the picture        	  
 	        	//defaultDisplayPic = new ImageIcon(CardBoxUI.class.getClassLoader().getResource(DEFAULT_DISPLAY_PIC_PATH));
-	        	image = ImageIO.read(CardBoxUI.class.getClassLoader().getResource(DEFAULT_DISPLAY_PIC_PATH));
+	        	image = ImageIO.read(CardBoxUI.class.getClassLoader().getResource(icon_path));
 	        } catch (Exception e) {
 	        	// Just use an empty image
 	        	log.info("Error: " + e.getMessage());
-	            log.info("Could not located default display picture, defaulting to a black sqare!");
-	        	image = new BufferedImage(64, 64, BufferedImage.TYPE_INT_RGB);
+	            log.info("Could not load " + DEFAULT_DISPLAY_PIC_PATH + ", defaulting to a black sqare!");
+	        	image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 	        }
 	        
 	        // Scale that image, smooooth style
-	        defaultDisplayPic = new ImageIcon(image.getScaledInstance(32, 32, Image.SCALE_SMOOTH));	        
+	        icon = new ImageIcon(image.getScaledInstance(scaleW, scaleH, Image.SCALE_SMOOTH));	        
     	}
     	
     	// Return the default pic
-        return defaultDisplayPic;
-    }
+        return icon;
+	}
 
-    public static void init (CardBoxContext ctx)
+	public static void init (CardBoxContext ctx)
     {
         _ctx = ctx;
 
@@ -113,7 +129,14 @@ public class CardBoxUI
     protected static final Font BORING_DEFAULT = new Font("Dialog", Font.PLAIN, 12);
     
     // The default image for use in the friend list (used if friend pic is not loaded/available)
-    protected static ImageIcon defaultDisplayPic = null;    
-    
+    protected static ImageIcon defaultDisplayPic = null;        
     protected static String DEFAULT_DISPLAY_PIC_PATH = "rsrc/media/displayPic.png";
+    
+    // The image/icon used for the friend Chat tab icon
+    protected static ImageIcon friendChatPic = null;        
+    protected static String FRIEND_CHAT_PIC_PATH = "rsrc/media/friendIcon.png";
+    
+    // The image/icon used for the global Chat tab icon
+    protected static ImageIcon globalChatPic = null;        
+    protected static String GLOBAL_CHAT_PIC_PATH = "rsrc/media/globalIcon.png";    
 }
