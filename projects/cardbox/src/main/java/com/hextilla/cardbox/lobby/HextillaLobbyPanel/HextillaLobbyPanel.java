@@ -18,6 +18,7 @@ import com.hextilla.cardbox.client.chat.FriendChatPanel;
 import com.hextilla.cardbox.client.chat.StrangerChatPanel;
 import com.hextilla.cardbox.data.CardBoxGameConfig;
 import com.hextilla.cardbox.data.GameDefinition;
+import com.hextilla.cardbox.lobby.data.LobbyCodes;
 import com.hextilla.cardbox.lobby.data.LobbyConfig;
 import com.hextilla.cardbox.lobby.data.LobbyObject;
 import com.hextilla.cardbox.lobby.friendlist.FriendListPanel;
@@ -33,6 +34,11 @@ import com.hextilla.cardbox.util.CardBoxContext;
 import com.threerings.crowd.client.PlaceView;
 import com.threerings.crowd.data.PlaceObject;
 
+import com.threerings.crowd.server.PlaceManager;
+import com.threerings.parlor.client.TableDirector;
+import com.threerings.util.MessageBundle;
+
+
 public class HextillaLobbyPanel extends JPanel implements PlaceView 
 {
 	
@@ -40,6 +46,7 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
 	{
         _ctx = ctx;
         _lobj = null;
+        _msgs = _ctx.getMessageManager().getBundle(LobbyCodes.LOBBY_MSGS);
         
         // Get the game definition from the lobby config
         GameDefinition gamedef = config.getGameDefinition();
@@ -74,7 +81,7 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
 				new FriendTableFilter(ctx, _ctx.getSocialDirector().getFriends()));		         
 		       
 		// Stranger Play button
-		_strangerPlay = new MatchMakingButton(STRANGER_BUTTON_TEXT, _strangerMatchMaker);
+		_strangerPlay = new MatchMakingButton(_msgs.xlate("m.stranger"), _strangerMatchMaker);
 		_strangerPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				// Stop the other match making if it is running
@@ -125,7 +132,7 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
 		});	
 		
         // Friend Play button   
-		_friendPlay = new MatchMakingButton(FRIENDPLAY_BUTTON_TEXT, _friendlyMatchMaker);
+		_friendPlay = new MatchMakingButton(_msgs.xlate("m.friend"), _friendlyMatchMaker);
 		_friendPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				
@@ -338,6 +345,9 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
 	
     /** Giver of life and services. */
     protected CardBoxContext _ctx;
+    
+    /** Our translation messages. */
+    protected MessageBundle _msgs;
     
     /** Our lobby distributed object. */
     protected LobbyObject _lobj;

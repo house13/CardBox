@@ -90,7 +90,7 @@ public class LobbyPanel extends JPanel
         // Loading bar for download progress
         _progressBar = new JProgressBar(0, 100);
         _progressBar.setValue(0);
-        _progressBar.setStringPainted(true);        
+        _progressBar.setStringPainted(true);
         
         // Main Panel, populated based on the games download progress
         _main = new JPanel(new GridLayout(1,1));
@@ -144,15 +144,15 @@ public class LobbyPanel extends JPanel
                 ((JPanel)comp).setOpaque(false);
             } else if (comp instanceof JCheckBox) {
                 ((JCheckBox)comp).setOpaque(false);
-                comp.setForeground(Color.white);
+                comp.setForeground(Color.black);
             } else if (comp instanceof JSlider) {
                 ((JSlider)comp).setOpaque(false);
-                comp.setForeground(Color.white);
+                comp.setForeground(Color.black);
             } else if (comp instanceof JScrollPane) {
                 ((JScrollPane)comp).getViewport().setBackground(
                     CardBoxUI.LIGHT_BLUE);
             } else if (comp instanceof JLabel) {
-                comp.setForeground(Color.white);
+                comp.setForeground(Color.black);
             } else if (comp instanceof JList ||
                        comp instanceof JComboBox) {
                 comp.setBackground(CardBoxUI.LIGHT_BLUE);
