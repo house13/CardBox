@@ -85,12 +85,12 @@ public class ChatPanel extends JPanel
     /** The message bundle identifier for chat translations. */
     public static final String CHAT_MSGS = "client.chat";
 
-    public ChatPanel (CardBoxContext ctx)
+    public ChatPanel (CardBoxContext ctx, ChatDirector chatdtr)
     {
-        this(ctx, false);
+        this(ctx, chatdtr, false);        
     }
 
-    public ChatPanel (CardBoxContext ctx, boolean horizontal)
+    public ChatPanel (CardBoxContext ctx, ChatDirector chatdtr, boolean horizontal)
     {
         // keep this around for later
         _ctx = ctx;
@@ -99,7 +99,7 @@ public class ChatPanel extends JPanel
         _nameTransformer = new defaultNameTransformer();
 
         // create our chat director and register ourselves with it
-        _chatdtr = ctx.getChatDirector();
+        _chatdtr = chatdtr;
         _chatdtr.addChatDisplay(this);
 
         // register as an occupant observer
@@ -299,6 +299,7 @@ public class ChatPanel extends JPanel
             if (msg.localtype == ChatCodes.USER_CHAT_TYPE) {
                 type = "m.chat_prefix_tell";
             }
+
             if (msg.mode == ChatCodes.BROADCAST_MODE) {
                 msgStyle = _noticeStyle;
             }

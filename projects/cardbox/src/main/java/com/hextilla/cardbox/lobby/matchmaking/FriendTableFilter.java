@@ -14,8 +14,8 @@ public class FriendTableFilter implements TableFilter {
 	public FriendTableFilter(CardBoxContext ctx, FriendSet friends)
 	{
 		super();
-		_friends = friends;
-		_userID = ((CardBoxName)ctx.getClient().getClientObject().username).getFacebookId();
+		_ctx = ctx;
+		_clientName = ((CardBoxName)ctx.getClient().getClientObject().username);
 	}
 	
 	@Override
@@ -25,8 +25,9 @@ public class FriendTableFilter implements TableFilter {
 			if (((CardBoxGameConfig)table.config).getGameMode().equals("friendly"))
 			{
 				if (table.getPlayers().length > 0){
-					long id = ((CardBoxName)table.getPlayers()[0]).getFacebookId();
-					if (id == _userID || _friends.isFriend(id)) 
+					CardBoxName currentPlayer = ((CardBoxName)table.getPlayers()[0]);
+					if (currentPlayer.equals(_clientName) || 
+							_ctx.getSocialDirector().isOnlineFriend(currentPlayer)) 
 					{
 						// Friend made the game						
 						return true;
@@ -35,12 +36,10 @@ public class FriendTableFilter implements TableFilter {
 					{
 						// See if our friend is joined an existing game with
 						// one of their friends
-						id = ((CardBoxName)table.getPlayers()[1]).getFacebookId();
-						return (id == _userID || _friends.isFriend(id));
-						
+						currentPlayer = (CardBoxName) table.getPlayers()[1];
+						return (currentPlayer.equals(_clientName) || 
+								_ctx.getSocialDirector().isOnlineFriend(currentPlayer));						
 					}
-					// Neither of the players are our friend :(
-					return false;
 				}
 			}
 		}
@@ -48,9 +47,9 @@ public class FriendTableFilter implements TableFilter {
 		return false;
 	}
 	
-	// The user's set of friends
-	protected FriendSet _friends;
+	// The CardBoxContext
+	protected CardBoxContext _ctx;
 	
 	// The current users face book id
-	long _userID;
+	CardBoxName _clientName;
 }

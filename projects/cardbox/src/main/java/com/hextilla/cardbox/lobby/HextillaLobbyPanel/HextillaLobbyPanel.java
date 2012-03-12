@@ -9,14 +9,12 @@ import java.awt.event.ActionListener;
 
 import javax.swing.GroupLayout;
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.Timer;
 
-import com.hextilla.cardbox.client.CardBoxButton;
 import com.hextilla.cardbox.client.chat.ChatPanel;
 import com.hextilla.cardbox.client.chat.FriendChatPanel;
+import com.hextilla.cardbox.client.chat.StrangerChatPanel;
 import com.hextilla.cardbox.data.CardBoxGameConfig;
 import com.hextilla.cardbox.data.GameDefinition;
 import com.hextilla.cardbox.lobby.data.LobbyConfig;
@@ -33,8 +31,6 @@ import com.hextilla.cardbox.lobby.matchmaking.MatchMaker.MatchStatus;
 import com.hextilla.cardbox.util.CardBoxContext;
 import com.threerings.crowd.client.PlaceView;
 import com.threerings.crowd.data.PlaceObject;
-import com.threerings.crowd.server.PlaceManager;
-import com.threerings.parlor.client.TableDirector;
 
 public class HextillaLobbyPanel extends JPanel implements PlaceView 
 {
@@ -62,9 +58,9 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
         _friendList.setBorder(BorderFactory.createLineBorder(Color.BLACK));     
         
         // Setup he chat panel, use a tabbed pane
-        JTabbedPane chatPane = new JTabbedPane();
-        _friendChat = new FriendChatPanel(ctx, true, _ctx.getSocialDirector().getFriends());      
-        _globalChat = new ChatPanel(ctx, true);             
+        JTabbedPane chatPane = new JTabbedPane(JTabbedPane.LEFT);
+        _friendChat = new FriendChatPanel(ctx, ctx.getChatDirector(), true);      
+        _globalChat = new StrangerChatPanel(ctx, ctx.getFriendChatDirector(), true);             
         chatPane.addTab("All", null, _globalChat, "Global Chat");
         chatPane.addTab("Friends", null, _friendChat, "Friend Only Chat");                       			             
         
@@ -261,7 +257,11 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
         
         _globalChat.setMaximumSize(CHAT_MAX_SIZE);
         _globalChat.setPreferredSize(CHAT_MAX_SIZE);
-        _globalChat.setMinimumSize(CHAT_MIN_SIZE);        
+        _globalChat.setMinimumSize(CHAT_MIN_SIZE);    
+        
+        chatPane.setMaximumSize(CHAT_MAX_SIZE);
+        chatPane.setPreferredSize(CHAT_MAX_SIZE);
+        chatPane.setMinimumSize(CHAT_MIN_SIZE);          
         
         _friendList.setPreferredSize(LIST_MAX_SIZE);
         _friendList.setMinimumSize(LIST_MIN_SIZE);          
@@ -381,6 +381,6 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
     protected static Dimension LIST_MIN_SIZE = new Dimension(200, 75);	
     
 	// Max/Min Sizes for the Chat
-    protected static Dimension CHAT_MAX_SIZE = new Dimension(800, 200);
+    protected static Dimension CHAT_MAX_SIZE = new Dimension(1920, 200);
     protected static Dimension CHAT_MIN_SIZE = new Dimension(400, 50);	    
 }

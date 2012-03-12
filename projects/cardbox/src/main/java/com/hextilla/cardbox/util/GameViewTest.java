@@ -43,6 +43,7 @@ import com.threerings.media.FrameManager;
 import com.threerings.media.ManagedJFrame;
 
 import com.hextilla.cardbox.client.CardBoxDirector;
+import com.hextilla.cardbox.client.chat.CardBoxChatDirector;
 import com.hextilla.cardbox.facebook.client.SocialDirector;
 
 /**
@@ -116,6 +117,9 @@ public abstract class GameViewTest extends ManagedJFrame
         public ChatDirector getChatDirector () {
             return null;
         }
+        public CardBoxChatDirector getFriendChatDirector () {
+            return null;
+        }        
         public ParlorDirector getParlorDirector () {
             return null;
         }

@@ -4,8 +4,11 @@ import javax.swing.text.Style;
 
 import com.hextilla.cardbox.facebook.CardBoxName;
 import com.hextilla.cardbox.facebook.client.FriendSet;
+import com.hextilla.cardbox.facebook.client.SocialDirector;
+import com.hextilla.cardbox.facebook.client.SocialDirector.FriendIterator;
 import com.hextilla.cardbox.util.CardBoxContext;
 import com.samskivert.util.StringUtil;
+import com.threerings.crowd.chat.client.ChatDirector;
 import com.threerings.crowd.chat.data.ChatCodes;
 import com.threerings.crowd.chat.data.ChatMessage;
 import com.threerings.crowd.chat.data.UserMessage;
@@ -14,17 +17,20 @@ import com.threerings.util.MessageBundle;
 
 public class FriendChatPanel extends ChatPanel {
 
-	public FriendChatPanel(CardBoxContext ctx, FriendSet friends)
-	{
-		this(ctx, false, friends);
-	}
+    /** The message bundle identifier for chat translations. */
+    public static final String CHAT_MSGS = "friend.chat";
+    
+	public FriendChatPanel(CardBoxContext ctx, ChatDirector chatdtr)
+    {
+        this(ctx, chatdtr, false);        
+    }
 	
-	public FriendChatPanel(CardBoxContext ctx, boolean horizontal, FriendSet friends) 
+	public FriendChatPanel(CardBoxContext ctx,  ChatDirector chatdtr, boolean horizontal) 
 	{
-		super(ctx, horizontal);
+		super(ctx, chatdtr, horizontal);
 
-		// FriendSet
-		_friendSet = friends;
+		// Social director
+		_sdtr = ctx.getSocialDirector();
 		
 		// All friends here!
         _nameTransformer = new FriendNameTransformer();
@@ -32,25 +38,21 @@ public class FriendChatPanel extends ChatPanel {
 	
 	@Override public boolean displayMessage (ChatMessage message, boolean alreadyShown)
 	{
-        if (message instanceof UserMessage) {
-        	//TODO: filter messages from non-friends
-            UserMessage msg = (UserMessage) message;
-            if (msg.mode == CardBoxChatCodes.FRIEND_MODE) {
-            	// Filter messages send from the friend chat to those that match the users friends
-            	return filter(msg, alreadyShown);
-            } else if (msg.mode == CardBoxChatCodes.DEFAULT_MODE) {
-            	// Don't show regular messages
-            	return false;
-            }     	
-        }        
-		return super.displayMessage(message, alreadyShown);		
+		// If it is not a friend message ignore it, its meant for regular chat
+		if (message.localtype != ChatCodes.USER_CHAT_TYPE)
+		{
+			return false;
+		}
+		
+		return filter((UserMessage)message, alreadyShown);		
 	}
 	
+	// Might not need this depending on how send works
 	private boolean filter(UserMessage message, boolean alreadyShown) 
-	{
+	{	
 		// If the speaker is in the friend list then display it normally
 		if ((message.speaker.equals(_ctx.getClient().getClientObject().username)) || 
-				(_friendSet != null && _friendSet.isFriend(((CardBoxName)message.speaker).getFacebookId())))
+				(_sdtr.isOnlineFriend((CardBoxName)message.speaker)))
 		{
 			return super.displayMessage(message, alreadyShown);
 		}
@@ -60,11 +62,14 @@ public class FriendChatPanel extends ChatPanel {
 	// Send text in FRIEND_MODE
 	@Override protected void sendText ()
     {
+		
         String text = _entry.getText().trim();
         if (!StringUtil.isBlank(text)) {
-        	// TODO: this doesn't properly handle slash commands and such, we need to override the
-        	// chat director and redo the requestChat function
-            _chatdtr.requestSpeak(_room.speakService, text, CardBoxChatCodes.FRIEND_MODE);
+        	// TODO: this doesn't properly handle slash commands and such
+        	        	
+            // Just tell all the online friends
+        	((CardBoxChatDirector)_chatdtr).requestFriendChat(_ctx.getUsername(), text);
+            
             _entry.setText("");
         }
     }	
@@ -73,7 +78,7 @@ public class FriendChatPanel extends ChatPanel {
 	@Override public void occupantEntered (OccupantInfo info)
     {
 		// Only display information about friends
-		if (_friendSet != null && _friendSet.isFriend(((CardBoxName)info.username).getFacebookId()))
+		if (_sdtr.isOnlineFriend((CardBoxName)info.username))
 		{
 	        displayOccupantMessage("*** " + _nameTransformer.transform((CardBoxName)info.username) + " entered.");			
 		}
@@ -83,13 +88,13 @@ public class FriendChatPanel extends ChatPanel {
 	@Override public void occupantLeft (OccupantInfo info)
     {
 		// Only display information about friends		
-		if (_friendSet != null && _friendSet.isFriend(((CardBoxName)info.username).getFacebookId()))
+		if (_sdtr.isOnlineFriend((CardBoxName)info.username))
 		{
 			displayOccupantMessage("*** " + _nameTransformer.transform((CardBoxName)info.username) + " left.");
 		}
     }	
 	
 	// The set of friends to compare messages against
-	protected FriendSet _friendSet;
+	protected SocialDirector _sdtr;
 
 }

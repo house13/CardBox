@@ -61,7 +61,9 @@ import com.threerings.crowd.data.PlaceConfig;
 
 import com.threerings.parlor.client.ParlorDirector;
 
+import com.hextilla.cardbox.client.chat.CardBoxChatDirector;
 import com.hextilla.cardbox.client.chat.ChatPanel;
+import com.hextilla.cardbox.client.chat.FriendChatPanel;
 import com.hextilla.cardbox.data.CardBoxGameConfig;
 import com.hextilla.cardbox.data.CardBoxCodes;
 import com.hextilla.cardbox.facebook.CardBoxCredentials;
@@ -262,7 +264,8 @@ public class CardBoxClient
         // create our managers and directors
         _locdir = createLocationDirector();
         _occdir = new OccupantDirector(_ctx);
-        _chatdir = new ChatDirector(_ctx, ChatPanel.CHAT_MSGS);
+        _chatdir = new CardBoxChatDirector(_ctx, ChatPanel.CHAT_MSGS);
+        _fchatdir = new CardBoxChatDirector(_ctx, ChatPanel.CHAT_MSGS);
         _pardtr = new ParlorDirector(_ctx);
         _carddtr = new CardBoxDirector(_ctx);
         _socialdtr = new SocialDirector(_ctx); 
@@ -383,10 +386,15 @@ public class CardBoxClient
             return _occdir;
         }
 
-        public ChatDirector getChatDirector ()
+        public CardBoxChatDirector getChatDirector ()
         {
             return _chatdir;
         }
+        
+        public CardBoxChatDirector getFriendChatDirector ()
+        {
+            return _fchatdir;
+        }          
 
         @Override
         public MessageManager getMessageManager ()
@@ -466,7 +474,8 @@ public class CardBoxClient
 
     protected LocationDirector _locdir;
     protected OccupantDirector _occdir;
-    protected ChatDirector _chatdir;
+    protected CardBoxChatDirector _chatdir;
+    protected CardBoxChatDirector _fchatdir;
     protected ParlorDirector _pardtr;
     protected CardBoxDirector _carddtr;
     protected SocialDirector _socialdtr;
