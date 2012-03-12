@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.Timer;
 
-import com.hextilla.cardbox.client.HextillaButton;
+import com.hextilla.cardbox.client.CardBoxButton;
 import com.hextilla.cardbox.client.chat.ChatPanel;
 import com.hextilla.cardbox.client.chat.FriendChatPanel;
 import com.hextilla.cardbox.data.CardBoxGameConfig;

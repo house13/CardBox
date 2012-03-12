@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
 
-import com.hextilla.cardbox.client.HextillaButton;
+import com.hextilla.cardbox.client.CardBoxButton;
 import com.hextilla.cardbox.data.CardBoxGameConfig;
 import com.hextilla.cardbox.data.TableMatchConfig;
 import com.hextilla.cardbox.lobby.table.TableItem;
@@ -53,7 +53,7 @@ public class ComputerOpponentView extends JPanel
 	        // add ourselves as a seatedness observer
 	        _tdtr.addSeatednessObserver(this);
 	        
-	        _playButton = new HextillaButton(SOLOPLAY_BUTTON_TEXT);
+	        _playButton = new CardBoxButton(SOLOPLAY_BUTTON_TEXT);
 	        
 	        // Different AI radio buttons, set the difficulty level
 	        JRadioButton _randomButton = new JRadioButton("Easy", true);

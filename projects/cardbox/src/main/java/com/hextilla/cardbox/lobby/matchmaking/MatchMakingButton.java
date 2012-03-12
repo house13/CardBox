@@ -3,11 +3,11 @@ package com.hextilla.cardbox.lobby.matchmaking;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Timer;
-import com.hextilla.cardbox.client.HextillaButton;
+import com.hextilla.cardbox.client.CardBoxButton;
 import com.hextilla.cardbox.lobby.matchmaking.MatchMaker.MatchStatus;
 
 @SuppressWarnings("serial")
-public class MatchMakingButton extends HextillaButton {
+public class MatchMakingButton extends CardBoxButton {
 	public enum State {
 		MATCHING,	// MatchMaker is running
 		STOPPING,	// MatchMaker is stopping
