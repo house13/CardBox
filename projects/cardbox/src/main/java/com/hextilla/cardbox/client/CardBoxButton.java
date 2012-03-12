@@ -22,6 +22,9 @@ public class CardBoxButton extends JButton implements MouseListener {
 	}
 
 	public void paint(Graphics g) {
+		Graphics2D gfx = (Graphics2D)g;
+		gfx.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		
 		g.setColor(Color.DARK_GRAY);
 		g.fillRoundRect(0, 0, this.getWidth()-1, this.getHeight()-1, 16, 16);
 
