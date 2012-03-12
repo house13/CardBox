@@ -39,6 +39,9 @@ import static com.hextilla.cardbox.Log.log;
 public class CardBoxUI
 {
     /** The fancy cursive font we use to display game names. */
+	public static Font TitleFontLarge;
+	public static Font TitleFontMedium;
+	public static Font TitleFontSmall;
 	public static Font TitleFont;
     public static Font AppFontLarge;
     public static Font AppFontMedium;
@@ -99,7 +102,9 @@ public class CardBoxUI
             log.warning("Failed to load custom font, falling back to default.", e);
             TitleFont = BORING_DEFAULT;
         }
-        TitleFont = TitleFont.deriveFont(Font.PLAIN, 52);
+        TitleFontLarge = TitleFont.deriveFont(Font.PLAIN, 52);
+        TitleFontMedium = TitleFont.deriveFont(Font.PLAIN, 30);
+        TitleFontSmall = TitleFont.deriveFont(Font.PLAIN, 20);
     }
     
     protected static CardBoxContext _ctx;

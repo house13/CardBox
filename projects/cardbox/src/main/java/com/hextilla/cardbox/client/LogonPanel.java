@@ -108,7 +108,7 @@ public class LogonPanel extends JPanel
 
         // create a big fat label
         MultiLineLabel title = new MultiLineLabel(tstr, MultiLineLabel.CENTER);
-        title.setFont(CardBoxUI.TitleFont);
+        title.setFont(CardBoxUI.TitleFontLarge);
         box.add(title);
 
         // float the logon bits side-by-side inside the wider panel

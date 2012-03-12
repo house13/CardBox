@@ -83,7 +83,7 @@ public class LobbyPanel extends JPanel
     	
     	// Add the page title
         _title = new MultiLineLabel("", MultiLineLabel.CENTER);
-        _title.setFont(CardBoxUI.TitleFont);
+        _title.setFont(CardBoxUI.TitleFontLarge);
         add(_title, BorderLayout.NORTH);
         
         // Main Panel, populated based on the games download progress
