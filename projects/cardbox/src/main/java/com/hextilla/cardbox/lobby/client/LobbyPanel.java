@@ -115,7 +115,7 @@ public class LobbyPanel extends JPanel
     public void willEnterPlace (PlaceObject plobj)
     {
         _lobj = (LobbyObject)plobj;
-        _title.setText(_lobj.name);
+        _title.setText(_lobj.name.toUpperCase());
     }
 
     // documentation inherited

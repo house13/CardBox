@@ -244,9 +244,9 @@ public class FBUserManager
     	if (pl.matches()) {
     		return "play";
     	} else {
-    		Matcher ac = _acctpat.matcher(query);
+    		Matcher ac = _settpat.matcher(query);
     		if (ac.matches()) 
-    			return "account";
+    			return "settings";
     	}
     	return null;
     }
@@ -287,5 +287,5 @@ public class FBUserManager
     
     /** We should know about the authorized pages so we can intelligently redirect users */
     protected static final Pattern _playpat = Pattern.compile("/play.wm");
-    protected static final Pattern _acctpat = Pattern.compile("/account.wm");
+    protected static final Pattern _settpat = Pattern.compile("/settings.wm");
 }

@@ -21,7 +21,7 @@ import com.threerings.presents.server.InvocationException;
 
 import static com.hextilla.cardbook.Log.log;
 
-public class account extends UserLogic 
+public class settings extends UserLogic 
 {
 
 	public void invoke(InvocationContext ctx, CardbookApp app, FBUserRecord user)
