@@ -33,6 +33,7 @@ import com.hextilla.cardbox.lobby.matchmaking.MatchMaker.MatchStatus;
 import com.hextilla.cardbox.util.CardBoxContext;
 import com.threerings.crowd.client.PlaceView;
 import com.threerings.crowd.data.PlaceObject;
+import com.threerings.crowd.server.PlaceManager;
 import com.threerings.parlor.client.TableDirector;
 
 public class HextillaLobbyPanel extends JPanel implements PlaceView 
@@ -229,8 +230,19 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
 			}
 		});
         
+        // Label to keep track of online players
+		_onlinePlayerLabel = new PlayerCountPanel(0);
+		JPanel spaceHolder = new JPanel();
+        
         // Create the page layout
 		// Set the max/min/preferred sizes
+		_onlinePlayerLabel.setMaximumSize(PC_MAX_SIZE);
+		_onlinePlayerLabel.setPreferredSize(PC_MAX_SIZE);
+		_onlinePlayerLabel.setMinimumSize(PC_MIN_SIZE);
+		spaceHolder.setMaximumSize(SPACE_MAX_SIZE);
+		spaceHolder.setPreferredSize(SPACE_MAX_SIZE);
+		spaceHolder.setMinimumSize(SPACE_MAX_SIZE);		
+		
 		_strangerPlay.setMaximumSize(BUTTON_MAX_SIZE);
 		_strangerPlay.setPreferredSize(BUTTON_MAX_SIZE);
 		_strangerPlay.setMinimumSize(BUTTON_MIN_SIZE);
@@ -266,6 +278,9 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
 	    		   layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 	    		      .addGroup(layout.createSequentialGroup()
 	    		    		  .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER, true)
+	    		    				  .addGroup(layout.createSequentialGroup()
+	    		    				  			.addComponent(_onlinePlayerLabel)
+	    		    				  			.addComponent(spaceHolder))
 	    		    				  .addComponent(_friendPlay)
 	    		    				  .addComponent(_strangerPlay)
 	    		    				  .addComponent(_soloPlay))
@@ -279,6 +294,9 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
 	    		   layout.createSequentialGroup()
 	    		      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER, true)
 	    		    		  .addGroup(layout.createSequentialGroup()
+	    		    				  .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, true)
+	    		    						  	.addComponent(_onlinePlayerLabel)
+	    		    						  	.addComponent(spaceHolder))
 	    		    				  .addComponent(_friendPlay)
 	    		    				  .addComponent(_strangerPlay)
 	    		    				  .addComponent(_soloPlay))
@@ -287,7 +305,12 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
 	    		);
 	}
 	
-	public void init(PlaceObject place) {
+	public void init(PlaceObject place) 
+	{
+		//TODO: We need to read in the players who are in games as well
+		// Number of player in the lobby
+		_onlinePlayerLabel.setOnlinePlayerCount(place.occupantInfo.size());		
+		
 		willEnterPlace(place);
 		_friendList.willEnterPlace(place);
 		_friendChat.willEnterPlace(place);
@@ -322,6 +345,9 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
     
     /** The Almighty Friend List */
     protected FriendListPanel _friendList;
+    
+    // Counts the number of online players
+    protected PlayerCountPanel _onlinePlayerLabel;
         
 	// Matchmaking classes
 	public static MatchMaker _strangerMatchMaker;
@@ -340,6 +366,12 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
 	// Whether we're running in development mode (i.e. gameId = -1)
 	protected boolean _devmode = false;
 
+	// PlayerCount label sizes (and the whitespace beside it)
+    protected static Dimension PC_MAX_SIZE = new Dimension(150, 50);
+    protected static Dimension PC_MIN_SIZE = new Dimension(75, 25);
+    protected static Dimension SPACE_MAX_SIZE = new Dimension(250, 50);
+    protected static Dimension SPACE_MIN_SIZE = new Dimension(125, 25);    
+	
     // Button sizes
     protected static Dimension BUTTON_MAX_SIZE = new Dimension(400, 100);
     protected static Dimension BUTTON_MIN_SIZE = new Dimension(200, 25);
