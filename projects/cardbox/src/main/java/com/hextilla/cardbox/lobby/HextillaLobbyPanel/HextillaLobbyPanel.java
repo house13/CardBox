@@ -229,7 +229,7 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
 		});
         
         // Label to keep track of online players
-		_onlinePlayerLabel = new PlayerCountPanel(0);
+		_onlinePlayerLabel = new PlayerCountPanel(ctx, 0);
 		JPanel spaceHolder = new JPanel();
         
         // Create the page layout
@@ -308,15 +308,12 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
 	}
 	
 	public void init(PlaceObject place) 
-	{
-		//TODO: We need to read in the players who are in games as well
-		// Number of player in the lobby
-		_onlinePlayerLabel.setOnlinePlayerCount(place.occupantInfo.size());		
-		
+	{		
 		willEnterPlace(place);
 		_friendList.willEnterPlace(place);
 		_friendChat.willEnterPlace(place);
 		_globalChat.willEnterPlace(place);
+		_onlinePlayerLabel.willEnterPlace(place);
 	}
 	
 	// Entering and leaving the Hextilla panel

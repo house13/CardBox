@@ -5,12 +5,15 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.hextilla.cardbox.client.CardBoxUI;
-import com.threerings.presents.client.Client;
-import com.threerings.presents.client.SessionObserver;
+import com.hextilla.cardbox.util.CardBoxContext;
+import com.threerings.crowd.client.OccupantObserver;
+import com.threerings.crowd.client.PlaceView;
+import com.threerings.crowd.data.OccupantInfo;
+import com.threerings.crowd.data.PlaceObject;
 
-public class PlayerCountPanel extends JPanel implements SessionObserver
+public class PlayerCountPanel extends JPanel implements OccupantObserver, PlaceView
 {
-	PlayerCountPanel(int currentPlayerCount)
+	PlayerCountPanel(CardBoxContext ctx, int currentPlayerCount)
 	{
 		super(new BorderLayout());
 		_playerCount = currentPlayerCount;
@@ -22,31 +25,10 @@ public class PlayerCountPanel extends JPanel implements SessionObserver
 		_onlineCountNumberLabel = new JLabel("" + _playerCount, JLabel.RIGHT);
 		_onlineCountNumberLabel.setFont(CardBoxUI.AppFontSmall);
 		add(_onlineCountNumberLabel, BorderLayout.CENTER);
+		
+		ctx.getOccupantDirector().addOccupantObserver(this);
 	}
 
-	public void clientWillLogon(Client client) {
-	}
-
-	public void clientDidLogon(Client client) {
-		++_playerCount;
-		_onlineCountNumberLabel.setText("" + _playerCount);
-	}
-
-	public void clientObjectDidChange(Client client) {
-	}
-
-	public void clientDidLogoff(Client client) {
-		_playerCount--;
-		_onlineCountNumberLabel.setText("" + _playerCount);
-	}
-	
-	// The number of players currently connected
-	long _playerCount;	
-	
-	// The labels for showing the online players
-	JLabel _onlineCountTextLabel;
-	JLabel _onlineCountNumberLabel;
-	
 	// Label text
 	protected static String _onlineCountText = "Players Online: ";
 
@@ -54,5 +36,37 @@ public class PlayerCountPanel extends JPanel implements SessionObserver
 		_playerCount = count;
 		_onlineCountNumberLabel.setText("" + _playerCount);
 	}
+
+	public void occupantEntered(OccupantInfo info) {
+		++_playerCount;
+		_onlineCountNumberLabel.setText("" + _playerCount);		
+	}
+
+	public void occupantLeft(OccupantInfo info) {
+		_playerCount--;
+		_onlineCountNumberLabel.setText("" + _playerCount);
+	}
+
+	public void occupantUpdated(OccupantInfo oldinfo, OccupantInfo newinfo) {
+	}
+
+	public void willEnterPlace(PlaceObject place) {
+		//TODO: We need to read in the players who are in games as well
+		// Number of player in the lobby
+		setOnlinePlayerCount(place.occupantInfo.size());				
+	}
+
+	public void didLeavePlace(PlaceObject place) {
+	
+	}
+	
+	
+	// The number of players currently connected
+	long _playerCount;	
+	
+	// The labels for showing the online players
+	JLabel _onlineCountTextLabel;
+	JLabel _onlineCountNumberLabel;
+		
 
 }
