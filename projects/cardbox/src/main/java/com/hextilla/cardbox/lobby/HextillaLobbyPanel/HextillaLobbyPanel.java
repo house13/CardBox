@@ -12,6 +12,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import com.hextilla.cardbox.client.CardBoxUI;
 import com.hextilla.cardbox.client.chat.ChatPanel;
 import com.hextilla.cardbox.client.chat.FriendChatPanel;
 import com.hextilla.cardbox.client.chat.StrangerChatPanel;
@@ -66,10 +67,11 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
         
         // Setup he chat panel, use a tabbed pane
         JTabbedPane chatPane = new JTabbedPane(JTabbedPane.LEFT);
+        chatPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         _friendChat = new FriendChatPanel(ctx, ctx.getChatDirector(), true);      
         _globalChat = new StrangerChatPanel(ctx, ctx.getFriendChatDirector(), true);             
-        chatPane.addTab("All", null, _globalChat, "Global Chat");
-        chatPane.addTab("Friends", null, _friendChat, "Friend Only Chat");                       			             
+        chatPane.addTab("", CardBoxUI.getGlobalChatIcon(), _globalChat, "Global Chat");
+        chatPane.addTab("", CardBoxUI.getFriendChatIcon(), _friendChat, "Friend Only Chat");                       			             
         
         // Classes to handle match making
         _mdtr = new MatchMakerDirector(ctx);
