@@ -123,8 +123,8 @@ public class fbauth extends OptionalUserLogic
 	     
     	 if (StringUtil.isBlank(pgState) || pgState.equals(_play)) {
     		 target = "/cardbook/play.wm#play";
-    	 } else if (pgState.equals(_acct)) {
-    		 target = "/cardbook/account.wm";
+    	 } else if (pgState.equals(_sett)) {
+    		 target = "/cardbook/settings.wm";
     	 }
 	     
 		 rsp.sendRedirect(target);
@@ -181,7 +181,7 @@ public class fbauth extends OptionalUserLogic
 	}
 	
 	protected static final String _play = "play";
-	protected static final String _acct = "account";
+	protected static final String _sett = "settings";
 	
 	protected static final String CLIENT_PATH = "/client";
 }
