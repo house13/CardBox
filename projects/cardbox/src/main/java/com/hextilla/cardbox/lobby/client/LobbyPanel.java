@@ -37,6 +37,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 
@@ -85,6 +86,11 @@ public class LobbyPanel extends JPanel
         _title = new MultiLineLabel("", MultiLineLabel.CENTER);
         _title.setFont(CardBoxUI.TitleFontLarge);
         add(_title, BorderLayout.NORTH);
+        
+        // Loading bar for download progress
+        _progressBar = new JProgressBar(0, 100);
+        _progressBar.setValue(0);
+        _progressBar.setStringPainted(true);        
         
         // Main Panel, populated based on the games download progress
         _main = new JPanel(new GridLayout(1,1));
@@ -162,6 +168,9 @@ public class LobbyPanel extends JPanel
 	
     public void loadGamePanel (LobbyConfig config)
     {
+    	// Remove our loading bar
+    	_main.remove(_progressBar);
+    	
         // create our match-making view
         JComponent hextillaView = createGamePanel(_ctx, config);
         if (hextillaView != null) {
@@ -182,9 +191,13 @@ public class LobbyPanel extends JPanel
     
     protected JComponent createGamePanel (
             CardBoxContext ctx, LobbyConfig config)
-        {
-            return new HextillaLobbyPanel(ctx, config);
-        }    
+    {
+        return new HextillaLobbyPanel(ctx, config);
+    }
+    
+	public void setDownloadProgress(int percent) {
+		_progressBar.setValue(percent);
+	}    
 
     /** Giver of life and services. */
     protected CardBoxContext _ctx;
@@ -203,6 +216,9 @@ public class LobbyPanel extends JPanel
 
     /** Our background image. */
     protected Mirage _bgimg;
+    
+    // Loading panel for while the jar is downloading
+    JProgressBar _progressBar;
     
     // Game config
     protected LobbyConfig _config;

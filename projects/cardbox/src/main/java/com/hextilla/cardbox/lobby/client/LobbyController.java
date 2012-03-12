@@ -73,7 +73,7 @@ public class LobbyController extends PlaceController
                 if (percent == 100) {
                 	_panel.loadGamePanel(_config);
                 } else {
-                    // TODO: show download progress
+                   _panel.setDownloadProgress(percent);
                 }
                 return true;
             }

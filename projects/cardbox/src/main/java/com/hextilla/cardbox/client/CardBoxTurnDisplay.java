@@ -19,7 +19,8 @@ public class CardBoxTurnDisplay extends TurnDisplay {
     	super();
     }
     
-	// Copy pasta of TurnDisplay. Need to override to take into account friendly/stranger names but otherwise it is the same
+	// Copy pasta of TurnDisplay. Need to override to take into account 
+    // friendly/stranger names but otherwise it is the same
     @Override 
     protected void createList ()
     {
