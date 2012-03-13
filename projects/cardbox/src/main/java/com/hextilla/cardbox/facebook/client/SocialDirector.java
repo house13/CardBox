@@ -65,16 +65,9 @@ public class SocialDirector extends BasicDirector
 		CardBoxUserObject user = (CardBoxUserObject)client.getClientObject();
 		_token = user.getSession();
 		_fbclient = StringUtil.isBlank(_token) ? null : new DefaultFacebookClient(_token);
-		_http = new DefaultHttpAsyncClient();
-		_http.getParams()
-        	.setIntParameter(CoreConnectionPNames.SO_TIMEOUT, 3000)
-	        .setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 3000)
-	        .setIntParameter(CoreConnectionPNames.SOCKET_BUFFER_SIZE, 8 * 1024)
-	        .setBooleanParameter(CoreConnectionPNames.TCP_NODELAY, true);
 		try {
-			SSLLayeringStrategy ssl_strategy = new SSLLayeringStrategy(new TrustSelfSignedStrategy(), new AllowAllHostnameVerifier());
-			AsyncScheme https_scheme = new AsyncScheme("https", 443, ssl_strategy);
-			_http.getConnectionManager().getSchemeRegistry().register(https_scheme);
+			_ssl = new SSLLayeringStrategy(new TrustSelfSignedStrategy(), new AllowAllHostnameVerifier());
+			_https = new AsyncScheme("https", 443, _ssl);
 		} catch (Exception e) {
 			log.warning("An error occurred when initializing our HTTPS handling", e);
 		}
@@ -130,7 +123,7 @@ public class SocialDirector extends BasicDirector
 		return (_tracker == null) ? null : _tracker.getOnlineFriendIterator();
 	}
 	
-	public void downloadPic(final CardBoxName friend, String url)
+	public void downloadPic(CardBoxName friend, String url)
 		throws Exception
 	{
 		// If our social services aren't online, don't even bother with this stuff
@@ -138,6 +131,15 @@ public class SocialDirector extends BasicDirector
 		
 		log.info("Now downloading a friend's display picture", "friend", friend, "url", url);
 		
+		HttpAsyncClient _http = new DefaultHttpAsyncClient();
+		_http.getParams()
+        	.setIntParameter(CoreConnectionPNames.SO_TIMEOUT, 3000)
+	        .setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 3000)
+	        .setIntParameter(CoreConnectionPNames.SOCKET_BUFFER_SIZE, 8 * 1024)
+	        .setBooleanParameter(CoreConnectionPNames.TCP_NODELAY, true);
+		_http.getConnectionManager().getSchemeRegistry().register(_https);
+		
+		final CardBoxName name = friend;
 		final Long friendId = new Long(friend.getFacebookId());
 		_http.start();
 		try {
@@ -149,20 +151,20 @@ public class SocialDirector extends BasicDirector
 					try {
 						String imgdata = getData(response);
 						_friends.setPicFromRaw(friendId, imgdata);
-						imageUpdated(friend);
+						imageUpdated(name);
 					} catch (Exception e) {
-						log.warning("Error processing image download response for " + friend.getFriendlyName(), e);
+						log.warning("Error processing image download response for " + name.getFriendlyName(), e);
 					}
 				}
 
 				@Override
 				public void cancelled() {
-					log.info("Cancelled image download for " + friend.getFriendlyName());
+					log.info("Cancelled image download for " + name.getFriendlyName());
 				}
 
 				@Override
 				public void failed(Exception err) {
-					log.warning("Error downloading display picture for " + friend.getFriendlyName(), err);
+					log.warning("Error downloading display picture for " + name.getFriendlyName(), err);
 				}
 			});
 		} finally {
@@ -205,9 +207,6 @@ public class SocialDirector extends BasicDirector
 	/** Manage the reference to the set of raw friend data from Facebook. */
 	protected FriendSet _friends = null;
 	
-	/** Our fancy schmancy asynchronous HTTP client */
-	protected HttpAsyncClient _http = null;
-	
 	/** The giver of life and services */
 	protected CardBoxContext _ctx;
 	
@@ -216,4 +215,8 @@ public class SocialDirector extends BasicDirector
 	// Delegate the responsibility of tracking online friends using the FriendTracker interface
 	protected FriendTracker _tracker = null;
 	protected FriendIterator _iterator = null;
+	
+	/** Keep around a single copy of our simple SSL strategy */
+	private SSLLayeringStrategy _ssl;
+	private AsyncScheme _https;
 }
