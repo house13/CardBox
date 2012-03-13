@@ -77,6 +77,7 @@ public class FriendSet
 			return;
 		}
 		ImageIcon pic = CardBoxUI.renderDisplayPic(bytes);
+		log.info("Display picture has been downloaded and properly rendered", "userid", fbId, "size", bytes.length() + " B");
 		_pictures.put(fbId, pic);
 	}
 	

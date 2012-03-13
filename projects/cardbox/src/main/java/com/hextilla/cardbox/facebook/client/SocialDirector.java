@@ -139,8 +139,8 @@ public class SocialDirector extends BasicDirector
 	        .setBooleanParameter(CoreConnectionPNames.TCP_NODELAY, true);
 		_http.getConnectionManager().getSchemeRegistry().register(_https);
 		
-		final CardBoxName name = friend;
-		final Long friendId = new Long(friend.getFacebookId());
+		final CardBoxName friendname = friend;
+		final Long friendId = new Long(friendname.getFacebookId());
 		_http.start();
 		try {
 			HttpGet get = new HttpGet(url);
@@ -150,7 +150,7 @@ public class SocialDirector extends BasicDirector
 				public void completed(HttpResponse response) {
 					String imgdata = getData(response);
 					_friends.setPicFromRaw(friendId, imgdata);
-					imageUpdated(name);
+					imageUpdated(friendname);
 				}
 
 				@Override
@@ -163,6 +163,7 @@ public class SocialDirector extends BasicDirector
 					// no-op
 				}
 			});
+			log.info("Shutting down HttpAsyncClient after executing HTTP GET");
 		} finally {
 			_http.shutdown();
 		}

@@ -140,7 +140,9 @@ public class FriendListPanel extends JPanel
 	@Override
 	public void imageUpdated(CardBoxName name) 
 	{
+		log.info("A display picture has finished downloading!", "Friend", name.getFriendlyName().toString());
 		_listModel.updateElement(new FriendEntry(name, _friends.getPic(name)));
+		invalidate();
 	}
 	
 	@Override
