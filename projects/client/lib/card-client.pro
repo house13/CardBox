@@ -72,6 +72,9 @@
 -keep public class org.apache.commons.logging.LogFactory {
     public protected *;
 }
+-keep public class org.apache.commons.logging.impl.LogFactoryImpl {
+    public protected *;
+}
 
 # Going to need to keep our HTTP junk in the client
 -keep public class org.apache.http.HttpResponse {
