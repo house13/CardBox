@@ -133,10 +133,10 @@ public class SocialDirector extends BasicDirector
 	        .setIntParameter(CoreConnectionPNames.SOCKET_BUFFER_SIZE, 8 * 1024)
 	        .setBooleanParameter(CoreConnectionPNames.TCP_NODELAY, true);
 
-		SSLLayeringStrategy _ssl = new SSLLayeringStrategy(new TrustSelfSignedStrategy(), new AllowAllHostnameVerifier());
-		AsyncScheme _https = new AsyncScheme("https", 443, _ssl);
+		//SSLLayeringStrategy _ssl = new SSLLayeringStrategy(new TrustSelfSignedStrategy(), new AllowAllHostnameVerifier());
+		//AsyncScheme _https = new AsyncScheme("https", 443, _ssl);
 		
-		_http.getConnectionManager().getSchemeRegistry().register(_https);
+		//_http.getConnectionManager().getSchemeRegistry().register(_https);
 		
 		final CardBoxName friendname = friend;
 		final Long friendId = new Long(friendname.getFacebookId());
@@ -186,17 +186,19 @@ public class SocialDirector extends BasicDirector
 		int ch = 0;
 		String bytes = null;
 		StringBuffer b = new StringBuffer();
+		log.info("Retrieving image content from HttpResponse", "Response Status", response.getStatusLine());
 		try {
 			InputStream in = response.getEntity().getContent();
 			long len = response.getEntity().getContentLength();
+			log.info("Image content length, in bytes", "length", len);
 			// If we know the length of the data, read exactly that much
 			if (len > 0) {
 				for (long l = 0; l < len; ++l)
-					if ((ch = in.read()) > 0) {
+					if ((ch = in.read()) != -1) {
 						b.append((char)ch);
 					}
 			} else {
-				while ((ch = in.read()) > 0) {
+				while ((ch = in.read()) != -1) {
 					len = in.available();
 					b.append((char)ch);
 				}
@@ -206,6 +208,7 @@ public class SocialDirector extends BasicDirector
 		} catch (IOException ioe) {
 			log.warning("There was a problem reading the returned content", "Response Status", response.getStatusLine(), ioe);
 		}
+		log.info("Binary image data retrieved", "bytes", bytes);
 		return bytes;
 	}
 

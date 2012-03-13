@@ -120,6 +120,7 @@ public class CardBoxUI
     /** Given a byte array containing JPEG image data, return an ImageIcon of the given scale */ 
     private static ImageIcon renderDisplayPicFromRaw(String bytes, int scaleW, int scaleH)
     {
+    	log.info("Attempting to render binary data into JPEG", "bytes", bytes);
     	BufferedImage img = null;
     	try {
     		InputStream in = new ByteArrayInputStream(bytes.getBytes());
