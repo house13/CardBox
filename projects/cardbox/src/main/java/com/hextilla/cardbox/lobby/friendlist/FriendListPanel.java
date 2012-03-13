@@ -106,7 +106,7 @@ public class FriendListPanel extends JPanel
 	// Add a friend to the friend list
 	public void addFriend(CardBoxName name)
 	{
-		_listModel.addElement(new FriendEntry(name, _friends.getImage(name.getFacebookId())));		
+		_listModel.addElement(new FriendEntry(name, _friends.getPic(name)));		
 	}
 	
 	public void removeFriend(OccupantInfo info)
@@ -140,7 +140,7 @@ public class FriendListPanel extends JPanel
 	@Override
 	public void imageUpdated(CardBoxName name) 
 	{
-		_listModel.updateElement(new FriendEntry(name, _friends.getImage(name.getFacebookId())));
+		_listModel.updateElement(new FriendEntry(name, _friends.getPic(name)));
 	}
 	
 	@Override

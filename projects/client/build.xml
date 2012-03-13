@@ -41,6 +41,10 @@
              filter="**/user/Password.class,**/user/UserUtil.class"/>
       <injar path="${com.hextilla:cardbox:jar}" filter="!META-INF/*,!*/xml/*"/>
       <injar path="${com.restfb:restfb:jar}" filter="!META-INF/*,!*/xml/*"/>
+      <injar path="${org.apache.httpcomponents:httpcore:jar}" filter="!META-INF/*,!*/xml/*"/>
+      <injar path="${org.apache.httpcomponents:httpcore-nio:jar}" filter="!META-INF/*,!*/xml/*"/>
+      <injar path="${org.apache.httpcomponents:httpclient:jar}" filter="!META-INF/*,!*/xml/*"/>
+      <injar path="${org.apache.httpcomponents:httpasyncclient:jar}" filter="!META-INF/*,!*/xml/*"/>
       <outjar path="${client.dir}/card-client.jar"/>
     </proguard>
 
