@@ -124,6 +124,8 @@ public class SocialDirector extends BasicDirector
 		// If our social services aren't online, don't even bother with this stuff
 		if (_fbclient == null) return;
 		
+		log.info("Now downloading a friend's display picture", "friend", friend, "url", url);
+		
 		final Long friendId = new Long(friend.getFacebookId());
 		_http.start();
 		try {
