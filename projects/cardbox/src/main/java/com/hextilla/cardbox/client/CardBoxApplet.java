@@ -163,7 +163,7 @@ public class CardBoxApplet extends ManagedJApplet
     {    
     	bufferGraphics.clearRect(0,0,dim.width,dim.width); 
     	super.paint(bufferGraphics);
-        super.paintAll(bufferGraphics); 
+        //super.paintAll(bufferGraphics); 
         g.drawImage(offscreen,0,0,this); 
     }
 
