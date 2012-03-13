@@ -14,6 +14,7 @@ import com.restfb.Parameter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -139,6 +140,7 @@ public class SocialDirector extends BasicDirector
 		
 		final CardBoxName friendname = friend;
 		final Long friendId = new Long(friendname.getFacebookId());
+		final CountDownLatch latch = new CountDownLatch(1);
 		_http.start();
 		try {
 			HttpGet get = new HttpGet(url);
@@ -146,6 +148,7 @@ public class SocialDirector extends BasicDirector
 				
 				@Override
 				public void completed(HttpResponse response) {
+					latch.countDown();
 					String imgdata = getData(response);
 					_friends.setPicFromRaw(friendId, imgdata);
 					imageUpdated(friendname);
@@ -153,15 +156,18 @@ public class SocialDirector extends BasicDirector
 
 				@Override
 				public void cancelled() {
+					latch.countDown();
 					System.out.println("Asynchronous download of display picture was cancelled.");
 				}
 
 				@Override
 				public void failed(Exception err) {
+					latch.countDown();
 					System.out.println("Asynchronous download of display picture failed.");
 					err.printStackTrace();
 				}
 			});
+			latch.await();
 			log.info("Shutting down HttpAsyncClient after executing HTTP GET");
 		} finally {
 			_http.shutdown();
