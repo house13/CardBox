@@ -31,6 +31,7 @@
 -dontwarn org.apache.mina.**
 -dontwarn org.apache.tools.ant.**
 -dontwarn org.apache.velocity.**
+-dontwarn org.apache.http.annotation.**
 -dontwarn org.lwjgl.**
 -dontwarn sun.misc.Unsafe
 
@@ -64,7 +65,27 @@
     public protected *;
 }
 
-# we're going to need our RestDB stuff client-side
+# Going to need to keep our HTTP junk in the client
+-keep public class org.apache.http.HttpResponse {
+    public protected *;
+}
+-keep public class org.apache.http.concurrent.FutureCallback {
+    public protected *;
+}
+-keep public class org.apache.http.client.methods.HttpGet {
+    public protected *;
+}
+-keep public class org.apache.http.params.CoreConnectionPNames {
+    public protected *;
+}
+-keep public class org.apache.http.nio.client.HttpAsyncClient {
+    public protected *;
+}
+-keep public class org.apache.http.impl.nio.client.DefaultHttpAsyncClient {
+    public protected *;
+}
+
+# Going to need our RestFB stuff client-side
 -keep public class com.restfb.** {
     public protected *;
 }

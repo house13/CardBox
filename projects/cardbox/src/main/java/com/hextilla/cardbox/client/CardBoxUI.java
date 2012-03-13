@@ -24,6 +24,7 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import javax.imageio.ImageIO;
@@ -47,6 +48,10 @@ public class CardBoxUI
     public static Font AppFontMedium;
     public static Font AppFontSmall;
     public static Font AppFont;
+    public static Font AppFontItalicLarge;
+    public static Font AppFontItalicMedium;
+    public static Font AppFontItalicSmall;
+    public static Font AppFontItalic;
     public static Font FbFontLarge;
     public static Font FbFontMedium;
     public static Font FbFontSmall;
@@ -62,7 +67,7 @@ public class CardBoxUI
     public static final Color DARK_BLUE = new Color(145, 185, 215);
     public static final Color GRAY = Color.DARK_GRAY;
     
-    public static ImageIcon getDefaultDisplayPic(){
+    public static ImageIcon getDefaultDisplayPic() {
     	
     	return getImageIcon(defaultDisplayPic, DEFAULT_DISPLAY_PIC_PATH, 64, 64, 32, 32);
     }
@@ -72,15 +77,19 @@ public class CardBoxUI
     	return getImageIcon(globalChatPic, GLOBAL_CHAT_PIC_PATH, 32, 32, 16, 16);
     }
     
-    public static ImageIcon getFriendChatIcon(){
+    public static ImageIcon getFriendChatIcon() {
     	
     	return getImageIcon(friendChatPic, FRIEND_CHAT_PIC_PATH, 32, 32, 16, 16);
     }    
     
-    public static ImageIcon getFacebookIcon(){
+    public static ImageIcon getFacebookIcon() {
     	
     	return getImageIcon(facebookIcon, FACEBOOK_ICON_PATH, 140, 140, 20, 20);
     }  
+    
+    public static ImageIcon renderDisplayPic(String bytes) {
+    	return renderDisplayPicFromRaw(bytes, 32, 32);
+    }
 
     private static ImageIcon getImageIcon(ImageIcon icon, String icon_path, 
     		int width, int height, int scaleW, int scaleH) {
@@ -107,6 +116,21 @@ public class CardBoxUI
     	// Return the default pic
         return icon;
 	}
+    
+    /** Given a byte array containing JPEG image data, return an ImageIcon of the given scale */ 
+    private static ImageIcon renderDisplayPicFromRaw(String bytes, int scaleW, int scaleH)
+    {
+    	BufferedImage img = null;
+    	try {
+    		InputStream in = new ByteArrayInputStream(bytes.getBytes());
+    		img = ImageIO.read(in);
+    	} catch (Exception e) {
+    		log.warning("Could not render display picture from raw", e);
+    		img = new BufferedImage(scaleW, scaleH, BufferedImage.TYPE_INT_RGB);
+    	}
+    	ImageIcon pic = new ImageIcon(img.getScaledInstance(scaleW, scaleH, Image.SCALE_SMOOTH));
+    	return pic;
+    }
 
 	public static void init (CardBoxContext ctx)
     {
@@ -125,6 +149,18 @@ public class CardBoxUI
         AppFontLarge = AppFont.deriveFont(Font.PLAIN, 30);
         AppFontMedium = AppFont.deriveFont(Font.PLAIN, 20);
         AppFontSmall = AppFont.deriveFont(Font.PLAIN, 14);
+        try {
+            InputStream in =
+                CardBoxUI.class.getClassLoader().getResourceAsStream("rsrc/media/OpenSans-LightItalic.ttf");
+            AppFontItalic = Font.createFont(Font.TRUETYPE_FONT, in);
+            in.close();
+        } catch (Exception e) {
+            log.warning("Failed to load custom font, falling back to default.", e);
+            AppFontItalic = BORING_DEFAULT;
+        }
+        AppFontItalicLarge = AppFontItalic.deriveFont(Font.PLAIN, 30);
+        AppFontItalicMedium = AppFontItalic.deriveFont(Font.PLAIN, 20);
+        AppFontItalicSmall = AppFontItalic.deriveFont(Font.PLAIN, 14);
         try {
         	InputStream in =
                     CardBoxUI.class.getClassLoader().getResourceAsStream("rsrc/media/League-Gothic.ttf");

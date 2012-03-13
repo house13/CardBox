@@ -10,6 +10,11 @@ public class UserWithPicture extends User
 		return picture;
 	}
 	
+	public String toString ()
+	{
+		return this.getName();
+	}
+	
 	@Facebook
 	private String picture;
 }

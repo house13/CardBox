@@ -10,13 +10,23 @@ import com.restfb.FacebookClient;
 import com.restfb.Connection;
 import com.restfb.Parameter;
 
-import java.util.Iterator;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.concurrent.FutureCallback;
+import org.apache.http.impl.nio.client.DefaultHttpAsyncClient;
+import org.apache.http.nio.client.HttpAsyncClient;
+import org.apache.http.params.CoreConnectionPNames;
 
 import com.samskivert.util.StringUtil;
 
 import com.threerings.presents.client.BasicDirector;
 import com.threerings.presents.client.Client;
+
+import static com.hextilla.cardbox.Log.log;
 
 public class SocialDirector extends BasicDirector 
 {
@@ -45,26 +55,38 @@ public class SocialDirector extends BasicDirector
 	}
 	
 	public void init (Client client)
+		throws Exception
 	{
 		CardBoxUserObject user = (CardBoxUserObject)client.getClientObject();
 		_token = user.getSession();
 		_fbclient = StringUtil.isBlank(_token) ? null : new DefaultFacebookClient(_token);
-	}
+		_http = new DefaultHttpAsyncClient();
+		_http.getParams()
+        	.setIntParameter(CoreConnectionPNames.SO_TIMEOUT, 3000)
+	        .setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 3000)
+	        .setIntParameter(CoreConnectionPNames.SOCKET_BUFFER_SIZE, 8 * 1024)
+	        .setBooleanParameter(CoreConnectionPNames.TCP_NODELAY, true);
+	} 
 	
 	@Override
 	public void clientDidLogon (Client client)
 	{
 		super.clientDidLogon(client);
-		if (_ctx.isFacebookEnabled())
-			init(client);
+		if (_ctx.isFacebookEnabled()) {
+			try {
+				init(client);
+			} catch (Exception e) {
+				log.warning("An error occurred during SocialDirector initialization", e);
+			}
+		}
 	}
 	
 	public synchronized FriendSet getFriends ()
 	{
-		if (_fbclient == null) return new FriendSet();
+		if (_fbclient == null) return new FriendSet(_ctx);
 		if (_friends == null)
 		{
-			FriendSet friends = new FriendSet();
+			FriendSet friends = new FriendSet(_ctx);
 			Connection<UserWithPicture> friendList = _fbclient.fetchConnection("me/friends", 
 					UserWithPicture.class, Parameter.with("fields", "id, name, picture"));
 			
@@ -96,6 +118,44 @@ public class SocialDirector extends BasicDirector
 		return (_tracker == null) ? null : _tracker.getOnlineFriendIterator();
 	}
 	
+	public void downloadPic(final CardBoxName friend, String url)
+		throws Exception
+	{
+		// If our social services aren't online, don't even bother with this stuff
+		if (_fbclient == null) return;
+		
+		final Long friendId = new Long(friend.getFacebookId());
+		_http.start();
+		try {
+			HttpGet get = new HttpGet(url);
+			_http.execute(get, new FutureCallback<HttpResponse>() {
+				
+				@Override
+				public void completed(HttpResponse response) {
+					try {
+						String imgdata = getData(response);
+						_friends.setPicFromRaw(friendId, imgdata);
+						imageUpdated(friend);
+					} catch (Exception e) {
+						log.warning("Error processing image download response for " + friend.getFriendlyName(), e);
+					}
+				}
+
+				@Override
+				public void cancelled() {
+					log.info("Cancelled image download for " + friend.getFriendlyName());
+				}
+
+				@Override
+				public void failed(Exception err) {
+					log.warning("Error downloading display picture for " + friend.getFriendlyName(), err);
+				}
+			});
+		} finally {
+			_http.shutdown();
+		}
+	}
+	
 	/** Delegate responsibility to the FriendTracker, if available */
 	public void imageUpdated(CardBoxName friend)
 	{
@@ -103,12 +163,39 @@ public class SocialDirector extends BasicDirector
 			_tracker.imageUpdated(friend);
 	}
 	
+	public static String getData(HttpResponse response)
+			throws IOException
+	{
+		int ch = 0;
+		StringBuffer b = new StringBuffer();
+		InputStream in = response.getEntity().getContent();
+		long len = response.getEntity().getContentLength();
+		// If we know the length of the data, read exactly that much
+		if (len > 0) {
+			for (long l = 0; l < len; ++l)
+				if ((ch = in.read()) > 0) {
+					b.append((char)ch);
+				}
+		} else {
+			while ((ch = in.read()) > 0) {
+				len = in.available();
+				b.append((char)ch);
+			}
+		}
+		in.close();
+		return b.toString();
+	}
 
 	protected String _token;
 	
+	/** Manage the reference to the set of raw friend data from Facebook. */
 	protected FriendSet _friends = null;
 	
+	protected HttpAsyncClient _http = null;
+	
+	/** The giver of life and services */
 	protected CardBoxContext _ctx;
+	
 	protected FacebookClient _fbclient = null;
 	
 	// Delegate the responsibility of tracking online friends using the FriendTracker interface

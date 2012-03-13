@@ -1,37 +1,23 @@
 package com.hextilla.cardbox.facebook.client;
 
 import java.util.Hashtable;
-import java.util.LinkedList;
 
 import javax.swing.ImageIcon;
 
+import com.hextilla.cardbox.client.CardBoxUI;
+import com.hextilla.cardbox.facebook.CardBoxName;
 import com.hextilla.cardbox.facebook.UserWithPicture;
+import com.hextilla.cardbox.util.CardBoxContext;
+
+import static com.hextilla.cardbox.Log.log;
 
 public class FriendSet 
 {
-	class Downloader implements Runnable
+	public FriendSet (CardBoxContext ctx)
 	{
-	  public Downloader(){}
-	  public void run() {
-		  ImageIcon icon;
-		  String picture;
-		  while(true) {
-			  while(!_downloadList.isEmpty()) {
-				   Long fbId = _downloadList.pop();
-				   picture = getFriend(fbId).getPicture();
-				   icon = new ImageIcon(picture);
-			       _pictures.put(fbId, icon);
-			  }  
-		  }
-	  }
-	}
-	
-	public FriendSet ()
-	{
+		_ctx = ctx;
 		_friends = new Hashtable<Long, UserWithPicture>();
 		_pictures = new Hashtable<Long, ImageIcon>();
-		//Thread t = new Thread(new Downloader());
-		//t.run();
 	}
 	
 	public void add (UserWithPicture friend)
@@ -47,22 +33,52 @@ public class FriendSet
 		return _friends.get(fbId);
 	}
 	
-	public boolean isFriend (long fbId)
+	public boolean isFriend (Long fbId)
 	{
-		return _friends.containsKey(new Long(fbId));
+		return _friends.containsKey(fbId);
 	}
 	
-	public ImageIcon getImage(long fbId){
-		Long friendId = new Long(fbId);
-		if (!_pictures.containsKey(new Long(fbId)))
+	/**
+	 * Checks our picture cache for the given Facebook ID. If we've haven't cached
+	 *   a pic for that user, tell the Social Director to get on that.
+	 * @param fbId Unique Facebook ID for desired friend
+	 * @return Whether that picture was cached at time of call
+	 */
+	public boolean checkPic(CardBoxName friend)
+	{
+		Long friendId = new Long(friend.getFacebookId());
+		boolean isCached = _pictures.containsKey(friendId);
+		if (!isCached && isFriend(friendId))
 		{
-			ImageIcon pic = new ImageIcon(getFriend(friendId).getPicture());
-			_pictures.put(friendId, pic);
+			try {
+				_ctx.getSocialDirector().downloadPic(friend, getFriend(friendId).getPicture());
+			} catch (Exception e) {
+				log.warning("Could not download display picture as requested for user [" + getFriend(friendId).toString() + "]", e);
+			}
 		}
-		return _pictures.get(friendId);
+		return isCached;
 	}
+	
+	public ImageIcon getPic(CardBoxName friend)
+	{
+	    Long friendId = new Long(friend.getFacebookId());
+	    boolean isCached = checkPic(friend);
+	    if (!isCached)
+	    {
+	            return CardBoxUI.getDefaultDisplayPic();
+	    }
+	    return _pictures.get(friendId);
+	}
+	
+	public void setPicFromRaw(Long fbId, String bytes)
+	{
+		ImageIcon pic = CardBoxUI.renderDisplayPic(bytes);
+		_pictures.put(fbId, pic);
+	}
+	
+	/** The giver of life and services */
+	protected CardBoxContext _ctx;
 	
 	protected Hashtable<Long, UserWithPicture> _friends;
-	protected LinkedList<Long> _downloadList;
 	protected Hashtable<Long, ImageIcon> _pictures;
 }
