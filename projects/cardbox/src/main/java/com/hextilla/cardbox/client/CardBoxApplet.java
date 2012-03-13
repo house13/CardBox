@@ -162,6 +162,7 @@ public class CardBoxApplet extends ManagedJApplet
     public void paint(Graphics g)  
     {    
     	bufferGraphics.clearRect(0,0,dim.width,dim.width); 
+    	super.paint(bufferGraphics);
         super.paintAll(bufferGraphics); 
         g.drawImage(offscreen,0,0,this); 
     }
@@ -175,7 +176,7 @@ public class CardBoxApplet extends ManagedJApplet
     public void update(Graphics g) 
     { 
          paint(g); 
-    } 
+    }
     
     protected CardBoxClient _client;
     protected FrameManager _framemgr;
