@@ -50,11 +50,7 @@ public class FriendSet
 		boolean isCached = _pictures.containsKey(friendId);
 		if (!isCached && isFriend(friendId))
 		{
-			try {
-				_ctx.getSocialDirector().downloadPic(friend, getFriend(friendId).getPicture());
-			} catch (Exception e) {
-				log.warning("Could not download display picture as requested for user [" + getFriend(friendId).toString() + "]", e);
-			}
+			new Thread(new PicDownloader(_ctx, friend, getFriend(friendId).getPicture())).start();
 		}
 		return isCached;
 	}
@@ -65,8 +61,10 @@ public class FriendSet
 	    boolean isCached = checkPic(friend);
 	    if (!isCached)
 	    {
-	            return CardBoxUI.getDefaultDisplayPic();
+	    	log.info("Display pic not cached, returning default", "friend", friend.getFriendlyName().toString());
+	        return CardBoxUI.getDefaultDisplayPic();
 	    }
+	    log.info("Display pic was cached, retrieving it from the table", "friend", friend.getFriendlyName().toString());
 	    return _pictures.get(friendId);
 	}
 	
@@ -79,6 +77,30 @@ public class FriendSet
 		ImageIcon pic = CardBoxUI.renderDisplayPic(bytes);
 		log.info("Display picture has been downloaded and properly rendered", "userid", fbId, "size", bytes.length() + " B");
 		_pictures.put(fbId, pic);
+	}
+	
+	protected class PicDownloader implements Runnable
+	{
+		public PicDownloader(CardBoxContext ctx, CardBoxName friend, String url)
+		{
+			_ctx = ctx;
+			_friend = friend;
+			_url = url;
+		}
+		
+		@Override
+		public void run() 
+		{
+			try {
+				_ctx.getSocialDirector().downloadPic(_friend, _url);
+			} catch (Exception e) {
+				log.warning("Could not download display picture as requested for user [" + _friend.getFriendlyName().toString() + "]", e);
+			}
+		}
+		
+		CardBoxContext _ctx;
+		CardBoxName _friend;
+		String _url;
 	}
 	
 	/** The giver of life and services */
