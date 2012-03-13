@@ -1,6 +1,7 @@
 package com.hextilla.cardbox.lobby.friendlist;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,6 +9,7 @@ import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
+import javax.swing.GroupLayout;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -24,7 +26,6 @@ import com.hextilla.cardbox.facebook.client.FriendSet;
 import com.hextilla.cardbox.facebook.client.SocialDirector;
 import com.hextilla.cardbox.facebook.client.SocialDirector.FriendIterator;
 import com.hextilla.cardbox.util.CardBoxContext;
-import com.samskivert.swing.util.SwingUtil;
 import com.threerings.crowd.client.OccupantObserver;
 import com.threerings.crowd.client.PlaceView;
 import com.threerings.crowd.data.OccupantInfo;
@@ -41,16 +42,19 @@ public class FriendListPanel extends JPanel
 	{
         _ctx = ctx;
         
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		setBackground(Color.BLACK);
+        GroupLayout layout = new GroupLayout(this);
+        layout.setAutoCreateGaps(true);
+        layout.setAutoCreateContainerGaps(true);        
+        this.setLayout(layout); 
                       
 		// Title the entry
-		JLabel friendTitle = new JLabel("Friends", JLabel.CENTER);
-		friendTitle.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-		friendTitle.setFont(CardBoxUI.AppFontLarge);
-		friendTitle.setForeground(Color.DARK_GRAY);
-		friendTitle.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-		add(friendTitle);
+		JLabel friendTitle = new JLabel("friends", CardBoxUI.getFacebookIcon(), JLabel.CENTER);
+		friendTitle.setFont(CardBoxUI.FbFontBoldLarge);
+		friendTitle.setIconTextGap(10);
+		
+		friendTitle.setMinimumSize(TITLE_MIN_SIZE);
+		friendTitle.setMaximumSize(TITLE_MAX_SIZE);
+		friendTitle.setPreferredSize(TITLE_MAX_SIZE);
 		
 		// Setup the friend list objects and custom renderers
 		_listModel  = new FriendListModel();
@@ -63,7 +67,26 @@ public class FriendListPanel extends JPanel
 		// Create the scroll Bar	
 		JScrollPane scrollin = new JScrollPane(_friendList);
 		scrollin.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
-		add(scrollin);
+		
+		scrollin.setMinimumSize(LIST_MIN_SIZE);
+		scrollin.setMaximumSize(LIST_MAX_SIZE);
+		scrollin.setPreferredSize(LIST_MAX_SIZE);
+		
+		// Horizontal Grouping
+        // parallel{ friendTitle, scrollin }
+		layout.setHorizontalGroup(
+	    		   layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+	    		       .addComponent(friendTitle)
+	    		       .addComponent(scrollin)
+	    );
+		
+		// Vertical Grouping
+        // sequential{ friendTitle, scrollin }
+		layout.setVerticalGroup(
+	    		   layout.createSequentialGroup()
+	    		       .addComponent(friendTitle)
+	    		       .addComponent(scrollin)
+		);
 		
 		_friends = _ctx.getSocialDirector().getFriends();
 		_ctx.getOccupantDirector().addOccupantObserver(this);
@@ -180,4 +203,11 @@ public class FriendListPanel extends JPanel
 	
 	/** Set of raw friend data from Facebook */
 	protected FriendSet _friends;
+	
+	// Max/Min Sizes for the Title
+	protected static Dimension TITLE_MAX_SIZE = new Dimension(400, 30);
+    protected static Dimension TITLE_MIN_SIZE = new Dimension(200, 30);
+    // Max/Min Sizes for the Friend List
+    protected static Dimension LIST_MAX_SIZE = new Dimension(400, 300);
+    protected static Dimension LIST_MIN_SIZE = new Dimension(200, 50);
 }

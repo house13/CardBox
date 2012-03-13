@@ -82,6 +82,7 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
 		       
 		// Stranger Play button
 		_strangerPlay = new MatchMakingButton(_msgs.xlate("m.stranger"), _strangerMatchMaker);
+		_strangerPlay.setFont(CardBoxUI.AppFontMedium);
 		_strangerPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				// Stop the other match making if it is running
@@ -133,6 +134,7 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
 		
         // Friend Play button   
 		_friendPlay = new MatchMakingButton(_msgs.xlate("m.friend"), _friendlyMatchMaker);
+		_friendPlay.setFont(CardBoxUI.AppFontMedium);
 		_friendPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				

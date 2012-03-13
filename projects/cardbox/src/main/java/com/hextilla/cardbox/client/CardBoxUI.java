@@ -47,6 +47,14 @@ public class CardBoxUI
     public static Font AppFontMedium;
     public static Font AppFontSmall;
     public static Font AppFont;
+    public static Font FbFontLarge;
+    public static Font FbFontMedium;
+    public static Font FbFontSmall;
+    public static Font FbFont;
+    public static Font FbFontBoldLarge;
+    public static Font FbFontBoldMedium;
+    public static Font FbFontBoldSmall;
+    public static Font FbFontBold;
     
     /** The nice blue background we use for scrolly bits. */
     public static final Color LIGHT_BLUE = new Color(0xC8E1E9);
@@ -65,6 +73,11 @@ public class CardBoxUI
     	
     	return getImageIcon(friendChatPic, FRIEND_CHAT_PIC_PATH, 32, 32, 16, 16);
     }    
+    
+    public static ImageIcon getFacebookIcon(){
+    	
+    	return getImageIcon(facebookIcon, FACEBOOK_ICON_PATH, 140, 140, 20, 20);
+    }  
 
     private static ImageIcon getImageIcon(ImageIcon icon, String icon_path, 
     		int width, int height, int scaleW, int scaleH) {
@@ -80,7 +93,7 @@ public class CardBoxUI
 	        } catch (Exception e) {
 	        	// Just use an empty image
 	        	log.info("Error: " + e.getMessage());
-	            log.info("Could not load " + DEFAULT_DISPLAY_PIC_PATH + ", defaulting to a black sqare!");
+	            log.info("Could not load " + icon_path + ", defaulting to a black sqare!");
 	        	image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 	        }
 	        
@@ -99,19 +112,19 @@ public class CardBoxUI
         // try to load our fancy font
         try {
             InputStream in =
-                CardBoxUI.class.getClassLoader().getResourceAsStream("rsrc/media/jargon.ttf");
+                CardBoxUI.class.getClassLoader().getResourceAsStream("rsrc/media/OpenSans-Regular.ttf");
             AppFont = Font.createFont(Font.TRUETYPE_FONT, in);
             in.close();
         } catch (Exception e) {
             log.warning("Failed to load custom font, falling back to default.", e);
             AppFont = BORING_DEFAULT;
         }
-        AppFontLarge = AppFont.deriveFont(Font.PLAIN, 52);
-        AppFontMedium = AppFont.deriveFont(Font.PLAIN, 30);
-        AppFontSmall = AppFont.deriveFont(Font.PLAIN, 20);
+        AppFontLarge = AppFont.deriveFont(Font.PLAIN, 30);
+        AppFontMedium = AppFont.deriveFont(Font.PLAIN, 20);
+        AppFontSmall = AppFont.deriveFont(Font.PLAIN, 14);
         try {
         	InputStream in =
-                    CardBoxUI.class.getClassLoader().getResourceAsStream("rsrc/media/League Gothic.ttf");
+                    CardBoxUI.class.getClassLoader().getResourceAsStream("rsrc/media/League-Gothic.ttf");
                 TitleFont = Font.createFont(Font.TRUETYPE_FONT, in);
                 in.close();  
         } catch (Exception e) {
@@ -121,6 +134,30 @@ public class CardBoxUI
         TitleFontLarge = TitleFont.deriveFont(Font.PLAIN, 52);
         TitleFontMedium = TitleFont.deriveFont(Font.PLAIN, 30);
         TitleFontSmall = TitleFont.deriveFont(Font.PLAIN, 20);
+        try {
+            InputStream in =
+                CardBoxUI.class.getClassLoader().getResourceAsStream("rsrc/media/Lucida-Grande.ttf");
+            FbFont = Font.createFont(Font.TRUETYPE_FONT, in);
+            in.close();
+        } catch (Exception e) {
+            log.warning("Failed to load custom font, falling back to default.", e);
+            FbFont = BORING_DEFAULT;
+        }
+        FbFontLarge = FbFont.deriveFont(Font.PLAIN, 30);
+        FbFontMedium = FbFont.deriveFont(Font.PLAIN, 22);
+        FbFontSmall = FbFont.deriveFont(Font.PLAIN, 14);
+        try {
+            InputStream in =
+                CardBoxUI.class.getClassLoader().getResourceAsStream("rsrc/media/Lucida-Grande-Bold.ttf");
+            FbFontBold = Font.createFont(Font.TRUETYPE_FONT, in);
+            in.close();
+        } catch (Exception e) {
+            log.warning("Failed to load custom font, falling back to default.", e);
+            FbFontBold = BORING_DEFAULT;
+        }
+        FbFontBoldLarge = FbFontBold.deriveFont(Font.PLAIN, 30);
+        FbFontBoldMedium = FbFontBold.deriveFont(Font.PLAIN, 22);
+        FbFontBoldSmall = FbFontBold.deriveFont(Font.PLAIN, 14);
     }
     
     protected static CardBoxContext _ctx;
@@ -139,4 +176,8 @@ public class CardBoxUI
     // The image/icon used for the global Chat tab icon
     protected static ImageIcon globalChatPic = null;        
     protected static String GLOBAL_CHAT_PIC_PATH = "rsrc/media/globalIcon.png";    
+    
+    // The image/icon used for the global Chat tab icon
+    protected static ImageIcon facebookIcon = null;        
+    protected static String FACEBOOK_ICON_PATH = "rsrc/media/f_logo.png"; 
 }
