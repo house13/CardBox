@@ -68,6 +68,16 @@ public class FriendSet
 	    return _pictures.get(friendId);
 	}
 	
+	public void setPic(Long fbId, ImageIcon pic)
+	{
+		if (pic == null) {
+			log.info("Argument to FriendSet.setPic was null, taking no action");
+			return;
+		}
+		log.info("Display picture has been downloaded and properly rendered", "userid", fbId);
+		_pictures.put(fbId, pic);
+	}
+	
 	public void setPicFromRaw(Long fbId, String bytes)
 	{
 		if (bytes == null) {

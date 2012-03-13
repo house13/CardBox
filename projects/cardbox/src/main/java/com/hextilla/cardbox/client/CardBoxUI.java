@@ -87,6 +87,10 @@ public class CardBoxUI
     	return getImageIcon(facebookIcon, FACEBOOK_ICON_PATH, 140, 140, 20, 20);
     }  
     
+    public static ImageIcon renderDisplayPic(final InputStream in) {
+    	return renderDisplayPic(in, 32, 32);
+    }
+    
     public static ImageIcon renderDisplayPic(String bytes) {
     	return renderDisplayPicFromRaw(bytes, 32, 32);
     }
@@ -120,10 +124,23 @@ public class CardBoxUI
     /** Given a byte array containing JPEG image data, return an ImageIcon of the given scale */ 
     private static ImageIcon renderDisplayPicFromRaw(String bytes, int scaleW, int scaleH)
     {
-    	log.info("Attempting to render binary data into JPEG", "bytes", bytes);
     	BufferedImage img = null;
     	try {
     		InputStream in = new ByteArrayInputStream(bytes.getBytes());
+    		img = ImageIO.read(in);
+    	} catch (Exception e) {
+    		log.warning("Could not render display picture from raw", e);
+    		img = new BufferedImage(scaleW, scaleH, BufferedImage.TYPE_INT_RGB);
+    	}
+    	ImageIcon pic = new ImageIcon(img.getScaledInstance(scaleW, scaleH, Image.SCALE_SMOOTH));
+    	return pic;
+    }
+    
+    /** Given a byte array containing JPEG image data, return an ImageIcon of the given scale */ 
+    private static ImageIcon renderDisplayPic(final InputStream in, int scaleW, int scaleH)
+    {
+    	BufferedImage img = null;
+    	try {
     		img = ImageIO.read(in);
     	} catch (Exception e) {
     		log.warning("Could not render display picture from raw", e);

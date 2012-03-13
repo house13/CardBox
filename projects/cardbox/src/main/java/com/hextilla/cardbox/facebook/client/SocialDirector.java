@@ -16,6 +16,8 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
+import javax.swing.ImageIcon;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.concurrent.FutureCallback;
@@ -132,11 +134,6 @@ public class SocialDirector extends BasicDirector
 	        .setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 3000)
 	        .setIntParameter(CoreConnectionPNames.SOCKET_BUFFER_SIZE, 8 * 1024)
 	        .setBooleanParameter(CoreConnectionPNames.TCP_NODELAY, true);
-
-		//SSLLayeringStrategy _ssl = new SSLLayeringStrategy(new TrustSelfSignedStrategy(), new AllowAllHostnameVerifier());
-		//AsyncScheme _https = new AsyncScheme("https", 443, _ssl);
-		
-		//_http.getConnectionManager().getSchemeRegistry().register(_https);
 		
 		final CardBoxName friendname = friend;
 		final Long friendId = new Long(friendname.getFacebookId());
@@ -149,8 +146,8 @@ public class SocialDirector extends BasicDirector
 				@Override
 				public void completed(HttpResponse response) {
 					latch.countDown();
-					String imgdata = getData(response);
-					_friends.setPicFromRaw(friendId, imgdata);
+					ImageIcon img = getImageData(response);
+					_friends.setPic(friendId, img);
 					imageUpdated(friendname);
 				}
 
@@ -181,35 +178,20 @@ public class SocialDirector extends BasicDirector
 			_tracker.imageUpdated(friend);
 	}
 	
-	public static String getData(HttpResponse response)
+	public static ImageIcon getImageData(HttpResponse response)
 	{
-		int ch = 0;
-		String bytes = null;
-		StringBuffer b = new StringBuffer();
+		ImageIcon pic = null;
 		log.info("Retrieving image content from HttpResponse", "Response Status", response.getStatusLine());
 		try {
 			InputStream in = response.getEntity().getContent();
 			long len = response.getEntity().getContentLength();
-			log.info("Image content length, in bytes", "length", len);
-			// If we know the length of the data, read exactly that much
-			if (len > 0) {
-				for (long l = 0; l < len; ++l)
-					if ((ch = in.read()) != -1) {
-						b.append((char)ch);
-					}
-			} else {
-				while ((ch = in.read()) != -1) {
-					len = in.available();
-					b.append((char)ch);
-				}
-			}
+			if (len > 0)
+				pic = CardBoxUI.renderDisplayPic(in);
 			in.close();
-			bytes = b.toString();
 		} catch (IOException ioe) {
 			log.warning("There was a problem reading the returned content", "Response Status", response.getStatusLine(), ioe);
 		}
-		log.info("Binary image data retrieved", "bytes", bytes);
-		return bytes;
+		return pic;
 	}
 
 	protected String _token;
