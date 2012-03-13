@@ -6,15 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import javax.swing.JPanel;
-
 import com.hextilla.cardbox.data.CardBoxGameConfig;
 import com.hextilla.cardbox.data.TableMatchConfig;
-import com.hextilla.cardbox.lobby.data.LobbyObject;
-import com.hextilla.cardbox.lobby.table.TableItem;
 import com.hextilla.cardbox.util.CardBoxContext;
-import com.samskivert.swing.util.SwingUtil;
-import com.threerings.crowd.client.PlaceView;
 import com.threerings.crowd.data.PlaceObject;
 import com.threerings.parlor.client.SeatednessObserver;
 import com.threerings.parlor.client.TableDirector;
@@ -30,7 +24,7 @@ public class MatchMaker implements TableObserver, SeatednessObserver
 	// Use an enum to indicate status, we may need to change this if we need more info
 	public enum MatchStatus {
 		STOPPED,		// Matchmaking stopped and tables cleaned up
-		AVAILABLE
+		GAME_STARTED
 	}
 
 	public MatchMaker(CardBoxContext ctx, CardBoxGameConfig config, MatchMakerDirector mdtr, TableFilter filter) {
@@ -201,8 +195,8 @@ public class MatchMaker implements TableObserver, SeatednessObserver
 	                _openList.remove(table);
 	                _playList.add(updatedTable);
 	                
-	                // Notify the user that they have been matched
-	                NotifyMatchListeners(MatchStatus.AVAILABLE, table.tableId);
+	                // Notify listeners that a game has moved from open, to started
+	                NotifyMatchListeners(MatchStatus.GAME_STARTED, table.tableId);
 	    			
     			// Otherwise just update the current entry	    			
 	    		} else {
