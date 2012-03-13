@@ -26,8 +26,9 @@
 -dontwarn org.apache.commons.codec.**
 -dontwarn org.apache.commons.collections.**
 -dontwarn org.apache.commons.digester.**
--dontwarn org.apache.commons.logging.**
+-dontwarn org.apache.log.**
 -dontwarn org.apache.log4j.**
+-dontwarn org.apache.avalon.**
 -dontwarn org.apache.mina.**
 -dontwarn org.apache.tools.ant.**
 -dontwarn org.apache.velocity.**
@@ -62,6 +63,13 @@
     public protected *;
 }
 -keep public class com.samskivert.util.** {
+    public protected *;
+}
+
+-keep public class org.apache.commons.logging.Log {
+    public protected *;
+}
+-keep public class org.apache.commons.logging.LogFactory {
     public protected *;
 }
 
