@@ -38,7 +38,7 @@ import static com.hextilla.cardbox.Log.log;
  */
 public class CardBoxUI
 {
-    /** The fancy cursive font we use to display game names. */
+    /** The fonts we use to display game names. */
 	public static Font TitleFontLarge;
 	public static Font TitleFontMedium;
 	public static Font TitleFontSmall;
@@ -58,6 +58,9 @@ public class CardBoxUI
     
     /** The nice blue background we use for scrolly bits. */
     public static final Color LIGHT_BLUE = new Color(0xC8E1E9);
+    public static final Color ORANGE = new Color(250, 153, 0);
+    public static final Color DARK_BLUE = new Color(145, 185, 215);
+    public static final Color GRAY = Color.DARK_GRAY;
     
     public static ImageIcon getDefaultDisplayPic(){
     	

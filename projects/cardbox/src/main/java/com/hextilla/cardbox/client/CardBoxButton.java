@@ -1,6 +1,5 @@
 package com.hextilla.cardbox.client;
 
-import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -25,24 +24,24 @@ public class CardBoxButton extends JButton implements MouseListener {
 		Graphics2D gfx = (Graphics2D)g;
 		gfx.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
-		g.setColor(Color.DARK_GRAY);
+		g.setColor(CardBoxUI.GRAY);
 		g.fillRoundRect(0, 0, this.getWidth()-1, this.getHeight()-1, 16, 16);
 
 		if (m_mouseInside) {
-			g.setColor(new Color(145, 185, 215));
+			g.setColor(CardBoxUI.DARK_BLUE);
 		} else {
-			g.setColor(new Color(225, 235, 250));
+			g.setColor(CardBoxUI.LIGHT_BLUE);
 		}
 		g.fillRoundRect(2, 2, this.getWidth()-5, this.getHeight()-5, 12, 12);
 		
 		if (m_pressed) {
-			g.setColor(new Color(190, 205, 225));
+			g.setColor(CardBoxUI.DARK_BLUE);
 		} else {
-			g.setColor(new Color(225, 235, 250));
+			g.setColor(CardBoxUI.LIGHT_BLUE);
 		}
 		g.fillRoundRect(4, 4, this.getWidth()-9, this.getHeight()-9, 10, 10);
 		
-		g.setColor(Color.DARK_GRAY);
+		g.setColor(CardBoxUI.GRAY);
 		FontMetrics metrics = g.getFontMetrics(this.getFont());
 		int textHeight = metrics.getHeight();
 		int textWidth = metrics.stringWidth(this.getText());
