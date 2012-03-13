@@ -65,12 +65,6 @@ public class SocialDirector extends BasicDirector
 		CardBoxUserObject user = (CardBoxUserObject)client.getClientObject();
 		_token = user.getSession();
 		_fbclient = StringUtil.isBlank(_token) ? null : new DefaultFacebookClient(_token);
-		try {
-			_ssl = new SSLLayeringStrategy(new TrustSelfSignedStrategy(), new AllowAllHostnameVerifier());
-			_https = new AsyncScheme("https", 443, _ssl);
-		} catch (Exception e) {
-			log.warning("An error occurred when initializing our HTTPS handling", e);
-		}
 	} 
 	
 	@Override
@@ -129,7 +123,7 @@ public class SocialDirector extends BasicDirector
 		// If our social services aren't online, don't even bother with this stuff
 		if (_fbclient == null) return;
 		
-		log.info("Now downloading a friend's display picture", "friend", friend, "url", url);
+		log.info("Now downloading a friend's display picture", "friend", friend.getFriendlyName().toString(), "url", url);
 		
 		HttpAsyncClient _http = new DefaultHttpAsyncClient();
 		_http.getParams()
@@ -137,6 +131,10 @@ public class SocialDirector extends BasicDirector
 	        .setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 3000)
 	        .setIntParameter(CoreConnectionPNames.SOCKET_BUFFER_SIZE, 8 * 1024)
 	        .setBooleanParameter(CoreConnectionPNames.TCP_NODELAY, true);
+
+		SSLLayeringStrategy _ssl = new SSLLayeringStrategy(new TrustSelfSignedStrategy(), new AllowAllHostnameVerifier());
+		AsyncScheme _https = new AsyncScheme("https", 443, _ssl);
+		
 		_http.getConnectionManager().getSchemeRegistry().register(_https);
 		
 		final CardBoxName friendname = friend;
@@ -155,12 +153,13 @@ public class SocialDirector extends BasicDirector
 
 				@Override
 				public void cancelled() {
-					// no-op
+					System.out.println("Asynchronous download of display picture was cancelled.");
 				}
 
 				@Override
 				public void failed(Exception err) {
-					// no-op
+					System.out.println("Asynchronous download of display picture failed.");
+					err.printStackTrace();
 				}
 			});
 			log.info("Shutting down HttpAsyncClient after executing HTTP GET");
@@ -217,8 +216,4 @@ public class SocialDirector extends BasicDirector
 	// Delegate the responsibility of tracking online friends using the FriendTracker interface
 	protected FriendTracker _tracker = null;
 	protected FriendIterator _iterator = null;
-	
-	/** Keep around a single copy of our simple SSL strategy */
-	private SSLLayeringStrategy _ssl;
-	private AsyncScheme _https;
 }
