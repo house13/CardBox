@@ -1,5 +1,6 @@
 package com.hextilla.cardbox.facebook.client;
 
+import com.hextilla.cardbox.client.CardBoxUI;
 import com.hextilla.cardbox.data.CardBoxUserObject;
 import com.hextilla.cardbox.facebook.CardBoxName;
 import com.hextilla.cardbox.facebook.UserWithPicture;
@@ -17,8 +18,12 @@ import java.util.List;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.concurrent.FutureCallback;
+import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.nio.client.DefaultHttpAsyncClient;
 import org.apache.http.nio.client.HttpAsyncClient;
+import org.apache.http.nio.conn.scheme.AsyncScheme;
+import org.apache.http.nio.conn.ssl.SSLLayeringStrategy;
 import org.apache.http.params.CoreConnectionPNames;
 
 import com.samskivert.util.StringUtil;
@@ -66,6 +71,13 @@ public class SocialDirector extends BasicDirector
 	        .setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 3000)
 	        .setIntParameter(CoreConnectionPNames.SOCKET_BUFFER_SIZE, 8 * 1024)
 	        .setBooleanParameter(CoreConnectionPNames.TCP_NODELAY, true);
+		try {
+			SSLLayeringStrategy ssl_strategy = new SSLLayeringStrategy(new TrustSelfSignedStrategy(), new AllowAllHostnameVerifier());
+			AsyncScheme https_scheme = new AsyncScheme("https", 443, ssl_strategy);
+			_http.getConnectionManager().getSchemeRegistry().register(https_scheme);
+		} catch (Exception e) {
+			log.warning("An error occurred when initializing our HTTPS handling", e);
+		}
 	} 
 	
 	@Override
@@ -193,6 +205,7 @@ public class SocialDirector extends BasicDirector
 	/** Manage the reference to the set of raw friend data from Facebook. */
 	protected FriendSet _friends = null;
 	
+	/** Our fancy schmancy asynchronous HTTP client */
 	protected HttpAsyncClient _http = null;
 	
 	/** The giver of life and services */

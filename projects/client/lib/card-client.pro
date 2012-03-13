@@ -72,6 +72,9 @@
 -keep public class org.apache.http.concurrent.FutureCallback {
     public protected *;
 }
+-keep public class org.apache.http.conn.ssl.** {
+    public protected *;
+}
 -keep public class org.apache.http.client.methods.HttpGet {
     public protected *;
 }
@@ -79,6 +82,12 @@
     public protected *;
 }
 -keep public class org.apache.http.nio.client.HttpAsyncClient {
+    public protected *;
+}
+-keep public class org.apache.http.nio.conn.scheme.AsyncScheme {
+    public protected *;
+}
+-keep public class org.apache.http.nio.con.ssl.SSLLayeringStrategy {
     public protected *;
 }
 -keep public class org.apache.http.impl.nio.client.DefaultHttpAsyncClient {
