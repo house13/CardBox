@@ -19,12 +19,9 @@
 
 package com.hextilla.cardbox.client;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.RenderingHints;
 import java.io.IOException;
 import java.net.URL;
 
@@ -109,7 +106,7 @@ public class CardBoxApplet extends ManagedJApplet
         // and our game id and game oid
         carddtr.setGameId(game_id, getIntParameter("game_oid", -1));  
         
-        setBackground(Color.black);         
+        setBackground(CardBoxUI.ORANGE);         
     }
 
     @Override // from Applet
