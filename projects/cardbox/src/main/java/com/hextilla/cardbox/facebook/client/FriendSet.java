@@ -72,6 +72,10 @@ public class FriendSet
 	
 	public void setPicFromRaw(Long fbId, String bytes)
 	{
+		if (bytes == null) {
+			log.info("Argument to FriendSet.setPicFromRaw was null, taking no action");
+			return;
+		}
 		ImageIcon pic = CardBoxUI.renderDisplayPic(bytes);
 		_pictures.put(fbId, pic);
 	}

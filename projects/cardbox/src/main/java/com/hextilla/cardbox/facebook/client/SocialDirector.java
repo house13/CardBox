@@ -148,23 +148,19 @@ public class SocialDirector extends BasicDirector
 				
 				@Override
 				public void completed(HttpResponse response) {
-					try {
-						String imgdata = getData(response);
-						_friends.setPicFromRaw(friendId, imgdata);
-						imageUpdated(name);
-					} catch (Exception e) {
-						log.warning("Error processing image download response for " + name.getFriendlyName(), e);
-					}
+					String imgdata = getData(response);
+					_friends.setPicFromRaw(friendId, imgdata);
+					imageUpdated(name);
 				}
 
 				@Override
 				public void cancelled() {
-					log.info("Cancelled image download for " + name.getFriendlyName());
+					// no-op
 				}
 
 				@Override
 				public void failed(Exception err) {
-					log.warning("Error downloading display picture for " + name.getFriendlyName(), err);
+					// no-op
 				}
 			});
 		} finally {
@@ -180,26 +176,31 @@ public class SocialDirector extends BasicDirector
 	}
 	
 	public static String getData(HttpResponse response)
-			throws IOException
 	{
 		int ch = 0;
+		String bytes = null;
 		StringBuffer b = new StringBuffer();
-		InputStream in = response.getEntity().getContent();
-		long len = response.getEntity().getContentLength();
-		// If we know the length of the data, read exactly that much
-		if (len > 0) {
-			for (long l = 0; l < len; ++l)
-				if ((ch = in.read()) > 0) {
+		try {
+			InputStream in = response.getEntity().getContent();
+			long len = response.getEntity().getContentLength();
+			// If we know the length of the data, read exactly that much
+			if (len > 0) {
+				for (long l = 0; l < len; ++l)
+					if ((ch = in.read()) > 0) {
+						b.append((char)ch);
+					}
+			} else {
+				while ((ch = in.read()) > 0) {
+					len = in.available();
 					b.append((char)ch);
 				}
-		} else {
-			while ((ch = in.read()) > 0) {
-				len = in.available();
-				b.append((char)ch);
 			}
+			in.close();
+			bytes = b.toString();
+		} catch (IOException ioe) {
+			log.warning("There was a problem reading the returned content", "Response Status", response.getStatusLine(), ioe);
 		}
-		in.close();
-		return b.toString();
+		return bytes;
 	}
 
 	protected String _token;
