@@ -102,8 +102,9 @@ public class FBUserRepository extends DepotRepository
  public FBUserRecord loadUser (String sessionHash)
      throws PersistenceException
  {
+	 Calendar now = Calendar.getInstance();
 	 SessionMapRecord maptoSession = load(SessionMapRecord.getKey(sessionHash));
-	 if (maptoSession == null)
+	 if (maptoSession == null || maptoSession.expires < now.getTimeInMillis())
 	 {
 		 log.warning("Query for user by session returned 0 rows.", "session", sessionHash);
 		 return null;

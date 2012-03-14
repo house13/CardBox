@@ -14,6 +14,9 @@ import com.restfb.Parameter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+
+import javax.swing.ImageIcon;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -65,12 +68,6 @@ public class SocialDirector extends BasicDirector
 		CardBoxUserObject user = (CardBoxUserObject)client.getClientObject();
 		_token = user.getSession();
 		_fbclient = StringUtil.isBlank(_token) ? null : new DefaultFacebookClient(_token);
-		try {
-			_ssl = new SSLLayeringStrategy(new TrustSelfSignedStrategy(), new AllowAllHostnameVerifier());
-			_https = new AsyncScheme("https", 443, _ssl);
-		} catch (Exception e) {
-			log.warning("An error occurred when initializing our HTTPS handling", e);
-		}
 	} 
 	
 	@Override
@@ -129,7 +126,7 @@ public class SocialDirector extends BasicDirector
 		// If our social services aren't online, don't even bother with this stuff
 		if (_fbclient == null) return;
 		
-		log.info("Now downloading a friend's display picture", "friend", friend, "url", url);
+		log.info("Now downloading a friend's display picture", "friend", friend.getFriendlyName().toString(), "url", url);
 		
 		HttpAsyncClient _http = new DefaultHttpAsyncClient();
 		_http.getParams()
@@ -137,10 +134,10 @@ public class SocialDirector extends BasicDirector
 	        .setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 3000)
 	        .setIntParameter(CoreConnectionPNames.SOCKET_BUFFER_SIZE, 8 * 1024)
 	        .setBooleanParameter(CoreConnectionPNames.TCP_NODELAY, true);
-		_http.getConnectionManager().getSchemeRegistry().register(_https);
 		
-		final CardBoxName name = friend;
-		final Long friendId = new Long(friend.getFacebookId());
+		final CardBoxName friendname = friend;
+		final Long friendId = new Long(friendname.getFacebookId());
+		final CountDownLatch latch = new CountDownLatch(1);
 		_http.start();
 		try {
 			HttpGet get = new HttpGet(url);
@@ -148,21 +145,27 @@ public class SocialDirector extends BasicDirector
 				
 				@Override
 				public void completed(HttpResponse response) {
-					String imgdata = getData(response);
-					_friends.setPicFromRaw(friendId, imgdata);
-					imageUpdated(name);
+					latch.countDown();
+					ImageIcon img = getImageData(response);
+					_friends.setPic(friendId, img);
+					imageUpdated(friendname);
 				}
 
 				@Override
 				public void cancelled() {
-					// no-op
+					latch.countDown();
+					System.out.println("Asynchronous download of display picture was cancelled.");
 				}
 
 				@Override
 				public void failed(Exception err) {
-					// no-op
+					latch.countDown();
+					System.out.println("Asynchronous download of display picture failed.");
+					err.printStackTrace();
 				}
 			});
+			latch.await();
+			log.info("Shutting down HttpAsyncClient after executing HTTP GET");
 		} finally {
 			_http.shutdown();
 		}
@@ -175,32 +178,20 @@ public class SocialDirector extends BasicDirector
 			_tracker.imageUpdated(friend);
 	}
 	
-	public static String getData(HttpResponse response)
+	public static ImageIcon getImageData(HttpResponse response)
 	{
-		int ch = 0;
-		String bytes = null;
-		StringBuffer b = new StringBuffer();
+		ImageIcon pic = null;
+		log.info("Retrieving image content from HttpResponse", "Response Status", response.getStatusLine());
 		try {
 			InputStream in = response.getEntity().getContent();
 			long len = response.getEntity().getContentLength();
-			// If we know the length of the data, read exactly that much
-			if (len > 0) {
-				for (long l = 0; l < len; ++l)
-					if ((ch = in.read()) > 0) {
-						b.append((char)ch);
-					}
-			} else {
-				while ((ch = in.read()) > 0) {
-					len = in.available();
-					b.append((char)ch);
-				}
-			}
+			if (len > 0)
+				pic = CardBoxUI.renderDisplayPic(in);
 			in.close();
-			bytes = b.toString();
 		} catch (IOException ioe) {
 			log.warning("There was a problem reading the returned content", "Response Status", response.getStatusLine(), ioe);
 		}
-		return bytes;
+		return pic;
 	}
 
 	protected String _token;
@@ -216,8 +207,4 @@ public class SocialDirector extends BasicDirector
 	// Delegate the responsibility of tracking online friends using the FriendTracker interface
 	protected FriendTracker _tracker = null;
 	protected FriendIterator _iterator = null;
-	
-	/** Keep around a single copy of our simple SSL strategy */
-	private SSLLayeringStrategy _ssl;
-	private AsyncScheme _https;
 }

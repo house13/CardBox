@@ -66,6 +66,7 @@
     public protected *;
 }
 
+# need to add commons-logging classes to appease HttpAsyncClient
 -keep public class org.apache.commons.logging.Log {
     public protected *;
 }
@@ -73,6 +74,9 @@
     public protected *;
 }
 -keep public class org.apache.commons.logging.impl.LogFactoryImpl {
+    public protected *;
+}
+-keep public class org.apache.commons.logging.impl.Jdk14Logger {
     public protected *;
 }
 
