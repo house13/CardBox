@@ -62,8 +62,7 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
         _devmode = (config.getGameId() == -1);
         
         // Add the friendPanel (same size as button panel)
-        _friendList = new FriendListPanel(ctx, friendlyConfig);
-        _friendList.setBorder(BorderFactory.createLineBorder(Color.BLACK));     
+        _friendList = new FriendListPanel(ctx, friendlyConfig);   
         
         // Setup he chat panel, use a tabbed pane
         JTabbedPane chatPane = new JTabbedPane(JTabbedPane.LEFT);
