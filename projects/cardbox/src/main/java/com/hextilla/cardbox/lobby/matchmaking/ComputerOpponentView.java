@@ -16,12 +16,12 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
 
-import com.hextilla.cardbox.client.CardBoxButton;
 import com.hextilla.cardbox.client.CardBoxUI;
 import com.hextilla.cardbox.data.CardBoxGameConfig;
 import com.hextilla.cardbox.data.TableMatchConfig;
 import com.hextilla.cardbox.lobby.data.LobbyCodes;
 import com.hextilla.cardbox.lobby.table.TableItem;
+import com.hextilla.cardbox.swing.CardBoxButton;
 import com.hextilla.cardbox.util.CardBoxContext;
 import com.threerings.crowd.data.PlaceObject;
 import com.threerings.parlor.client.SeatednessObserver;

@@ -72,9 +72,9 @@ import com.threerings.crowd.data.OccupantInfo;
 import com.threerings.crowd.data.PlaceObject;
 
 import com.hextilla.cardbox.client.CardBoxUI;
-import com.hextilla.cardbox.client.CardBoxButton;
 import com.hextilla.cardbox.data.CardBoxCodes;
 import com.hextilla.cardbox.facebook.CardBoxName;
+import com.hextilla.cardbox.swing.CardBoxButton;
 import com.hextilla.cardbox.util.CardBoxContext;
 
 import static com.hextilla.cardbox.Log.log;

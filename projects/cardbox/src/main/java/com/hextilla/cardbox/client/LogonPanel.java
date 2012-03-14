@@ -51,6 +51,7 @@ import com.threerings.presents.client.Client;
 import com.threerings.presents.client.ClientObserver;
 import com.threerings.presents.client.LogonException;
 
+import com.hextilla.cardbox.swing.CardBoxButton;
 import com.hextilla.cardbox.util.CardBoxContext;
 
 import static com.hextilla.cardbox.Log.log;
