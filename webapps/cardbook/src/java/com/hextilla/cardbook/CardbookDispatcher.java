@@ -43,9 +43,6 @@ public class CardbookDispatcher extends DispatcherServlet
         // doesn't confuse Java Web Start (it doesn't allow JNLP files to
         // differ only by query parameters)
         String path = ctx.getRequest().getServletPath();
-        if (_jnlppat.matcher(path).matches()) {
-            path = "/play_jnlp.wm";
-        }
 
         if (_usingSiteLoading) {
             // if we're using site resource loading, we need to prefix the path
@@ -58,11 +55,6 @@ public class CardbookDispatcher extends DispatcherServlet
     @Override // documentation inherited
     protected Logic resolveLogic (String path)
     {
-        if (_jnlppat.matcher(path).matches()) {
-            path = "/play_jnlp.wm";
-        }
         return super.resolveLogic(path);
     }
-
-    protected Pattern _jnlppat = Pattern.compile("/[A-Za-z0-9]+.jnlp");
 }

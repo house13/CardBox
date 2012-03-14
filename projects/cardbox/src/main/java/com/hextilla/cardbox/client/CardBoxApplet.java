@@ -116,14 +116,14 @@ public class CardBoxApplet extends ManagedJApplet
         _framemgr.start();
         
         // We'll ask the width and height by this 
-        dim = getSize(); 
-        // Create an offscreen image to draw on 
+        _dim = getSize(); 
+        // Create an _offscreen image to draw on 
         // Make it the size of the applet, this is just perfect larger 
         // size could slow it down unnecessary. 
-        offscreen = createImage(dim.width,dim.height); 
-        // by doing this everything that is drawn by bufferGraphics 
-        // will be written on the offscreen image. 
-        bufferGraphics = offscreen.getGraphics();        
+        _offscreen = createImage(_dim.width,_dim.height); 
+        // by doing this everything that is drawn by _buffer 
+        // will be written on the _offscreen image. 
+        _buffer = _offscreen.getGraphics();        
     }
 
     @Override // from Applet
@@ -140,7 +140,43 @@ public class CardBoxApplet extends ManagedJApplet
             }
         }
     }
+    
+    @Override
+    public void invalidate()
+    {
+    	super.invalidate();
+    	_offscreen = null;
+    	_buffer = null;
+    	_dim = null;
+    }
 
+    @Override
+    public void paint(Graphics g)  
+    {   
+    	if (_offscreen == null) 
+    	{
+    		// We've been invalidated, time to recalculate
+            _dim = getSize(); 
+            _offscreen = createImage(_dim.width,_dim.height); 
+            _buffer = _offscreen.getGraphics();  
+    	}
+    	_buffer.clearRect(0,0,_dim.width,_dim.width); 
+    	super.paint(_buffer);
+        super.paintAll(_buffer); 
+        g.drawImage(_offscreen,0,0,this); 
+    }
+
+    // Always required for good double-buffering. 
+    // This will cause the applet not to first wipe off 
+    // previous drawings but to immediately repaint. 
+    // the wiping off also causes flickering. 
+    // Update is called automatically when repaint() is called.
+    @Override
+    public void update(Graphics g) 
+    { 
+         paint(g); 
+    }
+    
     /** Helpy helper function. */
     protected int getIntParameter (String name, int defvalue)
     {
@@ -158,34 +194,13 @@ public class CardBoxApplet extends ManagedJApplet
     {
         return new CardBoxClient();
     }
-
-    public void paint(Graphics g)  
-    {    
-    	bufferGraphics.clearRect(0,0,dim.width,dim.width); 
-    	super.paint(bufferGraphics);
-        super.paintAll(bufferGraphics); 
-        g.drawImage(offscreen,0,0,this); 
-    }
-
-    // Always required for good double-buffering. 
-    // This will cause the applet not to first wipe off 
-    // previous drawings but to immediately repaint. 
-    // the wiping off also causes flickering. 
-    // Update is called automatically when repaint() is called.
-
-    public void update(Graphics g) 
-    { 
-         paint(g); 
-    }
     
     protected CardBoxClient _client;
     protected FrameManager _framemgr;
     
-    Graphics bufferGraphics; 
-    // The image that will contain everything that has been drawn on 
-    // bufferGraphics. 
-    Image offscreen; 
-    // To get the width and height of the applet. 
-    Dimension dim; 
-    int curX, curY;
+    /** Our double-buffering kit */
+    protected Image _offscreen; 
+    protected Graphics _buffer;
+    /** Cache the size of the applet */
+    protected Dimension _dim; 
 }
