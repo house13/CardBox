@@ -283,6 +283,7 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
         chatPane.setPreferredSize(CHAT_MAX_SIZE);
         chatPane.setMinimumSize(CHAT_MIN_SIZE);          
         
+        _friendList.setMaximumSize(LIST_MAX_SIZE);
         _friendList.setPreferredSize(LIST_MAX_SIZE);
         _friendList.setMinimumSize(LIST_MIN_SIZE);          
 		
@@ -312,7 +313,7 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
         // sequential{ parallel{ sequential{optsButton, _matchMaker}, friendPanel}, chatPane}
         layout.setVerticalGroup(
 	    		   layout.createSequentialGroup()
-	    		      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER, true)
+	    		      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, true)
 	    		    		  .addGroup(layout.createSequentialGroup()
 	    		    				  .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, true)
 	    		    						  	.addComponent(_onlinePlayerLabel)
@@ -397,7 +398,7 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
     protected static Dimension BUTTON_MIN_SIZE = new Dimension(200, 25);
     
 	// Max/Min Sizes for the Friend List
-    protected static Dimension LIST_MAX_SIZE = new Dimension(400, 300);
+    protected static Dimension LIST_MAX_SIZE = new Dimension(400, 400);
     protected static Dimension LIST_MIN_SIZE = new Dimension(200, 75);	
     
 	// Max/Min Sizes for the Chat

@@ -42,6 +42,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
+import javax.swing.SwingConstants;
 
 import com.samskivert.swing.MultiLineLabel;
 import com.samskivert.swing.util.SwingUtil;
@@ -85,8 +86,9 @@ public class LobbyPanel extends JPanel
     	setLayout(new BorderLayout());   
     	
     	// Add the page title
-        _title = new MultiLineLabel("", MultiLineLabel.CENTER);
+        _title = new MultiLineLabel("", MultiLineLabel.CENTER, SwingConstants.VERTICAL, 0);
         _title.setFont(CardBoxUI.TitleFontLarge);
+        
         add(_title, BorderLayout.NORTH);
         
         // Loading bar for download progress
@@ -127,6 +129,7 @@ public class LobbyPanel extends JPanel
     {
         _lobj = (LobbyObject)plobj;
         _title.setText(_lobj.name.toUpperCase());
+        invalidate();
     }
 
     // documentation inherited
