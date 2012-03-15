@@ -71,6 +71,7 @@ public class LobbyController extends PlaceController
             public boolean downloadProgress (int percent, long remaining) {
                 log.info("Download progress: " + percent);             
                 if (percent == 100) {
+                	_panel.setDownloadProgress(percent);
                 	_panel.loadGamePanel(_config);
                 } else {
                    _panel.setDownloadProgress(percent);
