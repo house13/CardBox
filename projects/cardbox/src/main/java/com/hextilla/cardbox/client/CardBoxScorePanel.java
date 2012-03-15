@@ -62,6 +62,9 @@ public class CardBoxScorePanel extends TurnDisplay implements AttributeChangeLis
 	{
 		_winIcon = icon;
 		setMinIconDim(icon);
+        if (_turnObj != null) {
+            createList();
+        }
 	}
 	
 	// Set the draw icon
@@ -69,13 +72,19 @@ public class CardBoxScorePanel extends TurnDisplay implements AttributeChangeLis
 	{
 		_drawIcon = icon;
 		setMinIconDim(icon);
+        if (_turnObj != null) {
+            createList();
+        }
 	}
 	
 	@Override
 	public void setTurnIcon(Icon icon)
 	{
-		super.setTurnIcon(icon);
+		_turnIcon = icon;
 		setMinIconDim(icon);
+        if (_turnObj != null) {
+            createList();
+        }
 	}
 
     // from interface PlaceView
@@ -191,8 +200,8 @@ public class CardBoxScorePanel extends TurnDisplay implements AttributeChangeLis
     /** A reference to our game object. */
     protected CardBoxGameObject _gameobj;  
     
-    protected Icon _winIcon = null;
-    protected Icon _drawIcon = null;
+    protected Icon _winIcon;
+    protected Icon _drawIcon;
     
     protected Dimension _minIconDim = new Dimension(0, 0);
 }
