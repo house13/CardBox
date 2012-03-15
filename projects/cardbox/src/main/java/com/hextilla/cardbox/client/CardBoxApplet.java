@@ -114,16 +114,8 @@ public class CardBoxApplet extends ManagedJApplet
     {
         super.start();
         _framemgr.start();
-        
-        // We'll ask the width and height by this 
-        _dim = getSize(); 
-        // Create an _offscreen image to draw on 
-        // Make it the size of the applet, this is just perfect larger 
-        // size could slow it down unnecessary. 
-        _offscreen = createImage(_dim.width,_dim.height); 
-        // by doing this everything that is drawn by _buffer 
-        // will be written on the _offscreen image. 
-        _buffer = _offscreen.getGraphics();        
+        // If our size is set dynamically, we should probably know by the time we start
+        recalculate();
     }
 
     @Override // from Applet
@@ -153,12 +145,9 @@ public class CardBoxApplet extends ManagedJApplet
     @Override
     public void paint(Graphics g)  
     {   
-    	if (_offscreen == null) 
-    	{
+    	if (_offscreen == null) {
     		// We've been invalidated, time to recalculate
-            _dim = getSize(); 
-            _offscreen = createImage(_dim.width,_dim.height); 
-            _buffer = _offscreen.getGraphics();  
+            recalculate();
     	}
     	_buffer.clearRect(0,0,_dim.width,_dim.width); 
     	super.paint(_buffer);
@@ -174,6 +163,20 @@ public class CardBoxApplet extends ManagedJApplet
     public void update(Graphics g) 
     { 
          paint(g); 
+    }
+    
+    /** Refresh our cached applet dimensions, and start a new buffer from scratch */
+    protected void recalculate()
+    {
+    	// We'll ask the width and height by this 
+        _dim = getSize(); 
+        // Create an _offscreen image to draw on 
+        // Make it the size of the applet, this is just perfect larger 
+        // size could slow it down unnecessary. 
+        _offscreen = createImage(_dim.width,_dim.height); 
+        // by doing this everything that is drawn by _buffer 
+        // will be written on the _offscreen image. 
+        _buffer = _offscreen.getGraphics();  
     }
     
     /** Helpy helper function. */
@@ -198,8 +201,8 @@ public class CardBoxApplet extends ManagedJApplet
     protected FrameManager _framemgr;
     
     /** Our double-buffering kit */
-    protected Image _offscreen; 
-    protected Graphics _buffer;
-    /** Cache the size of the applet */
-    protected Dimension _dim; 
+    protected Image _offscreen = null; 
+    protected Graphics _buffer = null;
+    /** Cache the latest size of the applet */
+    protected Dimension _dim = null; 
 }
