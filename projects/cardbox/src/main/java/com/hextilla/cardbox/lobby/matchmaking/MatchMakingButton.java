@@ -3,8 +3,8 @@ package com.hextilla.cardbox.lobby.matchmaking;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Timer;
-import com.hextilla.cardbox.client.CardBoxButton;
 import com.hextilla.cardbox.lobby.matchmaking.MatchMaker.MatchStatus;
+import com.hextilla.cardbox.swing.CardBoxButton;
 
 @SuppressWarnings("serial")
 public class MatchMakingButton extends CardBoxButton {

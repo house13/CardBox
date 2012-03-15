@@ -66,6 +66,7 @@ public class CardBoxUI
     public static final Color ORANGE = new Color(250, 153, 0);
     public static final Color DARK_BLUE = new Color(145, 185, 215);
     public static final Color GRAY = Color.DARK_GRAY;
+    public static final Color CHAT_BACKGROUND = new Color(0xC8E1E9);;
     
     public static ImageIcon getDefaultDisplayPic() {
     	

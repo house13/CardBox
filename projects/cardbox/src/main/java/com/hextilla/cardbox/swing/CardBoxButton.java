@@ -1,4 +1,4 @@
-package com.hextilla.cardbox.client;
+package com.hextilla.cardbox.swing;
 
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -8,6 +8,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.JButton;
+
+import com.hextilla.cardbox.client.CardBoxUI;
 
 @SuppressWarnings("serial")
 public class CardBoxButton extends JButton implements MouseListener {

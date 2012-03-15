@@ -4,13 +4,17 @@ import static com.hextilla.cardbox.lobby.Log.log;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.GroupLayout;
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import com.hextilla.cardbox.client.CardBoxUI;
 import com.hextilla.cardbox.client.chat.ChatPanel;
@@ -30,12 +34,10 @@ import com.hextilla.cardbox.lobby.matchmaking.MatchMakingButton;
 import com.hextilla.cardbox.lobby.matchmaking.StrangerTableFilter;
 import com.hextilla.cardbox.lobby.matchmaking.FriendTableFilter;
 import com.hextilla.cardbox.lobby.matchmaking.MatchMaker.MatchStatus;
+import com.hextilla.cardbox.swing.CardBoxTabbedPanel;
 import com.hextilla.cardbox.util.CardBoxContext;
 import com.threerings.crowd.client.PlaceView;
 import com.threerings.crowd.data.PlaceObject;
-
-import com.threerings.crowd.server.PlaceManager;
-import com.threerings.parlor.client.TableDirector;
 import com.threerings.util.MessageBundle;
 
 
@@ -63,14 +65,22 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
         
         // Add the friendPanel (same size as button panel)
         _friendList = new FriendListPanel(ctx, friendlyConfig);   
+                
+        // Modify the look/feel of the tabbedPane
+        UIDefaults def = UIManager.getLookAndFeelDefaults();
+        def.put("TabbedPane.unselectedBackground", CardBoxUI.DARK_BLUE);
+        def.put("TabbedPane.selected", CardBoxUI.CHAT_BACKGROUND);
+        def.put("TabbedPane.tabInsets", new Insets((CHAT_MIN_SIZE.height - CardBoxUI.getGlobalChatIcon().getIconHeight())/2, 5, 
+        		(CHAT_MIN_SIZE.height - CardBoxUI.getGlobalChatIcon().getIconHeight())/2, 5));        
         
         // Setup he chat panel, use a tabbed pane
-        JTabbedPane chatPane = new JTabbedPane(JTabbedPane.LEFT);
-        chatPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-        _friendChat = new FriendChatPanel(ctx, ctx.getChatDirector(), true);      
-        _globalChat = new StrangerChatPanel(ctx, ctx.getFriendChatDirector(), true);             
+        CardBoxTabbedPanel chatPane = new CardBoxTabbedPanel(JTabbedPane.LEFT);
+        chatPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);        
+        _friendChat = new FriendChatPanel(ctx, ctx.getChatDirector(), true);
+        _globalChat = new StrangerChatPanel(ctx, ctx.getFriendChatDirector(), true);
         chatPane.addTab("", CardBoxUI.getGlobalChatIcon(), _globalChat, "Global Chat");
-        chatPane.addTab("", CardBoxUI.getFriendChatIcon(), _friendChat, "Friend Only Chat");                       			             
+        chatPane.addTab("", CardBoxUI.getFriendChatIcon(), _friendChat, "Friend Only Chat");
+        chatPane.setBackground(_globalChat.getBackground());
         
         // Classes to handle match making
         _mdtr = new MatchMakerDirector(ctx);
