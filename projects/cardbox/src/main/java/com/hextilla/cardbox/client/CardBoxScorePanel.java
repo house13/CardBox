@@ -61,21 +61,21 @@ public class CardBoxScorePanel extends TurnDisplay implements AttributeChangeLis
 	public void setWinnerIcon(Icon icon)
 	{
 		_winIcon = icon;
-		setMinIconDim();
+		setMinIconDim(icon);
 	}
 	
 	// Set the draw icon
 	public void setDrawIcon(Icon icon)
 	{
 		_drawIcon = icon;
-		setMinIconDim();
+		setMinIconDim(icon);
 	}
 	
 	@Override
 	public void setTurnIcon(Icon icon)
 	{
 		super.setTurnIcon(icon);
-		setMinIconDim();
+		setMinIconDim(icon);
 	}
 
     // from interface PlaceView
@@ -131,11 +131,14 @@ public class CardBoxScorePanel extends TurnDisplay implements AttributeChangeLis
             JLabel iconLabel = new JLabel();
             if (winners == null) {
                 if (names[i].equals(holder)) {
+                	System.out.println("TurnIcon");
                     iconLabel.setIcon(_turnIcon);                  
                 }
             } else if (_gameobj.isDraw()) {
+            	System.out.println("draw");
                 iconLabel.setIcon(_drawIcon);
             } else if (winners[i]) {
+            	System.out.println("win");
                 iconLabel.setIcon(_winIcon);
             }
             iconLabel.setMinimumSize(_minIconDim);                                
@@ -180,9 +183,9 @@ public class CardBoxScorePanel extends TurnDisplay implements AttributeChangeLis
         SwingUtil.refresh(this);     
     }    
     
-    protected void setMinIconDim(){
-    	_minIconDim = new Dimension(Math.max(Math.max(_drawIcon.getIconWidth(), _winIcon.getIconWidth()), _turnIcon.getIconWidth())
-    			, Math.max(Math.max(_drawIcon.getIconHeight(), _winIcon.getIconHeight()), _turnIcon.getIconHeight())+1);
+    protected void setMinIconDim(Icon icon){
+    	_minIconDim = new Dimension(Math.max(icon.getIconWidth(), _minIconDim.width),
+    			Math.max(icon.getIconHeight(), _minIconDim.height)+1);
     }
 
     /** A reference to our game object. */
