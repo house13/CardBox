@@ -31,6 +31,8 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -91,10 +93,19 @@ public class LobbyPanel extends JPanel
         _progressBar = new JProgressBar(0, 100);
         _progressBar.setValue(0);
         _progressBar.setStringPainted(true);
+        Dimension barDimension = new Dimension (200, 25);
+        _progressBar.setMinimumSize(barDimension);
+        _progressBar.setPreferredSize(barDimension);
+        _progressBar.setMaximumSize(barDimension);
         
         // Main Panel, populated based on the games download progress
-        _main = new JPanel(new GridLayout(1,1));
-        add(_main, BorderLayout.CENTER);
+        _main = new JPanel();
+        _main.setLayout(new BoxLayout(_main, BoxLayout.PAGE_AXIS));
+        _main.add(Box.createVerticalGlue());
+        _main.add(_progressBar);
+        _main.add(Box.createVerticalGlue());
+        
+        add(_main, BorderLayout.CENTER);  
 
         // load up our background image
         try {
@@ -169,11 +180,13 @@ public class LobbyPanel extends JPanel
     public void loadGamePanel (LobbyConfig config)
     {
     	// Remove our loading bar
-    	_main.remove(_progressBar);
+    	_main.removeAll();
+    	_progressBar = null;
     	
         // create our match-making view
         JComponent hextillaView = createGamePanel(_ctx, config);
         if (hextillaView != null) {
+        	_main.setLayout(new GridLayout(1, 1));
         	_main.add(hextillaView);
             if (hextillaView instanceof HextillaLobbyPanel) {
                 // because we're adding our match making view after we've
