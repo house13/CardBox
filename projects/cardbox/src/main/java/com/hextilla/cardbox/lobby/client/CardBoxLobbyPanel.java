@@ -1,4 +1,4 @@
-package com.hextilla.cardbox.lobby.HextillaLobbyPanel;
+package com.hextilla.cardbox.lobby.client;
 
 import static com.hextilla.cardbox.lobby.Log.log;
 
@@ -35,16 +35,17 @@ import com.hextilla.cardbox.lobby.matchmaking.StrangerTableFilter;
 import com.hextilla.cardbox.lobby.matchmaking.FriendTableFilter;
 import com.hextilla.cardbox.lobby.matchmaking.MatchMaker.MatchStatus;
 import com.hextilla.cardbox.swing.CardBoxTabbedPanel;
+import com.hextilla.cardbox.swing.PlayerCountPanel;
 import com.hextilla.cardbox.util.CardBoxContext;
 import com.threerings.crowd.client.PlaceView;
 import com.threerings.crowd.data.PlaceObject;
 import com.threerings.util.MessageBundle;
 
 
-public class HextillaLobbyPanel extends JPanel implements PlaceView 
+public class CardBoxLobbyPanel extends JPanel implements PlaceView 
 {
 	
-	public HextillaLobbyPanel (CardBoxContext ctx, LobbyConfig config)
+	public CardBoxLobbyPanel (CardBoxContext ctx, LobbyConfig config)
 	{
         _ctx = ctx;
         _lobj = null;
