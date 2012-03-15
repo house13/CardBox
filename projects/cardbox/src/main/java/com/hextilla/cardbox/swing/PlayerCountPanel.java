@@ -1,4 +1,4 @@
-package com.hextilla.cardbox.lobby.HextillaLobbyPanel;
+package com.hextilla.cardbox.swing;
 import java.awt.BorderLayout;
 
 import javax.swing.JLabel;
@@ -13,7 +13,7 @@ import com.threerings.crowd.data.PlaceObject;
 
 public class PlayerCountPanel extends JPanel implements OccupantObserver, PlaceView
 {
-	PlayerCountPanel(CardBoxContext ctx, int currentPlayerCount)
+	public PlayerCountPanel(CardBoxContext ctx, int currentPlayerCount)
 	{
 		super(new BorderLayout());
 		_playerCount = currentPlayerCount;

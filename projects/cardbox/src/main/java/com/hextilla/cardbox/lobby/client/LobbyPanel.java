@@ -60,7 +60,6 @@ import com.hextilla.cardbox.client.CardBoxUI;
 import com.hextilla.cardbox.lobby.data.LobbyCodes;
 import com.hextilla.cardbox.lobby.data.LobbyConfig;
 import com.hextilla.cardbox.lobby.data.LobbyObject;
-import com.hextilla.cardbox.lobby.HextillaLobbyPanel.HextillaLobbyPanel;
 
 import static com.hextilla.cardbox.lobby.Log.log;
 
@@ -187,14 +186,14 @@ public class LobbyPanel extends JPanel
     	_progressBar = null;
     	
         // create our match-making view
-        JComponent hextillaView = createGamePanel(_ctx, config);
-        if (hextillaView != null) {
+        JComponent CardBoxView = createGamePanel(_ctx, config);
+        if (CardBoxView != null) {
         	_main.setLayout(new GridLayout(1, 1));
-        	_main.add(hextillaView);
-            if (hextillaView instanceof HextillaLobbyPanel) {
+        	_main.add(CardBoxView);
+            if (CardBoxView instanceof CardBoxLobbyPanel) {
                 // because we're adding our match making view after we've
                 // already entered our place, we need to fake an entry
-                ((HextillaLobbyPanel) hextillaView).init(_lobj);
+                ((CardBoxLobbyPanel) CardBoxView).init(_lobj);
             }
             // properly configure all of our components (limiting to a
             // depth of six is a giant hack but I'm too lazy to do the
@@ -208,7 +207,7 @@ public class LobbyPanel extends JPanel
     protected JComponent createGamePanel (
             CardBoxContext ctx, LobbyConfig config)
     {
-        return new HextillaLobbyPanel(ctx, config);
+        return new CardBoxLobbyPanel(ctx, config);
     }
     
 	public void setDownloadProgress(int percent) {
