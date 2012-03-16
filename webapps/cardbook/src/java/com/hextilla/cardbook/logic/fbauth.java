@@ -109,6 +109,7 @@ public class fbauth implements Logic
 				 authUser.init(fbUser, now.getTimeInMillis());
 				 repo.insertUser(authUser);
 				 authUser = userman.login(fbUser.getId(), accessToken, expires, req, rsp);
+				 authSuccess = true;
 			 } catch (Exception e) {
 				 log.warning("Creating new user: [user=" + fbUser.getId() + ",token=" + accessToken + "] failed due to exception", e);
 				 throw new FriendlyException("error.database_error");
