@@ -3,10 +3,10 @@
 #if ($user)
 <div id="main" class="container">
 	<!-- Account Section -->
-		<div id="account" class="sixteen columns">
+		<div id="settings" class="sixteen columns">
 			<h2>Account</h2>
 			<div class="four columns alpha">&nbsp;</div>
-			<form class="eight columns hextilla-form" method="POST" action="account.wm">
+			<form class="eight columns hextilla-form" method="POST" action="settings.wm">
 				$form.fixedHidden("action", $action)
 				<fieldset>
 					<span class="field-row">
