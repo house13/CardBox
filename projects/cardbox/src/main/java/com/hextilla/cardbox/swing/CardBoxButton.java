@@ -29,19 +29,23 @@ public class CardBoxButton extends JButton implements MouseListener {
 		g.setColor(CardBoxUI.GRAY);
 		g.fillRoundRect(0, 0, this.getWidth()-1, this.getHeight()-1, 16, 16);
 
-		if (m_mouseInside) {
-			g.setColor(CardBoxUI.DARK_BLUE);
+		if (!this.isEnabled()) {
+			g.setColor(CardBoxUI.LIGHT_GRAY);
+			g.fillRoundRect(2, 2, this.getWidth()-5, this.getHeight()-5, 12, 12);
 		} else {
-			g.setColor(CardBoxUI.LIGHT_BLUE);
-		}
-		g.fillRoundRect(2, 2, this.getWidth()-5, this.getHeight()-5, 12, 12);
-		
-		if (m_pressed) {
+			if (m_mouseInside) {
 			g.setColor(CardBoxUI.DARK_BLUE);
-		} else {
-			g.setColor(CardBoxUI.LIGHT_BLUE);
+			} else {
+				g.setColor(CardBoxUI.LIGHT_BLUE);
+			}
+			g.fillRoundRect(2, 2, this.getWidth()-5, this.getHeight()-5, 12, 12);
+			if (m_pressed) {
+				g.setColor(CardBoxUI.DARK_BLUE);
+			} else {
+				g.setColor(CardBoxUI.LIGHT_BLUE);
+			}
+			g.fillRoundRect(4, 4, this.getWidth()-9, this.getHeight()-9, 10, 10);
 		}
-		g.fillRoundRect(4, 4, this.getWidth()-9, this.getHeight()-9, 10, 10);
 		
 		g.setColor(CardBoxUI.GRAY);
 		FontMetrics metrics = g.getFontMetrics(this.getFont());
