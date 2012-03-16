@@ -1,12 +1,13 @@
 	<div id="bottom" class="container">
 		<div class="sixteen columns" id="about">
 			<h2>About</h2>
-			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-			tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-			quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-			consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-			cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-			proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+			<p>Hextilla was created by a small team of Software Engineers from the University of Waterloo, as part of
+            their fourth year design project. More than just the game itself, Hextilla runs on top of a free, open
+            source Java framework known as <a href="https://github.com/house13/CardBox">CardBox</a>, which follows in 
+            the footsteps of <a href="http://www.gamegardens.com/">Game Gardens</a> by 
+            <a href="http://www.threerings.net/">Three Rings Design</a>.
+            Rebuilt utilizing the Facebook platform, CardBox enables anyone to create and host their own
+            Facebook-enabled social games without having to worry about anything except the game design.</p>
 		</div>
 
 	</div>
