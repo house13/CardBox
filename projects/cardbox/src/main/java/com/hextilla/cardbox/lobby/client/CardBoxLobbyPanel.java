@@ -391,7 +391,7 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
 	
     // Button sizes
     protected static Dimension BUTTON_MAX_SIZE = new Dimension(400, 100);
-    protected static Dimension BUTTON_MIN_SIZE = new Dimension(200, 30);
+    protected static Dimension BUTTON_MIN_SIZE = new Dimension(200, 35);
     
 	// Max/Min Sizes for the Friend List
     protected static Dimension LIST_MAX_SIZE = new Dimension(400, 400);
