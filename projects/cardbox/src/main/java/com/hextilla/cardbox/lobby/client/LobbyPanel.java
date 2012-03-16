@@ -188,7 +188,7 @@ public class LobbyPanel extends JPanel
         // create our match-making view
         JComponent CardBoxView = createGamePanel(_ctx, config);
         if (CardBoxView != null) {
-        	_main.setLayout(new GridLayout(1, 1));
+        	_main.setLayout(new GridLayout(1, 1, 0, 0));
         	_main.add(CardBoxView);
             if (CardBoxView instanceof CardBoxLobbyPanel) {
                 // because we're adding our match making view after we've
