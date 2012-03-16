@@ -189,6 +189,106 @@ span.key {
 	margin-top: 20px;
 }
 
+#credits-list li {
+float: left;
+width: 98%;
+background: #fff;
+padding: 1%;
+-webkit-border-radius: 10px;
+-moz-border-radius: 10px;
+border-radius: 10px;
+border: 1px #ddd solid;
+border-bottom-width: 2px;
+border-right-width: 2px;
+background: #fff;
+}
+
+#credits-list li img {
+padding: 5px;
+background: #fff;
+-moz-transform: rotate(15deg);
+-moz-transform-origin: top right;
+-webkit-transform: rotate(15deg);
+-webkit-transform-origin: top right;
+-o-transform: rotate(15deg);
+-o-transform-origin: top right;
+transform: rotate(15deg);
+transform-origin: top right;
+-webkit-border-radius: 5px;
+-moz-border-radius: 5px;
+border-radius: 5px;
+-webkit-box-shadow: 1px 1px 2px 1px #bbb;
+-moz-box-shadow: 1px 1px 2px 1px #bbb;
+box-shadow: 1px 1px 2px 1px #bbb;
+}
+
+#credits-list li.left img {
+float: left;
+-moz-transform: rotate(15deg);
+-moz-transform-origin: top right;
+-webkit-transform: rotate(15deg);
+-webkit-transform-origin: top right;
+-o-transform: rotate(15deg);
+-o-transform-origin: top right;
+transform: rotate(15deg);
+transform-origin: top right;
+}
+
+#credits-list li.right img {
+float: right;
+-moz-transform: rotate(-15deg);
+-moz-transform-origin: top left;
+-webkit-transform: rotate(-15deg);
+-webkit-transform-origin: top left;
+-o-transform: rotate(-15deg);
+-o-transform-origin: top left;
+transform: rotate(-15deg);
+transform-origin: top left;
+}
+
+#credits-list li span {
+margin: 12px 15px;
+}
+
+#credits-list li.left span {
+float: right;
+}
+
+#credits-list li.right span {
+float: left;
+}
+
+#credits-list li span.credit-name {
+font-size: 1.2em;
+margin-top: 20px;
+font-weight: bold;
+margin-bottom: 0;
+}
+
+#credits-list li span.credit-motto {
+margin-top: 5px;
+color: #999;
+}
+
+#web-credit {
+display: block;
+padding: 5%;
+background: rgba(0,0,0,0.05);
+color: #bbb;
+float: left;
+width: 90%;
+-webkit-border-radius: 5px;
+-moz-border-radius: 5px;
+border-radius: 5px;
+text-align: center;
+font-size: 0.9em;
+margin-top: 10px;
+}
+
+#web-credit a {
+color: #999;
+}
+
 /* #Media Queries
 ================================================== */
 

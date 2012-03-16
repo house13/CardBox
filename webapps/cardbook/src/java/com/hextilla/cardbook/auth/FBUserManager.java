@@ -117,6 +117,17 @@ public class FBUserManager
     	}
     	return false;
     }
+    
+    public boolean deleteUser (FBUserRecord user)
+    {
+    	if (user != null)
+    	{
+    		int deleted = _repository.delete(user);
+    		_repository.purgeSessions(user);
+    		return deleted > 0;
+    	}
+    	return false;
+    }
 
     /**
      * Fetches the necessary authentication information from the http request and loads the user

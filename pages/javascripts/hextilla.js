@@ -43,4 +43,14 @@ $(function() {
 		$("nav ul li a").removeClass("selected");
 		$(this).addClass("selected");
 	});
+
+    $("#delete-data").submit(function() {
+        if (confirm("Are you sure you want me to forget your account data?")) {
+             return true;
+        }
+        else {
+            // Don't submit form
+            return false;
+        }
+    });
 });
