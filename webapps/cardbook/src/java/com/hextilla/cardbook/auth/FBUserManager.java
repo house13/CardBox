@@ -109,6 +109,7 @@ public class FBUserManager
     }
     
     public boolean updateUser (FBUserRecord user)
+    	throws PersistenceException
     {
     	if (user != null)
     	{
@@ -119,6 +120,7 @@ public class FBUserManager
     }
     
     public boolean deleteUser (FBUserRecord user)
+    	throws PersistenceException
     {
     	if (user != null)
     	{
