@@ -1,8 +1,7 @@
-package com.hextilla.cardbox.lobby.HextillaLobbyPanel;
+package com.hextilla.cardbox.lobby.client;
 
 import static com.hextilla.cardbox.lobby.Log.log;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -13,8 +12,6 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import com.hextilla.cardbox.client.CardBoxUI;
 import com.hextilla.cardbox.client.chat.ChatPanel;
@@ -35,16 +32,17 @@ import com.hextilla.cardbox.lobby.matchmaking.StrangerTableFilter;
 import com.hextilla.cardbox.lobby.matchmaking.FriendTableFilter;
 import com.hextilla.cardbox.lobby.matchmaking.MatchMaker.MatchStatus;
 import com.hextilla.cardbox.swing.CardBoxTabbedPanel;
+import com.hextilla.cardbox.swing.PlayerCountPanel;
 import com.hextilla.cardbox.util.CardBoxContext;
 import com.threerings.crowd.client.PlaceView;
 import com.threerings.crowd.data.PlaceObject;
 import com.threerings.util.MessageBundle;
 
 
-public class HextillaLobbyPanel extends JPanel implements PlaceView 
+public class CardBoxLobbyPanel extends JPanel implements PlaceView 
 {
 	
-	public HextillaLobbyPanel (CardBoxContext ctx, LobbyConfig config)
+	public CardBoxLobbyPanel (CardBoxContext ctx, LobbyConfig config)
 	{
         _ctx = ctx;
         _lobj = null;
@@ -60,7 +58,7 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
         CardBoxGameConfig aiConfig = new CardBoxGameConfig(config.getGameId(), gamedef, "ai");    
         
         // We need to know whether we're running in development mode
-        // If so, then don't bother initializing our social services
+        // If so, then don't bother initialising our social services
         _devmode = (config.getGameId() == -1);
         
         // Add the friendPanel (same size as button panel)
@@ -69,10 +67,8 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
         // Modify the look/feel of the tabbedPane
         UIDefaults def = UIManager.getLookAndFeelDefaults();
         def.put("TabbedPane.unselectedBackground", CardBoxUI.DARK_BLUE);
-        def.put("TabbedPane.selected", CardBoxUI.CHAT_BACKGROUND);
-        def.put("TabbedPane.tabInsets", new Insets((CHAT_MIN_SIZE.height - CardBoxUI.getGlobalChatIcon().getIconHeight())/2, 5, 
-        		(CHAT_MIN_SIZE.height - CardBoxUI.getGlobalChatIcon().getIconHeight())/2, 5));        
-        
+        def.put("TabbedPane.selected", CardBoxUI.CHAT_BACKGROUND);      
+        System.out.println("Size: " + (CHAT_MIN_SIZE.height - CardBoxUI.getGlobalChatIcon().getIconHeight())/2);
         // Setup he chat panel, use a tabbed pane
         CardBoxTabbedPanel chatPane = new CardBoxTabbedPanel(JTabbedPane.LEFT);
         chatPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);        
@@ -283,6 +279,7 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
         chatPane.setPreferredSize(CHAT_MAX_SIZE);
         chatPane.setMinimumSize(CHAT_MIN_SIZE);          
         
+        _friendList.setMaximumSize(LIST_MAX_SIZE);
         _friendList.setPreferredSize(LIST_MAX_SIZE);
         _friendList.setMinimumSize(LIST_MIN_SIZE);          
 		
@@ -312,7 +309,7 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
         // sequential{ parallel{ sequential{optsButton, _matchMaker}, friendPanel}, chatPane}
         layout.setVerticalGroup(
 	    		   layout.createSequentialGroup()
-	    		      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER, true)
+	    		      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, true)
 	    		    		  .addGroup(layout.createSequentialGroup()
 	    		    				  .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, true)
 	    		    						  	.addComponent(_onlinePlayerLabel)
@@ -394,13 +391,13 @@ public class HextillaLobbyPanel extends JPanel implements PlaceView
 	
     // Button sizes
     protected static Dimension BUTTON_MAX_SIZE = new Dimension(400, 100);
-    protected static Dimension BUTTON_MIN_SIZE = new Dimension(200, 25);
+    protected static Dimension BUTTON_MIN_SIZE = new Dimension(200, 35);
     
 	// Max/Min Sizes for the Friend List
-    protected static Dimension LIST_MAX_SIZE = new Dimension(400, 300);
+    protected static Dimension LIST_MAX_SIZE = new Dimension(400, 400);
     protected static Dimension LIST_MIN_SIZE = new Dimension(200, 75);	
     
 	// Max/Min Sizes for the Chat
     protected static Dimension CHAT_MAX_SIZE = new Dimension(1920, 200);
-    protected static Dimension CHAT_MIN_SIZE = new Dimension(400, 50);	    
+    protected static Dimension CHAT_MIN_SIZE = new Dimension(400, 100);	    
 }

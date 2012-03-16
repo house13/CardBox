@@ -20,33 +20,28 @@ import javax.swing.ListCellRenderer;
 import com.hextilla.cardbox.util.CardBoxContext;
 
 // Renders a friend entry object in a list
-public class FriendListRenderer extends JLabel implements ListCellRenderer 
-{		 
+public class FriendListRenderer implements ListCellRenderer 
+{
 	public Component getListCellRendererComponent(JList list, Object value,
 			int index, boolean isSelected, boolean cellHasFocus) {	
+
+		FriendEntry fe = (FriendEntry)value;
+		FriendListCell cell = new FriendListCell(fe);
 		
-		// Cell container (holds this object)
-		JPanel cell = new JPanel();
-		cell.setLayout(new BoxLayout(cell, BoxLayout.Y_AXIS));		
-		cell.add(this);
-		
-		// Add border, text and icon
-		setIcon(((FriendEntry)value).getDisplayPic());
-		setText(((FriendEntry)value).getName().getFriendlyName().toString());
-		setBorder(BorderFactory.createEmptyBorder(5, 1, 5, 1));
+		//cell.setBorder(BorderFactory.createEmptyBorder(5, 1, 5, 1));
 		
 		// Change colour when selected
 		if (isSelected){
 			// Change text from black to white
-			setForeground(Color.white);
+			cell.setForeground(Color.white);
 			
-			// Change cell colour to DARK_GRAY
+			// Change cell colour to dark gray 
 			cell.setBackground(Color.DARK_GRAY);
 		} else {
-			// Change text from black to white
-			setForeground(Color.black);
+			// Change text from white to black
+			cell.setForeground(Color.black);
 			
-			// Change cell colour to black
+			// Change cell colour to gray
 			cell.setBackground(Color.GRAY);
 		}
 		
@@ -63,17 +58,4 @@ public class FriendListRenderer extends JLabel implements ListCellRenderer
 	
 	/** Giver of life and services. */
 	protected CardBoxContext _ctx;	
-}
-
-class DisplayPic extends JPanel {
-    Image image;
- 
-    DisplayPic(Image image2) {
-        this.image = image2;
-    }
- 
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        g.drawImage(image, 0, 0, this);
-    }
 }

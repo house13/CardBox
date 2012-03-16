@@ -42,6 +42,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
+import javax.swing.SwingConstants;
 
 import com.samskivert.swing.MultiLineLabel;
 import com.samskivert.swing.util.SwingUtil;
@@ -59,7 +60,6 @@ import com.hextilla.cardbox.client.CardBoxUI;
 import com.hextilla.cardbox.lobby.data.LobbyCodes;
 import com.hextilla.cardbox.lobby.data.LobbyConfig;
 import com.hextilla.cardbox.lobby.data.LobbyObject;
-import com.hextilla.cardbox.lobby.HextillaLobbyPanel.HextillaLobbyPanel;
 
 import static com.hextilla.cardbox.lobby.Log.log;
 
@@ -85,8 +85,9 @@ public class LobbyPanel extends JPanel
     	setLayout(new BorderLayout());   
     	
     	// Add the page title
-        _title = new MultiLineLabel("", MultiLineLabel.CENTER);
+        _title = new MultiLineLabel("", MultiLineLabel.CENTER, SwingConstants.VERTICAL, 0);
         _title.setFont(CardBoxUI.TitleFontLarge);
+        
         add(_title, BorderLayout.NORTH);
         
         // Loading bar for download progress
@@ -127,6 +128,7 @@ public class LobbyPanel extends JPanel
     {
         _lobj = (LobbyObject)plobj;
         _title.setText(_lobj.name.toUpperCase());
+        invalidate();
     }
 
     // documentation inherited
@@ -184,14 +186,14 @@ public class LobbyPanel extends JPanel
     	_progressBar = null;
     	
         // create our match-making view
-        JComponent hextillaView = createGamePanel(_ctx, config);
-        if (hextillaView != null) {
-        	_main.setLayout(new GridLayout(1, 1));
-        	_main.add(hextillaView);
-            if (hextillaView instanceof HextillaLobbyPanel) {
+        JComponent CardBoxView = createGamePanel(_ctx, config);
+        if (CardBoxView != null) {
+        	_main.setLayout(new GridLayout(1, 1, 0, 0));
+        	_main.add(CardBoxView);
+            if (CardBoxView instanceof CardBoxLobbyPanel) {
                 // because we're adding our match making view after we've
                 // already entered our place, we need to fake an entry
-                ((HextillaLobbyPanel) hextillaView).init(_lobj);
+                ((CardBoxLobbyPanel) CardBoxView).init(_lobj);
             }
             // properly configure all of our components (limiting to a
             // depth of six is a giant hack but I'm too lazy to do the
@@ -205,7 +207,7 @@ public class LobbyPanel extends JPanel
     protected JComponent createGamePanel (
             CardBoxContext ctx, LobbyConfig config)
     {
-        return new HextillaLobbyPanel(ctx, config);
+        return new CardBoxLobbyPanel(ctx, config);
     }
     
 	public void setDownloadProgress(int percent) {

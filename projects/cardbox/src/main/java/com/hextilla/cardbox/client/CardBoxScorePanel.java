@@ -35,10 +35,6 @@ public class CardBoxScorePanel extends TurnDisplay implements AttributeChangeLis
 	public CardBoxScorePanel(CardBoxContext ctx)
 	{
 		super();
-		
-		// Set winner/draw text
-		setWinnerText(ctx.xlate("hextilla", "m.winner"));
-		setDrawText(ctx.xlate("hextilla", "m.draw"));					
 	}
 	
 	@Override
@@ -60,6 +56,36 @@ public class CardBoxScorePanel extends TurnDisplay implements AttributeChangeLis
 	    
 	    super.attributeChanged(event);
     }
+	
+	// Set the win icon
+	public void setWinnerIcon(Icon icon)
+	{
+		_winIcon = icon;
+		setMinIconDim(icon);
+        if (_turnObj != null) {
+            createList();
+        }
+	}
+	
+	// Set the draw icon
+	public void setDrawIcon(Icon icon)
+	{
+		_drawIcon = icon;
+		setMinIconDim(icon);
+        if (_turnObj != null) {
+            createList();
+        }
+	}
+	
+	@Override
+	public void setTurnIcon(Icon icon)
+	{
+		_turnIcon = icon;
+		setMinIconDim(icon);
+        if (_turnObj != null) {
+            createList();
+        }
+	}
 
     // from interface PlaceView
     public void willEnterPlace (PlaceObject plobj)
@@ -114,16 +140,17 @@ public class CardBoxScorePanel extends TurnDisplay implements AttributeChangeLis
             JLabel iconLabel = new JLabel();
             if (winners == null) {
                 if (names[i].equals(holder)) {
-                    iconLabel.setIcon(_turnIcon);
-                    iconLabel.setMinimumSize(new Dimension(_turnIcon.getIconWidth(), _turnIcon.getIconHeight()+1));                    
+                	System.out.println("TurnIcon");
+                    iconLabel.setIcon(_turnIcon);                  
                 }
             } else if (_gameobj.isDraw()) {
-                iconLabel.setText(_drawText);
+            	System.out.println("draw");
+                iconLabel.setIcon(_drawIcon);
             } else if (winners[i]) {
-                iconLabel.setText(_winnerText);
+            	System.out.println("win");
+                iconLabel.setIcon(_winIcon);
             }
-            iconLabel.setForeground(Color.BLACK);
-            iconLabel.setMinimumSize(new Dimension(_turnIcon.getIconWidth(), _turnIcon.getIconHeight()+1));                                
+            iconLabel.setMinimumSize(_minIconDim);                                
             _labels.put(names[i], iconLabel);
             parTurnIconGroup.addComponent(iconLabel);
             nameIconPair.addComponent(iconLabel);
@@ -164,7 +191,17 @@ public class CardBoxScorePanel extends TurnDisplay implements AttributeChangeLis
         // Redraw the display
         SwingUtil.refresh(this);     
     }    
+    
+    protected void setMinIconDim(Icon icon){
+    	_minIconDim = new Dimension(Math.max(icon.getIconWidth(), _minIconDim.width),
+    			Math.max(icon.getIconHeight(), _minIconDim.height)+1);
+    }
 
     /** A reference to our game object. */
     protected CardBoxGameObject _gameobj;  
+    
+    protected Icon _winIcon;
+    protected Icon _drawIcon;
+    
+    protected Dimension _minIconDim = new Dimension(0, 0);
 }

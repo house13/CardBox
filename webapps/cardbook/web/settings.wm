@@ -3,11 +3,10 @@
 #if ($user)
 <div id="main" class="container">
 	<!-- Account Section -->
-		<div id="account" class="sixteen columns">
-			<h2>Account</h2>
+		<div id="settings" class="sixteen columns">
+			<h2>Settings</h2>
 			<div class="four columns alpha">&nbsp;</div>
-			<form class="eight columns hextilla-form" method="POST" action="account.wm">
-				$form.fixedHidden("action", $action)
+			<form class="eight columns hextilla-form" method="POST" action="settings.wm">
 				<fieldset>
 					<span class="field-row">
 						<label for="username">$i18n.xlate("account.username")</label>
@@ -31,7 +30,11 @@
 
 					<span class="field-row">
 						<span>&nbsp;</span>
-						<input type="submit" value="$i18n.xlate("account.update")" name="submitBtn">
+						<input type="submit" value="$i18n.xlate("account.update")" name="update">
+					</span>
+					<span class="field-row">
+						<span>&nbsp;</span>
+						<input type="submit" value="$i18n.xlate("account.delete")" id="delete-data" name="delete">
 					</span>
 				</fieldset>
 			</form>

@@ -20,6 +20,7 @@
 package com.hextilla.cardbox.client;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -48,9 +49,8 @@ public class CardBoxUI
     public static Font AppFontMedium;
     public static Font AppFontSmall;
     public static Font AppFont;
-    public static Font AppFontItalicLarge;
-    public static Font AppFontItalicMedium;
     public static Font AppFontItalicSmall;
+    public static Font AppFontItalicExtraSmall;
     public static Font AppFontItalic;
     public static Font FbFontLarge;
     public static Font FbFontMedium;
@@ -70,7 +70,7 @@ public class CardBoxUI
     
     public static ImageIcon getDefaultDisplayPic() {
     	
-    	return getImageIcon(defaultDisplayPic, DEFAULT_DISPLAY_PIC_PATH, 64, 64, 32, 32);
+    	return getImageIcon(defaultDisplayPic, DEFAULT_DISPLAY_PIC_PATH, 64, 64, DISPLAY_PIC.width, DISPLAY_PIC.height);
     }
     
     public static ImageIcon getGlobalChatIcon(){
@@ -89,11 +89,11 @@ public class CardBoxUI
     }  
     
     public static ImageIcon renderDisplayPic(final InputStream in) {
-    	return renderDisplayPic(in, 32, 32);
+    	return renderDisplayPic(in, DISPLAY_PIC.width, DISPLAY_PIC.height);
     }
     
     public static ImageIcon renderDisplayPic(String bytes) {
-    	return renderDisplayPicFromRaw(bytes, 32, 32);
+    	return renderDisplayPicFromRaw(bytes, DISPLAY_PIC.width, DISPLAY_PIC.height);
     }
 
     private static ImageIcon getImageIcon(ImageIcon icon, String icon_path, 
@@ -170,16 +170,15 @@ public class CardBoxUI
         AppFontSmall = AppFont.deriveFont(Font.PLAIN, 14);
         try {
             InputStream in =
-                CardBoxUI.class.getClassLoader().getResourceAsStream("rsrc/media/OpenSans-LightItalic.ttf");
+                CardBoxUI.class.getClassLoader().getResourceAsStream("rsrc/media/OpenSans-Italic.ttf");
             AppFontItalic = Font.createFont(Font.TRUETYPE_FONT, in);
             in.close();
         } catch (Exception e) {
             log.warning("Failed to load custom font, falling back to default.", e);
             AppFontItalic = BORING_DEFAULT;
         }
-        AppFontItalicLarge = AppFontItalic.deriveFont(Font.PLAIN, 30);
-        AppFontItalicMedium = AppFontItalic.deriveFont(Font.PLAIN, 20);
         AppFontItalicSmall = AppFontItalic.deriveFont(Font.PLAIN, 14);
+        AppFontItalicExtraSmall = AppFontItalic.deriveFont(Font.PLAIN, 12);
         try {
         	InputStream in =
                     CardBoxUI.class.getClassLoader().getResourceAsStream("rsrc/media/League-Gothic.ttf");
@@ -219,6 +218,8 @@ public class CardBoxUI
     }
     
     protected static CardBoxContext _ctx;
+    
+    public static final Dimension DISPLAY_PIC = new Dimension(32, 32);
 
     /** The boring default font used if the custom font can't be loaded. */
     protected static final Font BORING_DEFAULT = new Font("Dialog", Font.PLAIN, 12);

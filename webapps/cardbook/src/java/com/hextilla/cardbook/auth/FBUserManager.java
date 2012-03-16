@@ -109,11 +109,24 @@ public class FBUserManager
     }
     
     public boolean updateUser (FBUserRecord user)
+    	throws PersistenceException
     {
     	if (user != null)
     	{
     		int updated = _repository.update(user);
     		return updated > 0;
+    	}
+    	return false;
+    }
+    
+    public boolean deleteUser (FBUserRecord user)
+    	throws PersistenceException
+    {
+    	if (user != null)
+    	{
+    		int deleted = _repository.delete(user);
+    		_repository.purgeSessions(user);
+    		return deleted > 0;
     	}
     	return false;
     }

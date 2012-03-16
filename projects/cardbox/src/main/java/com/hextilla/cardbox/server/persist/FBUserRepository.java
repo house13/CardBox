@@ -282,6 +282,18 @@ public class FBUserRepository extends DepotRepository
 	 return rows_deleted;
  }
  
+ public int purgeSessions (FBUserRecord user)
+		 throws PersistenceException
+ {
+	 int rows_deleted = 0;
+	 rows_deleted += deleteAll(SessionRecord.class, new Where(SessionRecord.USER_ID.eq(user.userId)));
+	 rows_deleted += deleteAll(SessionMapRecord.class, new Where(SessionMapRecord.USER_ID.eq(user.userId)));
+	 
+	 log.info("Call to purgeSessions(user) removed " + rows_deleted + " total session records for approx. " + (rows_deleted/2) + " users.");
+	 
+	 return rows_deleted;
+ }
+ 
  public static String hash (String s)
  {
 	 String algo = "SHA-256";

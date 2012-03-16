@@ -4,6 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.hextilla.cardbook.CardbookApp;
 
@@ -29,14 +30,20 @@ public class settings extends UserLogic
 	{
 		HttpServletRequest req = ctx.getRequest();
 		ctx.put("user", user);
-		ctx.put("action", "update");
-		ctx.put("page", "account");
+		ctx.put("page", "settings");
 		
-		String action = ParameterUtil.getParameter(req, "action", false);
-        if (action.equals("update")) {
+		// Find out which of our submit buttons was clicked
+		String update = ParameterUtil.getParameter(req, "update", false);
+		String delete = ParameterUtil.getParameter(req, "delete", false);
+		
+        if (!StringUtil.isBlank(update)) {
         	updateAccount(req, user);
         	app.getUserManager().updateUser(user);
         	ctx.put("status", "account.status.updated");
+        } else if (!StringUtil.isBlank(delete)) {
+        	app.getUserManager().deleteUser(user);
+        	HttpServletResponse rsp = ctx.getResponse();
+        	rsp.sendRedirect("/");
         }
 	}
 	

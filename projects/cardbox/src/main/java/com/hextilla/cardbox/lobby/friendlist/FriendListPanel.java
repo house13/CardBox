@@ -42,6 +42,8 @@ public class FriendListPanel extends JPanel
 	{
         _ctx = ctx;
         
+        _devmode = !_ctx.isFacebookEnabled();
+        
         GroupLayout layout = new GroupLayout(this);
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);        
@@ -106,7 +108,8 @@ public class FriendListPanel extends JPanel
 	// Add a friend to the friend list
 	public void addFriend(CardBoxName name)
 	{
-		_listModel.addElement(new FriendEntry(name, _friends.getPic(name)));		
+		log.info("Adding friend " + name);
+		_listModel.addElement(new FriendEntry(_ctx, name, _friends.getPic(name)));		
 	}
 	
 	public void removeFriend(OccupantInfo info)
@@ -122,13 +125,13 @@ public class FriendListPanel extends JPanel
 	// Remove a friend from the friend list
 	public void removeFriend(CardBoxName name)
 	{
-		_listModel.removeElement(new FriendEntry(name));
+		_listModel.removeElement(new FriendEntry(_ctx, name));
 	}
 
 	@Override
 	public boolean isOnlineFriend(CardBoxName friend)
 	{
-		return _listModel.contains(new FriendEntry(friend));
+		return _listModel.contains(new FriendEntry(_ctx, friend));
 	}
 
 	@Override
@@ -141,8 +144,7 @@ public class FriendListPanel extends JPanel
 	public void imageUpdated(CardBoxName name) 
 	{
 		log.info("A display picture has finished downloading!", "Friend", name.getFriendlyName().toString());
-		_listModel.updateElement(new FriendEntry(name, _friends.getPic(name)));
-		invalidate();
+		_listModel.updateElement(new FriendEntry(_ctx, name, _friends.getPic(name)));
 	}
 	
 	@Override
@@ -168,7 +170,6 @@ public class FriendListPanel extends JPanel
 	{
 		// add all of the occupants of the place to our list
         for (OccupantInfo info : plobj.occupantInfo) {
-        	log.info("Determining whether user ", info.username, " is a friend of ours");
         	addFriend(info);
         }
 	}
@@ -192,7 +193,7 @@ public class FriendListPanel extends JPanel
 	}
 	
 	/** The whole world is your friend in dev mode! */
-	protected boolean _devmode;
+	protected boolean _devmode = false;
 	
 	/** Giver of life and services. */
 	protected CardBoxContext _ctx;
@@ -207,9 +208,9 @@ public class FriendListPanel extends JPanel
 	protected FriendSet _friends;
 	
 	// Max/Min Sizes for the Title
-	protected static Dimension TITLE_MAX_SIZE = new Dimension(400, 30);
+	protected static Dimension TITLE_MAX_SIZE = new Dimension(390, 30);
     protected static Dimension TITLE_MIN_SIZE = new Dimension(200, 30);
     // Max/Min Sizes for the Friend List
-    protected static Dimension LIST_MAX_SIZE = new Dimension(400, 300);
+    protected static Dimension LIST_MAX_SIZE = new Dimension(390, 370);
     protected static Dimension LIST_MIN_SIZE = new Dimension(200, 50);
 }
