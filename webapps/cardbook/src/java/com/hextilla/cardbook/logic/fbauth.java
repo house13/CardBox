@@ -89,7 +89,7 @@ public class fbauth implements Logic
 		 FacebookClient fbClient = new DefaultFacebookClient(accessToken);
 		 User fbUser = fbClient.fetchObject("me", User.class);
 		 
-		 boolean playerExists = false;
+		 boolean playerExists = false, authSuccess = false;
 		 FBUserRecord authUser = null;
 		 FBUserManager userman = ((CardbookApp)app).getUserManager();
 		 
@@ -111,10 +111,14 @@ public class fbauth implements Logic
 				 authUser = userman.login(fbUser.getId(), accessToken, expires, req, rsp);
 			 } catch (Exception e) {
 				 log.warning("Creating new user: [user=" + fbUser.getId() + ",token=" + accessToken + "] failed due to exception", e);
+				 throw new FriendlyException("error.database_error");
 			 }
 		 }
 		 
-		 ctx.put("fbauthed", true);
+		 ctx.put("fbauthed", authSuccess);
+		 if (authUser != null) {
+			 ctx.put("user", authUser);
+		 }
 		 
 		 // Handle redirection flow somewhat nicely
 	     String pgState = req.getParameter("state");
@@ -127,7 +131,9 @@ public class fbauth implements Logic
     		 target = "/cardbook/settings.wm";
     	 }
 	     
-		 rsp.sendRedirect(target);
+    	 // Only redirect if the authentication was successful.
+    	 if (authSuccess)
+    		 rsp.sendRedirect(target);
 	 }
 	 
 	 /** Performs the raw act of Facebook authentication, getting the token/expiry
