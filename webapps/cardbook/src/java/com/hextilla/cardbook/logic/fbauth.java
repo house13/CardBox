@@ -89,7 +89,8 @@ public class fbauth implements Logic
 		 FacebookClient fbClient = new DefaultFacebookClient(accessToken);
 		 User fbUser = fbClient.fetchObject("me", User.class);
 		 
-		 boolean playerExists = false, authSuccess = false;
+		 boolean playerExists = false;
+		 boolean authSuccess = false;
 		 FBUserRecord authUser = null;
 		 FBUserManager userman = ((CardbookApp)app).getUserManager();
 		 
@@ -98,6 +99,7 @@ public class fbauth implements Logic
 		 try {
 			 authUser = userman.login(fbUser.getId(), accessToken, expires, req, rsp);
 			 playerExists = true;
+			 authSuccess = true;
 		 } catch (Exception e) {
 			 log.info("New user: [user=" + fbUser.getId() + ",token=" + accessToken + "] Successful FB Authentication");
 		 }
