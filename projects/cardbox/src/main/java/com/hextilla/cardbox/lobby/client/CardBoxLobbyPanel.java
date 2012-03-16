@@ -2,7 +2,6 @@ package com.hextilla.cardbox.lobby.client;
 
 import static com.hextilla.cardbox.lobby.Log.log;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -13,8 +12,6 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import com.hextilla.cardbox.client.CardBoxUI;
 import com.hextilla.cardbox.client.chat.ChatPanel;
@@ -61,7 +58,7 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
         CardBoxGameConfig aiConfig = new CardBoxGameConfig(config.getGameId(), gamedef, "ai");    
         
         // We need to know whether we're running in development mode
-        // If so, then don't bother initializing our social services
+        // If so, then don't bother initialising our social services
         _devmode = (config.getGameId() == -1);
         
         // Add the friendPanel (same size as button panel)
@@ -70,10 +67,8 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
         // Modify the look/feel of the tabbedPane
         UIDefaults def = UIManager.getLookAndFeelDefaults();
         def.put("TabbedPane.unselectedBackground", CardBoxUI.DARK_BLUE);
-        def.put("TabbedPane.selected", CardBoxUI.CHAT_BACKGROUND);
-        def.put("TabbedPane.tabInsets", new Insets((CHAT_MIN_SIZE.height - CardBoxUI.getGlobalChatIcon().getIconHeight())/2, 5, 
-        		(CHAT_MIN_SIZE.height - CardBoxUI.getGlobalChatIcon().getIconHeight())/2, 5));        
-        
+        def.put("TabbedPane.selected", CardBoxUI.CHAT_BACKGROUND);      
+        System.out.println("Size: " + (CHAT_MIN_SIZE.height - CardBoxUI.getGlobalChatIcon().getIconHeight())/2);
         // Setup he chat panel, use a tabbed pane
         CardBoxTabbedPanel chatPane = new CardBoxTabbedPanel(JTabbedPane.LEFT);
         chatPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);        
@@ -396,7 +391,7 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
 	
     // Button sizes
     protected static Dimension BUTTON_MAX_SIZE = new Dimension(400, 100);
-    protected static Dimension BUTTON_MIN_SIZE = new Dimension(200, 25);
+    protected static Dimension BUTTON_MIN_SIZE = new Dimension(200, 30);
     
 	// Max/Min Sizes for the Friend List
     protected static Dimension LIST_MAX_SIZE = new Dimension(400, 400);
@@ -404,5 +399,5 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
     
 	// Max/Min Sizes for the Chat
     protected static Dimension CHAT_MAX_SIZE = new Dimension(1920, 200);
-    protected static Dimension CHAT_MIN_SIZE = new Dimension(400, 50);	    
+    protected static Dimension CHAT_MIN_SIZE = new Dimension(400, 100);	    
 }
