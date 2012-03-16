@@ -62,10 +62,10 @@ import static com.hextilla.cardbook.Log.log;
 *  OAuth 2.0 authentication through Facebook, and
 *  handling user authentication accordingly
 */
-public class fbauth extends OptionalUserLogic
+public class fbauth implements Logic
 {
 	 // documentation inherited
-	 public void invoke (InvocationContext ctx, CardbookApp app, FBUserRecord user)
+	 public void invoke (Application app, InvocationContext ctx)
 	     throws Exception
 	 {
 	     HttpServletRequest req = ctx.getRequest();
@@ -91,7 +91,7 @@ public class fbauth extends OptionalUserLogic
 		 
 		 boolean playerExists = false;
 		 FBUserRecord authUser = null;
-		 FBUserManager userman = app.getUserManager();
+		 FBUserManager userman = ((CardbookApp)app).getUserManager();
 		 
 		 // Attempt to log the user in, assuming they've played the game before
 		 // If they're new, we need to create an account for them.
