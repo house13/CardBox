@@ -252,6 +252,18 @@ public class FBUserRepository extends DepotRepository
      }
  }
  
+ public boolean deleteUser (final FBUserRecord user)
+	 throws PersistenceException
+ {
+	 // Remove the multiple records associated with the given user
+	 int deleted = delete(user);
+	 int sessions = purgeSessions(user);
+	 FBUserMapRecord mapper = new FBUserMapRecord();
+	 mapper.init(user);
+	 int map = delete(mapper);
+	 return deleted > 0;
+ }
+ 
  /**
   * Update the given user record to reflect recent activity.
   * 

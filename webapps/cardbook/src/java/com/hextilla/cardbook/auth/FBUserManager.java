@@ -123,10 +123,8 @@ public class FBUserManager
     	throws PersistenceException
     {
     	if (user != null)
-    	{
-    		int deleted = _repository.delete(user);
-    		_repository.purgeSessions(user);
-    		return deleted > 0;
+    	{ 
+    		return _repository.deleteUser(user);
     	}
     	return false;
     }
