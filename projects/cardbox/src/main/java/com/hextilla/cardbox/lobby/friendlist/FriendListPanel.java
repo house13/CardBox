@@ -209,6 +209,7 @@ public class FriendListPanel extends JPanel
 			switch(_tabler.getUserStatus(user))
 			{
 			case OnlineStatus.ONLINE:
+			case OnlineStatus.LEAVING:
 				removeFriend(info);
 				break;
 			}
