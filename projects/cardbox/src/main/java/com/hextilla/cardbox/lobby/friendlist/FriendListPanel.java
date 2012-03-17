@@ -154,7 +154,7 @@ public class FriendListPanel extends JPanel
 		{
 			addFriend(info);
 		}
-		log.info("Occupant Entered", "user", user);
+		log.info("Occupant Entered", "user", user, "status", occupantStatus(info));
 	}
 
 	@Override
@@ -166,13 +166,16 @@ public class FriendListPanel extends JPanel
 		{
 			removeFriend(info);
 		}
-		log.info("Occupant Left", "user", user);
+		log.info("Occupant Left", "user", user, "status", occupantStatus(info));
 	}
 
 	@Override
 	public void occupantUpdated(OccupantInfo oldinfo, OccupantInfo newinfo)
 	{
-		// no-op 
+		CardBoxName olduser = (CardBoxName)oldinfo.username;
+		CardBoxName newuser = (CardBoxName)newinfo.username;
+		log.info("Occupant Updated", "olduser", olduser, "oldstatus", occupantStatus(oldinfo),
+									 "newuser", newuser, "newstatus", occupantStatus(newinfo));
 	}
 
 	@Override
@@ -227,6 +230,25 @@ public class FriendListPanel extends JPanel
 		} else {
 			return false;
 		}
+	}
+	
+	protected static String occupantStatus(OccupantInfo info)
+	{
+		String status = "Unknown";
+		switch(info.status)
+		{
+		case OccupantInfo.ACTIVE:
+			status = "Active";
+			break;
+		case OccupantInfo.IDLE:
+			status = "Idle";
+			break;
+		case OccupantInfo.DISCONNECTED:
+			status = "Disconnected";
+			break;
+		}
+		
+		return status;
 	}
 	
 	/** The whole world is your friend in dev mode! */
