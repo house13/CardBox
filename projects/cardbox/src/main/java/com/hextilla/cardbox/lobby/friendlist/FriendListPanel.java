@@ -150,6 +150,16 @@ public class FriendListPanel extends JPanel
 		_listModel.updateElement(new FriendEntry(_ctx, name, _friends.getPic(name)));
 	}
 	
+	public void updateStatus(OccupantInfo info, byte status)
+	{
+		if (info.username instanceof CardBoxName)
+		{
+			CardBoxName name = (CardBoxName) info.username;
+			if (isFriend(name.getFacebookId()))
+				updateStatus(name, status);
+		}
+	}
+	
 	public void updateStatus(CardBoxName friend, byte status)
 	{
 		String message = friend.getFriendlyName().toString() + " now has status ";
@@ -163,6 +173,9 @@ public class FriendListPanel extends JPanel
 			break;
 		case OnlineStatus.INGAME:
 			message = message + "INGAME";
+			break;
+		case OnlineStatus.LEAVING:
+			message = message + "LEAVING";
 			break;
 		}
 		
@@ -178,6 +191,8 @@ public class FriendListPanel extends JPanel
 		if (!_listModel.contains(user))
 		{
 			addFriend(info);
+		} else {
+			updateStatus(info, OnlineStatus.LEAVING);
 		}
 		log.info("Occupant Entered", "user", user, "status", occupantStatus(info));
 	}

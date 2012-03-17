@@ -74,6 +74,9 @@ public class OnlineStatus
 		case INGAME:
 			message = INGAME_MSG;
 			break;
+		case LEAVING:
+			message = LEAVING_MSG;
+			break;
 		default:
 			message = ONLINE_MSG;
 			break;
@@ -96,16 +99,19 @@ public class OnlineStatus
 	 * ONLINE - User in lobby, has no games
 	 * WAITING - User in lobby, in matchmaking
 	 * INGAME - User elsewhere, has a game
+	 * LEAVING - User leaving a game, on their way 
 	 */
 	public static final byte ONLINE = 1;
 	public static final byte WAITING = 2;
 	public static final byte INGAME = 4;
+	public static final byte LEAVING = 8;
 	
 	protected static final String STATUS_MSGS = "client.friend";
 	
 	protected static final String ONLINE_MSG = "m.online";
 	protected static final String WAITING_MSG = "m.waiting";
 	protected static final String INGAME_MSG = "m.ingame";
+	protected static final String LEAVING_MSG = "m.leaving";
 	
 	protected CardBoxContext _ctx;
 	/** The user whose status we represent */
