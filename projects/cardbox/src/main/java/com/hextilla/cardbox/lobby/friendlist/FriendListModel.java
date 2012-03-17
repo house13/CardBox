@@ -23,14 +23,23 @@ public class FriendListModel extends AbstractListModel
 	
 	public synchronized void addElement(FriendEntry friend)
 	{
-		_model.add(friend);
-		_directory.put(friend.getName(), friend);
-		Collections.sort(_model);
-		fireContentsChanged(this, 0, getSize());
+		// Don't add duplicate entries
+		if (!contains(friend))
+		{
+			_model.add(friend);
+			_directory.put(friend.getName(), friend);
+			Collections.sort(_model);
+			fireContentsChanged(this, 0, getSize());
+		} else {
+			// If you try to add a duplicate, we'll at least 
+			// give you the benefit of the doubt.
+			updateElement(friend);
+		}
 	}
 	
 	public synchronized void addAll(FriendEntry friends[])
 	{
+		// Might add duplicate entries, only use this if you're sure.
 		Collection<FriendEntry> c = Arrays.asList(friends);
 		_model.addAll(c);
 		for (FriendEntry friend : c)
@@ -78,6 +87,11 @@ public class FriendListModel extends AbstractListModel
 			}
 		}
 		return false;
+	}
+	
+	public boolean contains(CardBoxName friend)
+	{
+		return _directory.containsKey(friend);
 	}
 	
 	public boolean contains(FriendEntry friend)

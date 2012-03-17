@@ -1,6 +1,7 @@
 package com.hextilla.cardbox.lobby.friendlist;
 
 import java.awt.Dimension;
+import java.util.Arrays;
 
 import javax.swing.GroupLayout;
 import javax.swing.JLabel;
@@ -27,7 +28,7 @@ import com.threerings.parlor.client.SeatednessObserver;
 import com.threerings.parlor.client.TableObserver;
 import com.threerings.parlor.data.Table;
 
-import static com.hextilla.cardbox.Log.log;
+import static com.hextilla.cardbox.lobby.Log.log;
 
 // Class to show the list of Facebook friends
 public class FriendListPanel extends JPanel 
@@ -147,19 +148,31 @@ public class FriendListPanel extends JPanel
 	@Override
 	public void occupantEntered(OccupantInfo info)
 	{
-		addFriend(info);
+		CardBoxName user = (CardBoxName)info.username;
+		// Base Case: Friend enters the lobby
+		if (!_listModel.contains(user))
+		{
+			addFriend(info);
+		}
+		log.info("Occupant Entered", "user", user);
 	}
 
 	@Override
 	public void occupantLeft(OccupantInfo info)
 	{
-		removeFriend(info);
+		CardBoxName user = (CardBoxName)info.username;
+		// Ensure it's a friend we're tracking who left
+		if (_listModel.contains(user))
+		{
+			removeFriend(info);
+		}
+		log.info("Occupant Left", "user", user);
 	}
 
 	@Override
 	public void occupantUpdated(OccupantInfo oldinfo, OccupantInfo newinfo)
 	{
-		// no-op for now
+		// no-op 
 	}
 
 	@Override
@@ -169,6 +182,7 @@ public class FriendListPanel extends JPanel
         for (OccupantInfo info : plobj.occupantInfo) {
         	addFriend(info);
         }
+        // TODO: Add friends currently in-game
 	}
 
 	@Override
@@ -181,22 +195,27 @@ public class FriendListPanel extends JPanel
 	@Override
 	public void seatednessDidChange(boolean isSeated)
 	{
+		// no-op
 	}
 
 	@Override
 	public void tableAdded(Table table)
 	{
+		// Do we care whether a table was added?
+		log.info("Table Added", "players", Arrays.toString(table.players), "gameOid", table.gameOid);
 	}
 
 	@Override
 	public void tableUpdated(Table table)
 	{
-		
+		// If Table.gameOid != -1, the game has started
+		log.info("Table Updated", "players", Arrays.toString(table.players), "gameOid", table.gameOid);
 	}
 
 	@Override
 	public void tableRemoved(int tableId)
 	{
+		// Real handy for us
 	}
 	
 	public boolean isFriend(long fbId)
