@@ -25,6 +25,14 @@ public class FriendEntry
 		_status = new OnlineStatus(_ctx, name);
 	}
 	
+	public FriendEntry(CardBoxContext ctx, CardBoxName name, ImageIcon pic, byte status)
+	{
+		_ctx = ctx;
+		_name = name;
+		_pic = pic;
+		_status = new OnlineStatus(_ctx, name, status);
+	}
+	
 	public CardBoxName getName()
 	{
 		return _name;
@@ -55,9 +63,14 @@ public class FriendEntry
 	{
 		boolean changed = false;
 		if (this.equals(other)) {
-			_pic = other.getDisplayPic();
-			_status = other.getStatus();
-			changed = true;
+			ImageIcon newicon = other.getDisplayPic();
+			if (newicon != null) {
+				_pic = newicon;
+				changed = true;
+			}
+			if (_status.setStatus(other.getStatus())) {
+				changed = true;
+			}
 		}
 		return changed;
 	}

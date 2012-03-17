@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Hashtable;
 
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
@@ -14,7 +15,10 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JSlider;
 import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import com.hextilla.cardbox.client.CardBoxUI;
 import com.hextilla.cardbox.data.CardBoxGameConfig;
@@ -60,36 +64,26 @@ public class ComputerOpponentView extends JPanel
 	        _playButton = new CardBoxButton(_msgs.xlate("m.ai"));
 	        _playButton.setFont(CardBoxUI.AppFontMedium);
 	        
-	        // Different AI radio buttons, set the difficulty level
-	        JRadioButton _randomButton = new JRadioButton("Easy", true);
-	        _randomButton.setOpaque(false);
-	        _randomButton.addActionListener(new ActionListener() {	
-				public void actionPerformed(ActionEvent arg0) {
-					_difficultyLevel = 0;
-				}
-			});
+	        JLabel _aiLabel = new JLabel("AI Skill");
 	        
-	        JRadioButton _aggressiveButton = new JRadioButton("Hard");
-	        _aggressiveButton.setOpaque(false);
-	        _aggressiveButton.addActionListener(new ActionListener() {	
-				public void actionPerformed(ActionEvent arg0) {
-					_difficultyLevel = 1;
+	        JSlider _aiSlider = new JSlider(0, 9, 0);
+	        _aiSlider.setMajorTickSpacing(1);
+	        _aiSlider.setPaintTicks(true);
+
+			//Create the label table
+			Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>();
+			labelTable.put( new Integer( 0 ), new JLabel("Easy") );
+			labelTable.put( new Integer( 4 ), new JLabel("Medium") );
+			labelTable.put( new Integer( 9 ), new JLabel("Hard") );
+			_aiSlider.setLabelTable( labelTable );
+			
+			_aiSlider.setPaintLabels(true);
+			  
+	        _aiSlider.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent arg0) {
+					_difficultyLevel = (int)((JSlider)arg0.getSource()).getValue();
 				}
-			});
-	        
-	        JRadioButton _defensiveButton = new JRadioButton("Medium");
-	        _defensiveButton.setOpaque(false);
-	        _defensiveButton.addActionListener(new ActionListener() {	
-				public void actionPerformed(ActionEvent arg0) {
-					_difficultyLevel = 2;
-				}
-			});	 
-	        
-	        // Group the radio buttons
-	        ButtonGroup buttonGroup = new ButtonGroup();
-	        buttonGroup.add(_randomButton);
-	        buttonGroup.add(_defensiveButton);
-	        buttonGroup.add(_aggressiveButton);
+	        });
 	        
 	        // Add the buttons and such to the pane
 	        GroupLayout layout = new GroupLayout(this);        
@@ -100,9 +94,8 @@ public class ComputerOpponentView extends JPanel
 	        		layout.createParallelGroup(GroupLayout.Alignment.CENTER, true)
 	        			.addComponent(_playButton)
 	        			.addGroup(layout.createSequentialGroup()
-	        					.addComponent(_randomButton)
-	        					.addComponent(_defensiveButton)
-	        					.addComponent(_aggressiveButton))
+	        					.addComponent(_aiLabel)
+	        					.addComponent(_aiSlider))
 		    		);    
 	        
 	        // Vertical Grouping
@@ -110,9 +103,8 @@ public class ComputerOpponentView extends JPanel
 	        		layout.createSequentialGroup()
         			.addComponent(_playButton)
         			.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER, true)
-        					.addComponent(_randomButton)
-        					.addComponent(_defensiveButton)
-        					.addComponent(_aggressiveButton))
+        					.addComponent(_aiLabel)
+        					.addComponent(_aiSlider))
 	    		);        
 	    }
 

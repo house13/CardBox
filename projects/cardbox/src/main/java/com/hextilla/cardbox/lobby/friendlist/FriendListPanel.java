@@ -18,6 +18,7 @@ import com.hextilla.cardbox.facebook.CardBoxName;
 import com.hextilla.cardbox.facebook.client.FriendSet;
 import com.hextilla.cardbox.facebook.client.SocialDirector;
 import com.hextilla.cardbox.facebook.client.SocialDirector.FriendIterator;
+import com.hextilla.cardbox.lobby.data.LobbyObject;
 import com.hextilla.cardbox.util.CardBoxContext;
 
 import com.threerings.crowd.client.OccupantObserver;
@@ -25,6 +26,7 @@ import com.threerings.crowd.client.PlaceView;
 import com.threerings.crowd.data.OccupantInfo;
 import com.threerings.crowd.data.PlaceObject;
 import com.threerings.parlor.client.SeatednessObserver;
+import com.threerings.parlor.client.TableDirector;
 import com.threerings.parlor.client.TableObserver;
 import com.threerings.parlor.data.Table;
 
@@ -32,8 +34,8 @@ import static com.hextilla.cardbox.lobby.Log.log;
 
 // Class to show the list of Facebook friends
 public class FriendListPanel extends JPanel 
-	implements PlaceView, OccupantObserver, SocialDirector.FriendTracker,
-			   TableObserver, SeatednessObserver 
+	implements PlaceView, OccupantObserver, SocialDirector.FriendTracker
+			   
 {
 	// TODO: reference to this "friend" object taken in constructor
 	public FriendListPanel (CardBoxContext ctx, CardBoxGameConfig config)
@@ -41,6 +43,9 @@ public class FriendListPanel extends JPanel
         _ctx = ctx;
         
         _devmode = !_ctx.isFacebookEnabled();
+        
+        _tabler = new FriendTableTracker(_ctx);
+        _tdtr = new TableDirector(_ctx, LobbyObject.TABLE_SET, _tabler);
         
         GroupLayout layout = new GroupLayout(this);
         layout.setAutoCreateGaps(true);
@@ -87,6 +92,7 @@ public class FriendListPanel extends JPanel
 	    		       .addComponent(friendTitle)
 	    		       .addComponent(scrollin)
 		);
+		
 		log.info("Friends List Panel has been created!!");
 		_friends = _ctx.getSocialDirector().getFriends();
 		_ctx.getSocialDirector().setFriendTracker(this);
@@ -128,7 +134,7 @@ public class FriendListPanel extends JPanel
 	@Override
 	public boolean isOnlineFriend(CardBoxName friend)
 	{
-		return _listModel.contains(new FriendEntry(_ctx, friend));
+		return _listModel.contains(friend);
 	}
 
 	@Override
@@ -144,6 +150,39 @@ public class FriendListPanel extends JPanel
 		_listModel.updateElement(new FriendEntry(_ctx, name, _friends.getPic(name)));
 	}
 	
+	public void updateStatus(OccupantInfo info, byte status)
+	{
+		if (info.username instanceof CardBoxName)
+		{
+			CardBoxName name = (CardBoxName) info.username;
+			if (isFriend(name.getFacebookId()))
+				updateStatus(name, status);
+		}
+	}
+	
+	public void updateStatus(CardBoxName friend, byte status)
+	{
+		String message = friend.getFriendlyName().toString() + " now has status ";
+		switch(status)
+		{
+		case OnlineStatus.ONLINE:
+			message = message + "ONLINE";
+			break;
+		case OnlineStatus.WAITING:
+			message = message + "WAITING";
+			break;
+		case OnlineStatus.INGAME:
+			message = message + "INGAME";
+			break;
+		case OnlineStatus.LEAVING:
+			message = message + "LEAVING";
+			break;
+		}
+		
+		if (_listModel.updateElement(new FriendEntry(_ctx, friend, _friends.getPic(friend), status)))
+			log.info(message);
+	}
+	
 	@Override
 	public void occupantEntered(OccupantInfo info)
 	{
@@ -152,6 +191,8 @@ public class FriendListPanel extends JPanel
 		if (!_listModel.contains(user))
 		{
 			addFriend(info);
+		} else {
+			updateStatus(info, OnlineStatus.LEAVING);
 		}
 		log.info("Occupant Entered", "user", user, "status", occupantStatus(info));
 	}
@@ -160,10 +201,17 @@ public class FriendListPanel extends JPanel
 	public void occupantLeft(OccupantInfo info)
 	{
 		CardBoxName user = (CardBoxName)info.username;
-		// Ensure it's a friend we're tracking who left
+		// Ensure it's a friend who left
 		if (_listModel.contains(user))
 		{
-			removeFriend(info);
+			// Only remove a friend from the list if they left from the lobby
+			// without any running or pending games.
+			switch(_tabler.getUserStatus(user))
+			{
+			case OnlineStatus.ONLINE:
+				removeFriend(info);
+				break;
+			}
 		}
 		log.info("Occupant Left", "user", user, "status", occupantStatus(info));
 	}
@@ -186,6 +234,7 @@ public class FriendListPanel extends JPanel
         }
         _ctx.getOccupantDirector().addOccupantObserver(this);
         // TODO: Add friends currently in-game
+        _tdtr.setTableObject(plobj);
 	}
 
 	@Override
@@ -194,32 +243,7 @@ public class FriendListPanel extends JPanel
 		// clear out our occupant entries
 		_ctx.getOccupantDirector().removeOccupantObserver(this);
         _listModel.clear();
-	}
-	
-	@Override
-	public void seatednessDidChange(boolean isSeated)
-	{
-		// no-op
-	}
-
-	@Override
-	public void tableAdded(Table table)
-	{
-		// Do we care whether a table was added?
-		log.info("Table Added", "players", Arrays.toString(table.players), "gameOid", table.gameOid);
-	}
-
-	@Override
-	public void tableUpdated(Table table)
-	{
-		// If Table.gameOid != -1, the game has started
-		log.info("Table Updated", "players", Arrays.toString(table.players), "gameOid", table.gameOid);
-	}
-
-	@Override
-	public void tableRemoved(int tableId)
-	{
-		// Real handy for us
+        _tdtr.clearTableObject();
 	}
 	
 	public boolean isFriend(long fbId)
@@ -266,6 +290,10 @@ public class FriendListPanel extends JPanel
 	
 	/** Set of raw friend data from Facebook */
 	protected FriendSet _friends;
+	
+	protected TableDirector _tdtr;
+	
+	protected FriendTableTracker _tabler;
 	
 	// Max/Min Sizes for the Title
 	protected static Dimension TITLE_MAX_SIZE = new Dimension(390, 30);

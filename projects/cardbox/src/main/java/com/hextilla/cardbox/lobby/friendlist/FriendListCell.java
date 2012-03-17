@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import com.hextilla.cardbox.client.CardBoxUI;
+import com.hextilla.cardbox.facebook.CardBoxName;
 
 import com.samskivert.swing.MultiLineLabel;
 
@@ -116,6 +117,7 @@ public class FriendListCell extends JPanel
 	}
 	
 	protected class StatusPanel extends JPanel
+		implements OnlineStatus.StatusObserver
 	{
 		public StatusPanel (FriendEntry fe)
 		{
@@ -132,6 +134,12 @@ public class FriendListCell extends JPanel
 		}
 		
 		protected MultiLineLabel _status;
+
+		@Override
+		public void statusUpdated(CardBoxName user, OnlineStatus status)
+		{
+			_status.setText(status.toString());
+		}
 	}
 	
 	protected FriendEntry _entry = null;
