@@ -1,10 +1,9 @@
 package com.hextilla.cardbox.lobby.friendlist;
 
-import java.awt.Font;
+import java.util.Vector;
 
 import com.hextilla.cardbox.facebook.CardBoxName;
 import com.hextilla.cardbox.util.CardBoxContext;
-import com.threerings.util.MessageBundle;
 
 public class OnlineStatus
 {
@@ -15,8 +14,49 @@ public class OnlineStatus
 	
 	public OnlineStatus (CardBoxContext ctx, CardBoxName user)
 	{
+		this(ctx, user, ONLINE);
+	}
+	
+	public OnlineStatus (CardBoxContext ctx, CardBoxName user, byte status)
+	{
 		_ctx = ctx;
 		_user = user;
+		_status = status;
+	}
+	
+	public boolean setStatus (byte status)
+	{
+		// Ignore changes that 
+		if (_status != status) {
+			byte from = _status;
+			_status = status;
+			if (status == ONLINE || status == INGAME)
+				updateNotify();
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean setStatus (OnlineStatus status)
+	{
+		return setStatus(status.getStatus());
+	}
+	
+	public byte getStatus ()
+	{
+		return _status;
+	}
+	
+	public void addListener (StatusObserver so)
+	{
+		if (so != null)
+			_observers.add(so);
+	}
+	
+	public void clearListeners ()
+	{
+		_observers.clear();
 	}
 	
 	@Override
@@ -42,6 +82,14 @@ public class OnlineStatus
 		return _ctx.xlate(STATUS_MSGS, message); 
 	}
 	
+	protected void updateNotify ()
+	{
+		for (StatusObserver observer : _observers)
+		{
+			observer.statusUpdated(_user, this);
+		}
+	}
+	
 	/**
 	 * User State Table
 	 * ################
@@ -49,9 +97,9 @@ public class OnlineStatus
 	 * WAITING - User in lobby, in matchmaking
 	 * INGAME - User elsewhere, has a game
 	 */
-	public static final int ONLINE = 200;
-	public static final int WAITING = 250;
-	public static final int INGAME = 300;
+	public static final byte ONLINE = 1;
+	public static final byte WAITING = 2;
+	public static final byte INGAME = 4;
 	
 	protected static final String STATUS_MSGS = "client.friend";
 	
@@ -62,5 +110,8 @@ public class OnlineStatus
 	protected CardBoxContext _ctx;
 	/** The user whose status we represent */
 	protected CardBoxName _user;
-	protected int _status = ONLINE;
+	/** Our current status value */
+	protected byte _status;
+	
+	protected Vector<StatusObserver> _observers = new Vector<StatusObserver>();
 }

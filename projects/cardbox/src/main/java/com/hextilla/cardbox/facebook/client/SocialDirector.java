@@ -53,6 +53,9 @@ public class SocialDirector extends BasicDirector
 		/** Need to provide a means for iterating over our list of online friends */
 		public FriendIterator getOnlineFriendIterator();
 		
+		/** Need to provide a way to update your friends' user status */
+		public void updateStatus(CardBoxName friend, byte status);
+		
 		/** Need to provide a means to update the view when a user's display pic changes. */
 		public void imageUpdated(CardBoxName friend);
 	}
@@ -169,6 +172,13 @@ public class SocialDirector extends BasicDirector
 		} finally {
 			_http.shutdown();
 		}
+	}
+	
+	/** Need to provide a way to update your friends' user status */
+	public void updateStatus(CardBoxName friend, byte status)
+	{
+		if (_tracker != null)
+			_tracker.updateStatus(friend, status);
 	}
 	
 	/** Delegate responsibility to the FriendTracker, if available */
