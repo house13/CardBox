@@ -109,7 +109,9 @@ public class FriendTableTracker
 				if (player instanceof CardBoxName)
 				{
 					CardBoxName user = (CardBoxName)player;
-					if (_friendMap.remove(user) != null) {
+					Table oldtb = _friendMap.remove(user);
+					if (_sdtr.isOnlineFriend(user))
+					{	
 						_sdtr.updateStatus(user, OnlineStatus.ONLINE);
 					}
 				}
