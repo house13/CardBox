@@ -75,8 +75,7 @@ public class FriendListModel extends AbstractListModel
 	public synchronized boolean updateElement(FriendEntry update)
 	{
 		CardBoxName name = update.getName();
-		boolean exists = _directory.containsKey(name);
-		if (exists)
+		if (contains(name))
 		{
 			FriendEntry entry = getElementByName(name);
 			if (entry.update(update))
@@ -85,6 +84,8 @@ public class FriendListModel extends AbstractListModel
 				fireContentsChanged(this, index, index);
 				return true;
 			}
+		} else {
+			
 		}
 		return false;
 	}

@@ -18,6 +18,7 @@ import com.hextilla.cardbox.facebook.CardBoxName;
 import com.hextilla.cardbox.facebook.client.FriendSet;
 import com.hextilla.cardbox.facebook.client.SocialDirector;
 import com.hextilla.cardbox.facebook.client.SocialDirector.FriendIterator;
+import com.hextilla.cardbox.lobby.data.LobbyObject;
 import com.hextilla.cardbox.util.CardBoxContext;
 
 import com.threerings.crowd.client.OccupantObserver;
@@ -25,6 +26,7 @@ import com.threerings.crowd.client.PlaceView;
 import com.threerings.crowd.data.OccupantInfo;
 import com.threerings.crowd.data.PlaceObject;
 import com.threerings.parlor.client.SeatednessObserver;
+import com.threerings.parlor.client.TableDirector;
 import com.threerings.parlor.client.TableObserver;
 import com.threerings.parlor.data.Table;
 
@@ -43,6 +45,7 @@ public class FriendListPanel extends JPanel
         _devmode = !_ctx.isFacebookEnabled();
         
         _tabler = new FriendTableTracker(_ctx);
+        _tdtr = new TableDirector(_ctx, LobbyObject.TABLE_SET, _tabler);
         
         GroupLayout layout = new GroupLayout(this);
         layout.setAutoCreateGaps(true);
@@ -163,7 +166,7 @@ public class FriendListPanel extends JPanel
 			break;
 		}
 		
-		if (_listModel.updateElement(new FriendEntry(_ctx, friend, null, status)))
+		if (_listModel.updateElement(new FriendEntry(_ctx, friend, _friends.getPic(friend), status)))
 			log.info(message);
 	}
 	
@@ -216,6 +219,7 @@ public class FriendListPanel extends JPanel
         }
         _ctx.getOccupantDirector().addOccupantObserver(this);
         // TODO: Add friends currently in-game
+        _tdtr.setTableObject(plobj);
 	}
 
 	@Override
@@ -224,6 +228,7 @@ public class FriendListPanel extends JPanel
 		// clear out our occupant entries
 		_ctx.getOccupantDirector().removeOccupantObserver(this);
         _listModel.clear();
+        _tdtr.clearTableObject();
 	}
 	
 	public boolean isFriend(long fbId)
@@ -270,6 +275,8 @@ public class FriendListPanel extends JPanel
 	
 	/** Set of raw friend data from Facebook */
 	protected FriendSet _friends;
+	
+	protected TableDirector _tdtr;
 	
 	protected FriendTableTracker _tabler;
 	
