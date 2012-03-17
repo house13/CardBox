@@ -89,7 +89,6 @@ public class FriendListPanel extends JPanel
 		);
 		log.info("Friends List Panel has been created!!");
 		_friends = _ctx.getSocialDirector().getFriends();
-		_ctx.getOccupantDirector().addOccupantObserver(this);
 		_ctx.getSocialDirector().setFriendTracker(this);
 	}
 	
@@ -185,6 +184,7 @@ public class FriendListPanel extends JPanel
         for (OccupantInfo info : plobj.occupantInfo) {
         	addFriend(info);
         }
+        _ctx.getOccupantDirector().addOccupantObserver(this);
         // TODO: Add friends currently in-game
 	}
 
@@ -192,6 +192,7 @@ public class FriendListPanel extends JPanel
 	public void didLeavePlace(PlaceObject plobj)
 	{
 		// clear out our occupant entries
+		_ctx.getOccupantDirector().removeOccupantObserver(this);
         _listModel.clear();
 	}
 	

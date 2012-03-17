@@ -16,6 +16,8 @@ public class PlayerCountPanel extends JPanel implements OccupantObserver, PlaceV
 	public PlayerCountPanel(CardBoxContext ctx, int currentPlayerCount)
 	{
 		super(new BorderLayout());
+		_ctx = ctx;
+		
 		_playerCount = currentPlayerCount;
 		
 		_onlineCountTextLabel = new JLabel(_onlineCountText, JLabel.LEFT);
@@ -25,8 +27,6 @@ public class PlayerCountPanel extends JPanel implements OccupantObserver, PlaceV
 		_onlineCountNumberLabel = new JLabel("" + _playerCount, JLabel.RIGHT);
 		_onlineCountNumberLabel.setFont(CardBoxUI.AppFontSmall);
 		add(_onlineCountNumberLabel, BorderLayout.CENTER);
-		
-		ctx.getOccupantDirector().addOccupantObserver(this);
 	}
 
 	// Label text
@@ -53,13 +53,15 @@ public class PlayerCountPanel extends JPanel implements OccupantObserver, PlaceV
 	public void willEnterPlace(PlaceObject place) {
 		//TODO: We need to read in the players who are in games as well
 		// Number of player in the lobby
+		_ctx.getOccupantDirector().addOccupantObserver(this);
 		setOnlinePlayerCount(place.occupantInfo.size());				
 	}
 
 	public void didLeavePlace(PlaceObject place) {
-	
+		_ctx.getOccupantDirector().removeOccupantObserver(this);
 	}
 	
+	protected CardBoxContext _ctx;
 	
 	// The number of players currently connected
 	long _playerCount;	
