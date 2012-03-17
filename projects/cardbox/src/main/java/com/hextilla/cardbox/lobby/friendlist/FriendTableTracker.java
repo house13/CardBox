@@ -61,10 +61,10 @@ public class FriendTableTracker
 					{
 						// maybe do some logic here to find out what's going on
 					}
+					oldtable = _tableMap.put(table.tableId, table);
 					// The game might actually be started already
 					if (table.gameOid != -1) 
 					{
-						oldtable = _tableMap.put(table.tableId, table);
 						_sdtr.updateStatus(user, OnlineStatus.INGAME);
 					} else {
 						_sdtr.updateStatus(user, OnlineStatus.WAITING);
@@ -116,6 +116,9 @@ public class FriendTableTracker
 					}
 				}
 			}
+		} else {
+			// If someone cancels matchmaking
+			
 		}
 	}
 	
