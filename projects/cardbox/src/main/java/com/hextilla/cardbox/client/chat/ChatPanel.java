@@ -102,9 +102,6 @@ public class ChatPanel extends JPanel
         _chatdtr = chatdtr;
         _chatdtr.addChatDisplay(this);
 
-        // register as an occupant observer
-        _ctx.getOccupantDirector().addOccupantObserver(this);
-
         GroupLayout gl = new VGroupLayout(GroupLayout.STRETCH);
         gl.setOffAxisPolicy(GroupLayout.STRETCH);
         setLayout(gl);
@@ -375,12 +372,16 @@ public class ChatPanel extends JPanel
         if (_focus) {
             _entry.requestFocus();
         }
+        // register as an occupant observer
+        _ctx.getOccupantDirector().addOccupantObserver(this);
         _room = place;
     }
 
     // documentation inherited
     public void didLeavePlace (PlaceObject place)
     {
+    	// unregister as an occupant observer
+        _ctx.getOccupantDirector().removeOccupantObserver(this);
         _room = null;
     }
 
