@@ -87,7 +87,7 @@ public class FriendListPanel extends JPanel
 	    		       .addComponent(friendTitle)
 	    		       .addComponent(scrollin)
 		);
-		
+		log.info("Friends List Panel has been created!!");
 		_friends = _ctx.getSocialDirector().getFriends();
 		_ctx.getOccupantDirector().addOccupantObserver(this);
 		_ctx.getSocialDirector().setFriendTracker(this);
