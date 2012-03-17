@@ -8,6 +8,11 @@ import com.threerings.util.MessageBundle;
 
 public class OnlineStatus
 {
+	public interface StatusObserver
+	{
+		public void statusUpdated (CardBoxName user, OnlineStatus status);
+	}
+	
 	public OnlineStatus (CardBoxContext ctx, CardBoxName user)
 	{
 		_ctx = ctx;

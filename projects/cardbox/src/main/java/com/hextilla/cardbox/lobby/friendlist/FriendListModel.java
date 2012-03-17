@@ -1,31 +1,32 @@
 package com.hextilla.cardbox.lobby.friendlist;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.swing.AbstractListModel;
 
 import com.hextilla.cardbox.facebook.CardBoxName;
 
+import static com.hextilla.cardbox.Log.log;
+
 public class FriendListModel extends AbstractListModel
 {
 	public FriendListModel()
 	{
-		_model = new TreeSet<FriendEntry>();
+		_model = new ArrayList<FriendEntry>();
 		_directory = new Hashtable<CardBoxName, FriendEntry>();
 	}
 	
 	public synchronized void addElement(FriendEntry friend)
 	{
-		if (_model.add(friend))
-		{
-			_directory.put(friend.getName(), friend);
-			fireContentsChanged(this, 0, getSize());
-		}
+		_model.add(friend);
+		_directory.put(friend.getName(), friend);
+		Collections.sort(_model);
+		fireContentsChanged(this, 0, getSize());
 	}
 	
 	public synchronized void addAll(FriendEntry friends[])
@@ -36,7 +37,19 @@ public class FriendListModel extends AbstractListModel
 		{
 			_directory.put(friend.getName(), friend);
 		}
+		Collections.sort(_model);
 		fireContentsChanged(this, 0, getSize());
+	}
+	
+	public synchronized boolean removeElement(int index)
+	{
+		FriendEntry fe = _model.remove(index);
+		if (fe != null)
+		{
+			_directory.remove(fe.getName());
+			fireContentsChanged(this, index, getSize());
+		}
+		return (fe != null);
 	}
 	
 	public synchronized boolean removeElement(FriendEntry friend)
@@ -59,7 +72,8 @@ public class FriendListModel extends AbstractListModel
 			FriendEntry entry = getElementByName(name);
 			if (entry.update(update))
 			{
-				fireContentsChanged(this, 0, getSize());
+				int index = Collections.binarySearch(_model, entry);
+				fireContentsChanged(this, index, index);
 				return true;
 			}
 		}
@@ -68,7 +82,7 @@ public class FriendListModel extends AbstractListModel
 	
 	public boolean contains(FriendEntry friend)
 	{
-		return _model.contains(friend);
+		return _directory.containsKey(friend.getName());
 	}
 	
 	public void clear()
@@ -91,7 +105,7 @@ public class FriendListModel extends AbstractListModel
 	@Override
 	public Object getElementAt(int index)
 	{
-		return _model.toArray()[index];
+		return _model.get(index);
 	}
 
 	@Override
@@ -100,6 +114,6 @@ public class FriendListModel extends AbstractListModel
 		return _model.size();
 	}
 
-	protected SortedSet<FriendEntry> _model;
+	protected ArrayList<FriendEntry> _model;
 	protected Hashtable<CardBoxName, FriendEntry> _directory;
 }

@@ -1,14 +1,7 @@
 package com.hextilla.cardbox.lobby.friendlist;
 
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -17,7 +10,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
 
 import com.hextilla.cardbox.client.CardBoxUI;
 import com.hextilla.cardbox.data.CardBoxGameConfig;
@@ -26,16 +18,21 @@ import com.hextilla.cardbox.facebook.client.FriendSet;
 import com.hextilla.cardbox.facebook.client.SocialDirector;
 import com.hextilla.cardbox.facebook.client.SocialDirector.FriendIterator;
 import com.hextilla.cardbox.util.CardBoxContext;
+
 import com.threerings.crowd.client.OccupantObserver;
 import com.threerings.crowd.client.PlaceView;
 import com.threerings.crowd.data.OccupantInfo;
 import com.threerings.crowd.data.PlaceObject;
+import com.threerings.parlor.client.SeatednessObserver;
+import com.threerings.parlor.client.TableObserver;
+import com.threerings.parlor.data.Table;
 
 import static com.hextilla.cardbox.Log.log;
 
 // Class to show the list of Facebook friends
 public class FriendListPanel extends JPanel 
-	implements PlaceView, OccupantObserver, SocialDirector.FriendTracker
+	implements PlaceView, OccupantObserver, SocialDirector.FriendTracker,
+			   TableObserver, SeatednessObserver 
 {
 	// TODO: reference to this "friend" object taken in constructor
 	public FriendListPanel (CardBoxContext ctx, CardBoxGameConfig config)
@@ -60,8 +57,8 @@ public class FriendListPanel extends JPanel
 		
 		// Setup the friend list objects and custom renderers
 		_listModel  = new FriendListModel();
-		_friendList = new JList(_listModel);
-		_friendList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		_friendList = new FriendList(_listModel);
+		_friendList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		_friendList.setLayoutOrientation(JList.VERTICAL);		
 		ListCellRenderer renderer = new FriendListRenderer();
 		_friendList.setCellRenderer(renderer);
@@ -181,6 +178,27 @@ public class FriendListPanel extends JPanel
         _listModel.clear();
 	}
 	
+	@Override
+	public void seatednessDidChange(boolean isSeated)
+	{
+	}
+
+	@Override
+	public void tableAdded(Table table)
+	{
+	}
+
+	@Override
+	public void tableUpdated(Table table)
+	{
+		
+	}
+
+	@Override
+	public void tableRemoved(int tableId)
+	{
+	}
+	
 	public boolean isFriend(long fbId)
 	{
 		if (_devmode || _friends == null) {
@@ -202,7 +220,7 @@ public class FriendListPanel extends JPanel
 	protected FriendListModel _listModel;
 	
 	/** JComponent representation of the friend list */
-	protected JList _friendList;
+	protected FriendList _friendList;
 	
 	/** Set of raw friend data from Facebook */
 	protected FriendSet _friends;

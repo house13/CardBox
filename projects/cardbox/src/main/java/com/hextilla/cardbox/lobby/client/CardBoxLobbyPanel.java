@@ -375,10 +375,6 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
     protected ComputerOpponentView _soloPlay;
     protected MatchMakingButton _friendPlay;
     protected MatchMakingButton _strangerPlay;   
-    	
-    // Button text
-    protected static String STRANGER_BUTTON_TEXT = "Play with a Stranger";
-    protected static String FRIENDPLAY_BUTTON_TEXT = "Play with a Friend";
 	
 	// Whether we're running in development mode (i.e. gameId = -1)
 	protected boolean _devmode = false;

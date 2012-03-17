@@ -91,8 +91,8 @@ public class FriendListCell extends JPanel
 	{
 		public NamePanel (String name, String username)
 		{
-			_name = new MultiLineLabel(name, SwingConstants.LEFT, SwingConstants.HORIZONTAL, 0);
-	        _username = new MultiLineLabel("(" + username + ")", SwingConstants.LEFT, SwingConstants.HORIZONTAL, 0);
+			_name = new MultiLineLabel(name, SwingConstants.LEFT, SwingConstants.VERTICAL, 0);
+	        _username = new MultiLineLabel("(" + username + ")", SwingConstants.LEFT, SwingConstants.VERTICAL, 0);
 	        
 	        _name.setFont(CardBoxUI.AppFontSmall);
 	        _username.setFont(CardBoxUI.AppFontItalicExtraSmall);
