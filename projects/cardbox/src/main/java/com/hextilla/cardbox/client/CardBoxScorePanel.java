@@ -1,9 +1,6 @@
 package com.hextilla.cardbox.client;
 
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Polygon;
-import java.awt.geom.Ellipse2D;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.ParallelGroup;
@@ -15,8 +12,6 @@ import com.hextilla.cardbox.facebook.CardBoxName;
 import com.hextilla.cardbox.server.CardBoxGameObject;
 import com.hextilla.cardbox.swing.ShapeLabel;
 import com.hextilla.cardbox.util.CardBoxContext;
-import com.samskivert.swing.MultiLineLabel;
-import com.samskivert.swing.ShapeIcon;
 import com.samskivert.swing.util.SwingUtil;
 import com.threerings.crowd.client.PlaceView;
 import com.threerings.crowd.data.PlaceObject;
@@ -140,14 +135,14 @@ public class CardBoxScorePanel extends TurnDisplay implements AttributeChangeLis
             JLabel iconLabel = new JLabel();
             if (winners == null) {
                 if (names[i].equals(holder)) {
-                	System.out.println("TurnIcon");
-                    iconLabel.setIcon(_turnIcon);                  
+                	System.out.println("TurnIcon: " + names[i]);
+                    iconLabel.setIcon(_turnIcon);  
                 }
             } else if (_gameobj.isDraw()) {
-            	System.out.println("draw");
+            	System.out.println("draw: " + names[i]);
                 iconLabel.setIcon(_drawIcon);
             } else if (winners[i]) {
-            	System.out.println("win");
+            	System.out.println("win: " + names[i]);
                 iconLabel.setIcon(_winIcon);
             }
             iconLabel.setMinimumSize(_minIconDim);                                
@@ -189,12 +184,13 @@ public class CardBoxScorePanel extends TurnDisplay implements AttributeChangeLis
         layout.setVerticalGroup(nameIconPairs);
 
         // Redraw the display
-        SwingUtil.refresh(this);     
+        //SwingUtil.refresh(this);
+        repaint();
     }    
     
     protected void setMinIconDim(Icon icon){
-    	_minIconDim = new Dimension(Math.max(icon.getIconWidth(), _minIconDim.width),
-    			Math.max(icon.getIconHeight(), _minIconDim.height)+1);
+    	_minIconDim = new Dimension(Math.max(icon.getIconWidth()+1, _minIconDim.width),
+    			Math.max(icon.getIconHeight()+1, _minIconDim.height));
     }
 
     /** A reference to our game object. */
