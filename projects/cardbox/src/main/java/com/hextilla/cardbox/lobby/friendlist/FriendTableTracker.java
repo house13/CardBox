@@ -65,6 +65,7 @@ public class FriendTableTracker
 					if (table.gameOid != -1) 
 					{
 						oldtable = _tableMap.put(table.gameOid, table);
+						_sdtr.updateStatus(user, OnlineStatus.INGAME);
 					} else {
 						_sdtr.updateStatus(user, OnlineStatus.WAITING);
 					}
@@ -90,12 +91,7 @@ public class FriendTableTracker
 						Table oldtable = _friendMap.put(user, table);
 						_tableMap.put(table.gameOid, table);
 						// If a non-null value is returned, this user was still in a table
-						if (oldtable != null)
-						{
-							// do some logic here to find out what's going on
-						} else {
-							_sdtr.updateStatus(user, OnlineStatus.INGAME);
-						}
+						_sdtr.updateStatus(user, OnlineStatus.INGAME);
 					}
 				}
 			}
