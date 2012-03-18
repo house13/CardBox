@@ -154,6 +154,22 @@ public class CardBoxPrefs
         return key;
     }
 
+    /**
+     * Returns the user's last selected AI level.
+     */
+    public static int getAILevel()
+    {
+        return config.getValue(LAST_AI_LEVEL, 0);
+    }
+
+    /**
+     * Sets the user's last selected AI level.
+     */
+    public static void setgetAILevel(int value)
+    {
+        config.setValue(LAST_AI_LEVEL, value);
+    }
+    
     /** The configuration key for the user's username. */
     protected static final String USERNAME_KEY = "username";
 
@@ -168,4 +184,7 @@ public class CardBoxPrefs
     
     /** The configuration key for the user's ID. */
     protected static final String USERID_KEY = "userId";
+    
+    /** The configuration key for the AI level. */
+    protected static final String LAST_AI_LEVEL = "lastAILevel";
 }

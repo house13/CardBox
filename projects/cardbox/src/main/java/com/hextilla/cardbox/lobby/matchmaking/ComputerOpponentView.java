@@ -20,6 +20,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import com.hextilla.cardbox.client.CardBoxPrefs;
 import com.hextilla.cardbox.client.CardBoxUI;
 import com.hextilla.cardbox.data.CardBoxGameConfig;
 import com.hextilla.cardbox.data.TableMatchConfig;
@@ -66,7 +67,7 @@ public class ComputerOpponentView extends JPanel
 	        
 	        JLabel _aiLabel = new JLabel("AI Skill");
 	        
-	        JSlider _aiSlider = new JSlider(0, 8, 0);
+	        JSlider _aiSlider = new JSlider(0, 8, CardBoxPrefs.getAILevel());
 	        _aiSlider.setMajorTickSpacing(1);
 	        _aiSlider.setPaintTicks(true);
 
@@ -82,6 +83,7 @@ public class ComputerOpponentView extends JPanel
 	        _aiSlider.addChangeListener(new ChangeListener() {
 				public void stateChanged(ChangeEvent arg0) {
 					_difficultyLevel = (int)((JSlider)arg0.getSource()).getValue();
+					CardBoxPrefs.setgetAILevel(_difficultyLevel);
 				}
 	        });
 	        
