@@ -53,10 +53,14 @@ import com.threerings.crowd.data.PlaceConfig;
 import com.threerings.crowd.server.PlaceManager;
 import com.threerings.crowd.server.PlaceRegistry;
 
+import com.threerings.parlor.data.Table;
+import com.threerings.parlor.data.TableConfig;
 import com.threerings.parlor.game.data.GameConfig;
 import com.threerings.parlor.game.server.GameManager;
 import com.threerings.parlor.game.server.GameManagerDelegate;
 import com.threerings.parlor.server.ParlorManager;
+import com.threerings.parlor.server.TableManager;
+import com.threerings.util.Name;
 
 import com.hextilla.cardbox.lobby.data.LobbyConfig;
 import com.hextilla.cardbox.lobby.data.LobbyObject;
@@ -65,6 +69,7 @@ import com.hextilla.cardbox.lobby.server.LobbyManager;
 import com.hextilla.cardbox.data.GameDefinition;
 import com.hextilla.cardbox.data.CardBoxGameConfig;
 import com.hextilla.cardbox.data.HexDeck;
+import com.hextilla.cardbox.data.TableMatchConfig;
 import com.hextilla.cardbox.server.persist.GameRecord.Status;
 import com.hextilla.cardbox.server.persist.GameRecord;
 import com.hextilla.cardbox.server.persist.SessionRecord;
@@ -335,10 +340,36 @@ public class CardBoxManager extends ParlorManager
     }
     
     @Override
+    protected void processAcceptedInvitation (Invitation invite)
+    {
+        try {
+        	LobbyManager lmgr = (LobbyManager)_plreg.getPlaceManager(_lobbyOids.get(invite.config.getGameId()));
+            log.info("Processing accepted invitation [invite=" + invite + "].");
+
+            // configure the game config with the player info
+            invite.config.players = new Name[] { invite.invitee.getVisibleName(),
+                                                 invite.inviter.getVisibleName() };
+            
+            TableConfig tconfig = new TableConfig();
+            tconfig.minimumPlayerCount = 2;
+            tconfig.desiredPlayerCount = 2;
+            
+            TableManager tablemgr = lmgr.getTableManager();
+            Table table = tablemgr.createTable(invite.inviter, tconfig, invite.config);
+            if (table != null) {
+            	tablemgr.joinTable(invite.invitee, table.tableId, 1, null);
+            } else {
+            	log.warning("Invitational table could not be created", "invite", invite);
+            }
+        } catch (Exception e) {
+            log.warning("Unable to create game manager [invite=" + invite + "].", e);
+        }
+    }
+    
+    @Override
     protected void createGameManager (GameConfig config)
             throws InstantiationException, InvocationException
     {
-    	createGame(config);
     }
 
     /**
