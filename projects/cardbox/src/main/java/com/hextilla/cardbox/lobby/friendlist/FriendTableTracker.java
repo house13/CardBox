@@ -48,8 +48,6 @@ public class FriendTableTracker
 	@Override
 	public void tableAdded(Table table)
 	{
-		// Do we care whether a table was added?
-		log.info("Table Added", "players", Arrays.toString(table.players), "gameOid", table.gameOid);
 		for (Name player : table.players)
 		{
 			if (player instanceof CardBoxName)
@@ -57,6 +55,7 @@ public class FriendTableTracker
 				CardBoxName user = (CardBoxName)player;
 				if (_sdtr.isOnlineFriend(user) || _friends.isFriend(user.getFacebookId()))
 				{
+					log.info("Table Added", "friend", user, "players", Arrays.toString(table.players), "gameOid", table.gameOid);
 					Table oldtable = _friendMap.put(user, table);
 					// If a non-null value is returned, this user was still in a table
 					if (oldtable != null)
