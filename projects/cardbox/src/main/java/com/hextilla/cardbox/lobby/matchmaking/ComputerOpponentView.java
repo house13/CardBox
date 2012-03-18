@@ -66,7 +66,7 @@ public class ComputerOpponentView extends JPanel
 	        
 	        JLabel _aiLabel = new JLabel("AI Skill");
 	        
-	        JSlider _aiSlider = new JSlider(0, 9, 0);
+	        JSlider _aiSlider = new JSlider(0, 8, 0);
 	        _aiSlider.setMajorTickSpacing(1);
 	        _aiSlider.setPaintTicks(true);
 
@@ -74,7 +74,7 @@ public class ComputerOpponentView extends JPanel
 			Hashtable<Integer, JLabel> labelTable = new Hashtable<Integer, JLabel>();
 			labelTable.put( new Integer( 0 ), new JLabel("Easy") );
 			labelTable.put( new Integer( 4 ), new JLabel("Medium") );
-			labelTable.put( new Integer( 9 ), new JLabel("Hard") );
+			labelTable.put( new Integer( 8 ), new JLabel("Hard") );
 			_aiSlider.setLabelTable( labelTable );
 			
 			_aiSlider.setPaintLabels(true);
