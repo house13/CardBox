@@ -37,6 +37,7 @@ import com.threerings.parlor.util.ParlorContext;
 import com.hextilla.cardbox.client.CardBoxDirector;
 import com.hextilla.cardbox.client.chat.CardBoxChatDirector;
 import com.hextilla.cardbox.facebook.client.SocialDirector;
+import com.hextilla.cardbox.lobby.invite.InvitationDirector;
 
 import static com.hextilla.cardbox.Log.log;
 
@@ -65,6 +66,11 @@ public abstract class CardBoxContext implements ParlorContext
      * Returns a reference to our Social director.
      */
     public abstract SocialDirector getSocialDirector ();
+    
+    /**
+     * Returns a reference to our Social director.
+     */
+    public abstract InvitationDirector getInvitationDirector ();
 
     /**
      * Returns a reference to our frame manager (used for media services).

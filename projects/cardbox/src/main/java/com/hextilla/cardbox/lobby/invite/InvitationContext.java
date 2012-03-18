@@ -16,11 +16,12 @@ public class InvitationContext
 		log.info("InvitationContext: created", "friend", friend);
 		_ctx = ctx;
 		_friend = friend;
+		_idtr = _ctx.getInvitationDirector();
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
+		_idtr.sendInvitation(_friend);
 		
 	}
 	@Override
@@ -52,6 +53,8 @@ public class InvitationContext
 	}
 	
 	protected CardBoxContext _ctx;
+	
+	protected InvitationDirector _idtr;
 	
 	protected CardBoxName _friend;
 	

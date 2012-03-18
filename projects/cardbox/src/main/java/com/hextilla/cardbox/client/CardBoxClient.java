@@ -68,6 +68,7 @@ import com.hextilla.cardbox.data.CardBoxGameConfig;
 import com.hextilla.cardbox.data.CardBoxCodes;
 import com.hextilla.cardbox.facebook.CardBoxCredentials;
 import com.hextilla.cardbox.facebook.client.SocialDirector;
+import com.hextilla.cardbox.lobby.invite.InvitationDirector;
 import com.hextilla.cardbox.util.CardBoxContext;
 
 import static com.hextilla.cardbox.Log.log;
@@ -268,7 +269,8 @@ public class CardBoxClient
         _fchatdir = new CardBoxChatDirector(_ctx, ChatPanel.CHAT_MSGS);
         _pardtr = new ParlorDirector(_ctx);
         _carddtr = new CardBoxDirector(_ctx);
-        _socialdtr = new SocialDirector(_ctx); 
+        _socialdtr = new SocialDirector(_ctx);
+        _invitedtr = new InvitationDirector(_ctx); 
     }
 
     /**
@@ -428,6 +430,12 @@ public class CardBoxClient
         {
             return _socialdtr;
         }
+        
+        @Override
+        public InvitationDirector getInvitationDirector ()
+        {
+            return _invitedtr;
+        }
 
         @Override
         public FrameManager getFrameManager ()
@@ -479,6 +487,7 @@ public class CardBoxClient
     protected ParlorDirector _pardtr;
     protected CardBoxDirector _carddtr;
     protected SocialDirector _socialdtr;
+    protected InvitationDirector _invitedtr;
     
     protected String _session;
     

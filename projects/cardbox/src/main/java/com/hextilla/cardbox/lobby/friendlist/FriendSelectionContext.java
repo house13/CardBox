@@ -110,6 +110,7 @@ public class FriendSelectionContext
 				_delegate = null;
 				break;
 			}
+			updated();
 		}
 	}
 	

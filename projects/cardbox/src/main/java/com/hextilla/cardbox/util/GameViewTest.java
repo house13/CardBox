@@ -45,6 +45,7 @@ import com.threerings.media.ManagedJFrame;
 import com.hextilla.cardbox.client.CardBoxDirector;
 import com.hextilla.cardbox.client.chat.CardBoxChatDirector;
 import com.hextilla.cardbox.facebook.client.SocialDirector;
+import com.hextilla.cardbox.lobby.invite.InvitationDirector;
 
 /**
  * A test harness for one's game view which can be used to unit test a game
@@ -143,6 +144,10 @@ public abstract class GameViewTest extends ManagedJFrame
         }
         @Override
         public SocialDirector getSocialDirector () {
+        	return null;
+        }
+        @Override
+        public InvitationDirector getInvitationDirector () {
         	return null;
         }
         @Override
