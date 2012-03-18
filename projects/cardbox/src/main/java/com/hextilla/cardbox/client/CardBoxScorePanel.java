@@ -8,6 +8,8 @@ import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 
+import com.hextilla.cardbox.client.chat.FriendNameTransformer;
+import com.hextilla.cardbox.client.chat.StrangerNameTransformer;
 import com.hextilla.cardbox.facebook.CardBoxName;
 import com.hextilla.cardbox.server.CardBoxGameObject;
 import com.hextilla.cardbox.swing.ShapeLabel;
@@ -15,6 +17,7 @@ import com.hextilla.cardbox.util.CardBoxContext;
 import com.samskivert.swing.util.SwingUtil;
 import com.threerings.crowd.client.PlaceView;
 import com.threerings.crowd.data.PlaceObject;
+import com.threerings.parlor.game.data.GameObject;
 import com.threerings.parlor.turn.client.TurnDisplay;
 import com.threerings.parlor.turn.data.TurnGameObject;
 import com.threerings.presents.dobj.AttributeChangeListener;
@@ -34,22 +37,40 @@ public class CardBoxScorePanel extends TurnDisplay implements AttributeChangeLis
 	
 	@Override
     public void attributeChanged (AttributeChangedEvent event)
-    {
+    {	  	    
+        String name = event.getName();
+        
 	    // Player 1 score was updated
-	    if (event.getName().equals(CardBoxGameObject.PLAYER1_SCORE)) {
+	    if (name.equals(CardBoxGameObject.PLAYER1_SCORE)) {
 	    	((ShapeLabel) _playerIcons[0]).setText("" + _gameobj.player1Score);
 	    	this.repaint();
 	    	return;
 	    }
 	    
 	    // Player 2 score was updated
-	    else if (event.getName().equals(CardBoxGameObject.PLAYER2_SCORE)) {
+	    else if (name.equals(CardBoxGameObject.PLAYER2_SCORE)) {
 	    	((ShapeLabel) _playerIcons[1]).setText("" + _gameobj.player2Score);
 	    	this.repaint();
 	    	return;
 	    }
-	    
-	    super.attributeChanged(event);
+
+        else if (name.equals(_turnObj.getTurnHolderFieldName())) {
+            JLabel oldLabel = _labels.get(event.getOldValue());
+            if (oldLabel != null) {
+                oldLabel.setIcon(null);
+            }
+            JLabel newLabel = _labels.get(event.getValue());
+            if (newLabel != null) {
+                newLabel.setIcon(_turnIcon);
+            }
+        	createList();
+
+        } else if (name.equals(GameObject.PLAYERS)) {
+            createList();
+
+        } else if (name.equals(GameObject.WINNERS)) {
+            createList();
+        }
     }
 	
 	// Set the win icon
@@ -88,6 +109,7 @@ public class CardBoxScorePanel extends TurnDisplay implements AttributeChangeLis
     	_turnObj = (TurnGameObject) plobj;
     	_gameobj = (CardBoxGameObject)plobj;
         _gameobj.addListener(this);
+    	
         createList();
     }
 
@@ -135,14 +157,11 @@ public class CardBoxScorePanel extends TurnDisplay implements AttributeChangeLis
             JLabel iconLabel = new JLabel();
             if (winners == null) {
                 if (names[i].equals(holder)) {
-                	System.out.println("TurnIcon: " + names[i]);
                     iconLabel.setIcon(_turnIcon);  
                 }
             } else if (_gameobj.isDraw()) {
-            	System.out.println("draw: " + names[i]);
                 iconLabel.setIcon(_drawIcon);
             } else if (winners[i]) {
-            	System.out.println("win: " + names[i]);
                 iconLabel.setIcon(_winIcon);
             }
             iconLabel.setMinimumSize(_minIconDim);                                
@@ -153,12 +172,11 @@ public class CardBoxScorePanel extends TurnDisplay implements AttributeChangeLis
             // Fix up the name to friendly/stranger version based on the type
             JLabel label = null;
         	if (names[i] instanceof CardBoxName){       	
-	        	if (_gameobj.gameMode.equals("friendly") || _gameobj.gameMode.equals("ai")){
+	        	if (_gameobj.gameMode.equals("friendly")){
 	                label = new JLabel(((CardBoxName)names[i]).getFriendlyName().toString());
-	            } else if (_gameobj.gameMode.equals("stranger")){            	
-	                label = new JLabel(((CardBoxName)names[i]).getStrangerName().toString());
+	            } else {            	
+	                label = new JLabel(names[i].toString());
 	            }
-	        	label = new JLabel(names[i].toString());
         	} 
         	else
         	{
@@ -184,8 +202,7 @@ public class CardBoxScorePanel extends TurnDisplay implements AttributeChangeLis
         layout.setVerticalGroup(nameIconPairs);
 
         // Redraw the display
-        //SwingUtil.refresh(this);
-        repaint();
+        SwingUtil.refresh(this);
     }    
     
     protected void setMinIconDim(Icon icon){
