@@ -85,7 +85,7 @@ public class FriendListModel extends AbstractListModel
 				return true;
 			}
 		} else {
-			
+			addElement(update);
 		}
 		return false;
 	}
