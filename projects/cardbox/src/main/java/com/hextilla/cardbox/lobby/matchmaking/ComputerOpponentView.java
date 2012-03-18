@@ -67,7 +67,8 @@ public class ComputerOpponentView extends JPanel
 	        
 	        JLabel _aiLabel = new JLabel("AI Skill");
 	        
-	        JSlider _aiSlider = new JSlider(0, 8, CardBoxPrefs.getAILevel());
+	        _difficultyLevel = CardBoxPrefs.getAILevel();
+	        JSlider _aiSlider = new JSlider(0, 8, _difficultyLevel);
 	        _aiSlider.setMajorTickSpacing(1);
 	        _aiSlider.setPaintTicks(true);
 
