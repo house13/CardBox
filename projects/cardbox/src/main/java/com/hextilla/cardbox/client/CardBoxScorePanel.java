@@ -8,6 +8,8 @@ import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 
+import com.hextilla.cardbox.client.chat.FriendNameTransformer;
+import com.hextilla.cardbox.client.chat.StrangerNameTransformer;
 import com.hextilla.cardbox.facebook.CardBoxName;
 import com.hextilla.cardbox.server.CardBoxGameObject;
 import com.hextilla.cardbox.swing.ShapeLabel;
@@ -88,6 +90,7 @@ public class CardBoxScorePanel extends TurnDisplay implements AttributeChangeLis
     	_turnObj = (TurnGameObject) plobj;
     	_gameobj = (CardBoxGameObject)plobj;
         _gameobj.addListener(this);
+    	
         createList();
     }
 
@@ -153,12 +156,11 @@ public class CardBoxScorePanel extends TurnDisplay implements AttributeChangeLis
             // Fix up the name to friendly/stranger version based on the type
             JLabel label = null;
         	if (names[i] instanceof CardBoxName){       	
-	        	if (_gameobj.gameMode.equals("friendly") || _gameobj.gameMode.equals("ai")){
+	        	if (_gameobj.gameMode.equals("friendly")){
 	                label = new JLabel(((CardBoxName)names[i]).getFriendlyName().toString());
-	            } else if (_gameobj.gameMode.equals("stranger")){            	
-	                label = new JLabel(((CardBoxName)names[i]).getStrangerName().toString());
+	            } else {            	
+	                label = new JLabel(names[i].toString());
 	            }
-	        	label = new JLabel(names[i].toString());
         	} 
         	else
         	{
