@@ -61,10 +61,10 @@ public class FriendTableTracker
 					{
 						// maybe do some logic here to find out what's going on
 					}
+					oldtable = _tableMap.put(table.tableId, table);
 					// The game might actually be started already
 					if (table.gameOid != -1) 
 					{
-						oldtable = _tableMap.put(table.gameOid, table);
 						_sdtr.updateStatus(user, OnlineStatus.INGAME);
 					} else {
 						_sdtr.updateStatus(user, OnlineStatus.WAITING);
@@ -89,7 +89,7 @@ public class FriendTableTracker
 					if (_sdtr.isOnlineFriend(user))
 					{
 						Table oldtable = _friendMap.put(user, table);
-						_tableMap.put(table.gameOid, table);
+						_tableMap.put(table.tableId, table);
 						// If a non-null value is returned, this user was still in a table
 						_sdtr.updateStatus(user, OnlineStatus.INGAME);
 					}
@@ -109,11 +109,16 @@ public class FriendTableTracker
 				if (player instanceof CardBoxName)
 				{
 					CardBoxName user = (CardBoxName)player;
-					if (_friendMap.remove(user) != null) {
+					Table oldtb = _friendMap.remove(user);
+					if (_sdtr.isOnlineFriend(user))
+					{	
 						_sdtr.updateStatus(user, OnlineStatus.ONLINE);
 					}
 				}
 			}
+		} else {
+			// If someone cancels matchmaking
+			
 		}
 	}
 	

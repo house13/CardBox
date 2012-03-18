@@ -24,11 +24,13 @@ public class OnlineStatus
 		_status = status;
 	}
 	
-	public boolean setStatus (byte status)
+	public boolean transition (byte status)
 	{
 		// Ignore changes that 
 		if (_status != status) {
-			byte from = _status;
+			// Can only transition from leaving to online
+			if (_status == LEAVING && status != ONLINE)
+				return false;
 			_status = status;
 			if (status == ONLINE || status == INGAME)
 				updateNotify();
@@ -38,9 +40,9 @@ public class OnlineStatus
 		}
 	}
 	
-	public boolean setStatus (OnlineStatus status)
+	public boolean transition (OnlineStatus status)
 	{
-		return setStatus(status.getStatus());
+		return transition(status.getStatus());
 	}
 	
 	public byte getStatus ()

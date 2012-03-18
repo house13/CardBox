@@ -68,7 +68,7 @@ public class FriendEntry
 				_pic = newicon;
 				changed = true;
 			}
-			if (_status.setStatus(other.getStatus())) {
+			if (_status.transition(other.getStatus())) {
 				changed = true;
 			}
 		}
