@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Hashtable;
 
 import com.hextilla.cardbox.facebook.CardBoxName;
+import com.hextilla.cardbox.facebook.client.FriendSet;
 import com.hextilla.cardbox.facebook.client.SocialDirector;
 import com.hextilla.cardbox.util.CardBoxContext;
 import com.threerings.parlor.client.SeatednessObserver;
@@ -21,6 +22,7 @@ public class FriendTableTracker
 		log.info("Creating a new FriendTableTracker");
 		_ctx = ctx;
 		_sdtr = _ctx.getSocialDirector();
+		_friends = _sdtr.getFriends();
 	}
 	
 	/** We should be able to discern a user's state, utilizing the FriendTracker interface */
@@ -53,7 +55,7 @@ public class FriendTableTracker
 			if (player instanceof CardBoxName)
 			{
 				CardBoxName user = (CardBoxName)player;
-				if (_sdtr.isOnlineFriend(user))
+				if (_sdtr.isOnlineFriend(user) || _friends.isFriend(user.getFacebookId()))
 				{
 					Table oldtable = _friendMap.put(user, table);
 					// If a non-null value is returned, this user was still in a table
@@ -132,6 +134,7 @@ public class FriendTableTracker
 	
 	protected SocialDirector _sdtr;
 	
+	protected FriendSet _friends;
 	
 	protected Hashtable<Integer,Table> _tableMap = new Hashtable<Integer,Table>();
 	/** Maps friend names to tables they're playing in */

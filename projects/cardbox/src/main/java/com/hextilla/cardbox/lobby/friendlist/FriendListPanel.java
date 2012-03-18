@@ -29,6 +29,7 @@ import com.threerings.parlor.client.SeatednessObserver;
 import com.threerings.parlor.client.TableDirector;
 import com.threerings.parlor.client.TableObserver;
 import com.threerings.parlor.data.Table;
+import com.threerings.parlor.data.TableLobbyObject;
 
 import static com.hextilla.cardbox.lobby.Log.log;
 
@@ -236,6 +237,10 @@ public class FriendListPanel extends JPanel
         _ctx.getOccupantDirector().addOccupantObserver(this);
         // TODO: Add friends currently in-game
         _tdtr.setTableObject(plobj);
+        TableLobbyObject tlobj = (TableLobbyObject)plobj;
+        for (Table table : tlobj.getTables()) {
+        	_tabler.tableAdded(table);
+        }
 	}
 
 	@Override
