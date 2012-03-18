@@ -19,6 +19,7 @@ import com.hextilla.cardbox.facebook.client.FriendSet;
 import com.hextilla.cardbox.facebook.client.SocialDirector;
 import com.hextilla.cardbox.facebook.client.SocialDirector.FriendIterator;
 import com.hextilla.cardbox.lobby.data.LobbyObject;
+import com.hextilla.cardbox.lobby.invite.ButtonContext;
 import com.hextilla.cardbox.util.CardBoxContext;
 
 import com.threerings.crowd.client.OccupantObserver;
@@ -30,6 +31,7 @@ import com.threerings.parlor.client.TableDirector;
 import com.threerings.parlor.client.TableObserver;
 import com.threerings.parlor.data.Table;
 import com.threerings.parlor.data.TableLobbyObject;
+import com.threerings.util.Name;
 
 import static com.hextilla.cardbox.lobby.Log.log;
 
@@ -64,7 +66,7 @@ public class FriendListPanel extends JPanel
 		
 		// Setup the friend list objects and custom renderers
 		_listModel  = new FriendListModel();
-		_friendList = new FriendList(_listModel);
+		_friendList = new FriendList(_ctx, _listModel);
 		_friendList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		_friendList.setLayoutOrientation(JList.VERTICAL);		
 		ListCellRenderer renderer = new FriendListRenderer();
@@ -166,6 +168,9 @@ public class FriendListPanel extends JPanel
 		String message = friend.getFriendlyName().toString() + " now has status ";
 		switch(status)
 		{
+		case OnlineStatus.OFFLINE:
+			message = message + "OFFLINE";
+			break;
 		case OnlineStatus.ONLINE:
 			message = message + "ONLINE";
 			break;
@@ -206,10 +211,11 @@ public class FriendListPanel extends JPanel
 		if (_listModel.contains(user))
 		{
 			// Only remove a friend from the list if they left from the lobby
-			// without any running or pending games.
+			// without any running games.
 			switch(_tabler.getUserStatus(user))
 			{
 			case OnlineStatus.ONLINE:
+			case OnlineStatus.WAITING:
 			case OnlineStatus.LEAVING:
 				removeFriend(info);
 				break;
@@ -235,10 +241,19 @@ public class FriendListPanel extends JPanel
         	addFriend(info);
         }
         _ctx.getOccupantDirector().addOccupantObserver(this);
-        // TODO: Add friends currently in-game
+
+        // Add friends currently in-game (kind of ugly)
         _tdtr.setTableObject(plobj);
         TableLobbyObject tlobj = (TableLobbyObject)plobj;
         for (Table table : tlobj.getTables()) {
+        	for (Name player : table.players)
+        	{
+        		if (player instanceof CardBoxName)
+    			{
+    				CardBoxName user = (CardBoxName)player;
+    				addFriend(user);
+    			}
+        	}
         	_tabler.tableAdded(table);
         }
 	}
@@ -249,6 +264,7 @@ public class FriendListPanel extends JPanel
 		// clear out our occupant entries
 		_ctx.getOccupantDirector().removeOccupantObserver(this);
         _listModel.clear();
+        _friendList.clear();
         _tdtr.clearTableObject();
 	}
 	
@@ -261,6 +277,13 @@ public class FriendListPanel extends JPanel
 		} else {
 			return false;
 		}
+	}
+	
+	// Since this component generates contextual information, provide a means
+	// to access and use that.
+	public ButtonContext getContext()
+	{
+		return _friendList.getContext();
 	}
 	
 	protected static String occupantStatus(OccupantInfo info)

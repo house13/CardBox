@@ -138,7 +138,7 @@ public class FBUserRecord extends PersistentRecord
     	this.firstname = fbuser.getFirstName();
     	this.lastname = fbuser.getLastName();
     	this.email = fbuser.getEmail();
-    	this.anonymous = false;
+    	this.anonymous = true;
     	this.created = new Date(created);
     	this.lastActive = new Date(created);
     	setStatus(Status.NEW);

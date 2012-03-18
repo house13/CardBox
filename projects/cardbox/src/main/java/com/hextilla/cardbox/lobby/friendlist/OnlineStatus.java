@@ -87,6 +87,18 @@ public class OnlineStatus
 		return _ctx.xlate(STATUS_MSGS, message); 
 	}
 	
+	@Override
+	public boolean equals (Object other)
+	{
+		if (other instanceof OnlineStatus)
+		{
+			OnlineStatus os = (OnlineStatus)other;
+			return _status == os.getStatus();
+		}
+		
+		return false;
+	}
+	
 	protected void updateNotify ()
 	{
 		for (StatusObserver observer : _observers)
@@ -98,11 +110,13 @@ public class OnlineStatus
 	/**
 	 * User State Table
 	 * ################
+	 * OFFLINE
 	 * ONLINE - User in lobby, has no games
 	 * WAITING - User in lobby, in matchmaking
 	 * INGAME - User elsewhere, has a game
 	 * LEAVING - User leaving a game, on their way 
 	 */
+	public static final byte OFFLINE = 0;
 	public static final byte ONLINE = 1;
 	public static final byte WAITING = 2;
 	public static final byte INGAME = 4;

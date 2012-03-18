@@ -53,7 +53,7 @@ public class FriendTableTracker
 			if (player instanceof CardBoxName)
 			{
 				CardBoxName user = (CardBoxName)player;
-				if (_sdtr.isOnlineFriend(user) || _friends.isFriend(user.getFacebookId()))
+				if (_sdtr.isOnlineFriend(user))
 				{
 					log.info("Table Added", "friend", user, "players", Arrays.toString(table.players), "gameOid", table.gameOid);
 					Table oldtable = _friendMap.put(user, table);
