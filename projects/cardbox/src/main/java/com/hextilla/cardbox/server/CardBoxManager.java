@@ -56,6 +56,7 @@ import com.threerings.crowd.server.PlaceRegistry;
 import com.threerings.parlor.game.data.GameConfig;
 import com.threerings.parlor.game.server.GameManager;
 import com.threerings.parlor.game.server.GameManagerDelegate;
+import com.threerings.parlor.server.ParlorManager;
 
 import com.hextilla.cardbox.lobby.data.LobbyConfig;
 import com.hextilla.cardbox.lobby.data.LobbyObject;
@@ -77,7 +78,7 @@ import static com.hextilla.cardbox.data.CardBoxCodes.*;
  * Manages the server side of the CardBox services.
  */
 @Singleton
-public class CardBoxManager
+public class CardBoxManager extends ParlorManager
     implements CardBoxProvider
 {
     /**
@@ -100,6 +101,7 @@ public class CardBoxManager
 
     @Inject public CardBoxManager (InvocationManager invmgr)
     {
+    	super(invmgr);
         // register ourselves as providing the cardbox service
         invmgr.registerDispatcher(new CardBoxDispatcher(this), TOYBOX_GROUP);
     }
@@ -331,11 +333,18 @@ public class CardBoxManager
             });
         }
     }
+    
+    @Override
+    protected void createGameManager (GameConfig config)
+            throws InstantiationException, InvocationException
+    {
+    	createGame(config);
+    }
 
     /**
      * Creates a game based on the supplied configuration.
      */
-    public GameManager createGame (final GameRecord game, GameConfig config)
+    public GameManager createGame (GameConfig config)
         throws InvocationException
     {
         // TODO: various complicated bits to pass this request off to the standalone game server
@@ -344,7 +353,6 @@ public class CardBoxManager
         	{
         		HexDeck deck = _cbcmgr.getCards();
         		((CardBoxGameConfig)config).setDeck(deck);
-        		log.info("Creating a new game with cards loaded from DB", "deck", deck);
         	}
         	
             PlaceManager pmgr = _plreg.createPlace(config);
@@ -358,7 +366,7 @@ public class CardBoxManager
                 @Override
                 public void gameDidEnd () {
                     long playtime = System.currentTimeMillis() - _started;
-                    recordPlaytime(game, playtime);
+                    log.info("CardBoxManager: Game ended","playtime", playtime);
                 }
                 protected long _started;
             });

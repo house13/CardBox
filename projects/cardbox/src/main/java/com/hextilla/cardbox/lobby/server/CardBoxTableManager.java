@@ -59,7 +59,7 @@ public class CardBoxTableManager extends TableManager
     	table.config.players = table.getPlayers();
 
         // pass the buck to the cardbox manager to create the game
-        GameManager gmgr = _cardmgr.createGame(_lmgr.getGame(), table.config);
+        GameManager gmgr = _cardmgr.createGame(table.config);
 
         // tell the table manager about this game
         gameCreated(table, (GameObject)gmgr.getPlaceObject(), gmgr);
