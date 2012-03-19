@@ -15,6 +15,12 @@ import static com.hextilla.cardbox.lobby.Log.log;
 public class FriendSelectionContext 
 	implements ButtonContext, StatusObserver
 {
+	public FriendSelectionContext(CardBoxContext ctx, ButtonContext parent)
+	{
+		this(ctx);
+		_parent = parent;
+	}
+	
 	public FriendSelectionContext(CardBoxContext ctx)
 	{
 		log.info("FriendSelectionContext Created");
@@ -28,8 +34,8 @@ public class FriendSelectionContext
 
 	@Override
 	public String getText() {
-		if (_delegate != null)
-			return _delegate.getText();
+		if (_child != null)
+			return _child.getText();
 		
 		return _ctx.xlate(BUTTON_MSGS, DEFAULT_MSG);
 	}
@@ -39,10 +45,10 @@ public class FriendSelectionContext
 		// Ideally we want to avoid doing the work ourselves.
 		if (_selected == null)
 			return false;
-		if (_delegate == null)
+		if (_child == null)
 			return false;
 		
-		return _delegate.getEnabled();
+		return _child.getEnabled();
 	}
 
 	@Override
@@ -53,14 +59,17 @@ public class FriendSelectionContext
 	@Override
 	public void clear() {
 		_observers.clear();
-		_delegate = null;
+		_child = null;
 		_selected = null;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (_delegate != null)
-			_delegate.actionPerformed(e);
+		if (_child != null) {
+			_child.actionPerformed(e);
+			updated();
+		}
+			
 	}
 
 	// In this context, an update means a friend was selected
@@ -79,15 +88,17 @@ public class FriendSelectionContext
 		_selected = fe;
 		if (_selected != null)
 		{
+			if (_child != null)
+				_child.clear();
 			switch (_selected.getStatus().getStatus())
 			{
 			case OnlineStatus.ONLINE:
 			case OnlineStatus.WAITING:
 			case OnlineStatus.LEAVING:
-				_delegate = new InvitationContext(_ctx, _selected.getName());
+				_child = new InvitationContext(_ctx, _selected.getName(), this);
 				break;
 			default:
-				_delegate = null;
+				_child = null;
 				break;
 			}
 		}
@@ -99,17 +110,29 @@ public class FriendSelectionContext
 		// Update our delegate only if we're making a state transition
 		if (_selected != null && !_selected.getStatus().equals(status))
 		{
+			if (_child != null)
+				_child.clear();
 			switch (status.getStatus())
 			{
 			case OnlineStatus.ONLINE:
 			case OnlineStatus.WAITING:
 			case OnlineStatus.LEAVING:
-				_delegate = new InvitationContext(_ctx, user);
+				_child = new InvitationContext(_ctx, user, this);
 				break;
 			default:
-				_delegate = null;
+				_child = null;
 				break;
 			}
+			updated();
+		}
+	}
+	
+	@Override
+	public void refresh()
+	{
+		// Only service the request if it's probably the child making it
+		if (_child != null)
+		{
 			updated();
 		}
 	}
@@ -127,12 +150,17 @@ public class FriendSelectionContext
 		}
 	}
 	
+	
+	
 	protected CardBoxContext _ctx;
 	
 	protected FriendEntry _selected = null;
 	
+	/** Generally this context works on the top level */
+	protected  ButtonContext _parent = null;
+	
 	/** Our main job is to intelligently handle updates from the friend list, delegate out the work */
-	protected ButtonContext _delegate = null;
+	protected ButtonContext _child = null;
 	
 	protected Vector<ButtonContextObserver> _observers = new Vector<ButtonContextObserver>();
 	

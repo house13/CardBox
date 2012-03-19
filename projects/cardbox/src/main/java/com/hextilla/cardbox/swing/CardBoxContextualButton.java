@@ -80,6 +80,9 @@ public class CardBoxContextualButton extends CardBoxButton
 		@Override
 		public void clear() {
 		}
+		@Override
+		public void refresh() {
+		}
 		
 		protected CardBoxContext _ctx;
 		protected String _buttonText;

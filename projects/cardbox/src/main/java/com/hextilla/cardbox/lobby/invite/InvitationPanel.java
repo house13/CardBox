@@ -1,10 +1,8 @@
 package com.hextilla.cardbox.lobby.invite;
 
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -25,16 +23,14 @@ import static com.hextilla.cardbox.lobby.Log.log;
 
 public class InvitationPanel extends JPanel
 	implements InvitationListener 
-{
-	public InvitationPanel (CardBoxContext ctx)
+{	
+	public InvitationPanel (CardBoxContext ctx, JPanel dp)
 	{
 		log.info("Setting up the InvitationPanel");
 		_ctx = ctx;
 		_idtr = _ctx.getInvitationDirector();
 		
-		//this.setLayout(new GridLayout(1,1,0,0));
-		
-		//this.setLayout(new GridLayout(1, 1, 0, 0));
+		this.setLayout(new CardLayout());
 		
 		_inviteMsg = new MultiLineLabel("", MultiLineLabel.LEFT);
 		_inviteMsg.setFont(CardBoxUI.AppFontSmall);
@@ -68,12 +64,16 @@ public class InvitationPanel extends JPanel
 		_refuse.setMinimumSize(BUTTON_MIN_SIZE);
 		
 		//createDefaultPanel();
-		//this.add(_defaultPanel);
+		_defaultPanel = dp;
+		this.add(_defaultPanel, DEFAULT_CARD);
 		
 		createInvitationPanel();
-		this.add(_invitePanel);
+		this.add(_invitePanel, INVITE_CARD);
 		
 		_idtr.addInvitationListener(this);
+		
+		CardLayout cl = (CardLayout)this.getLayout();
+		cl.show(this, DEFAULT_CARD);
 		
 		log.info("InvitationPanel set up!!");
 	}
@@ -108,7 +108,7 @@ public class InvitationPanel extends JPanel
 	{
 		if (_incoming != null)
 		{
-			_incoming.accept();
+			_idtr.accept(_incoming);
 			if (!getNext())
 				_incoming = null;
 			updated();
@@ -119,15 +119,11 @@ public class InvitationPanel extends JPanel
 	{
 		if (_incoming != null)
 		{
-			_incoming.cancel();
+			_idtr.refuse(_incoming, null);
 			if (!getNext())
 				_incoming = null;
 			updated();
 		}
-	}
-	
-	public void willEnterPlace(PlaceObject place) {
-		_lobj = place;			
 	}
 	
 	protected boolean getNext()
@@ -143,12 +139,11 @@ public class InvitationPanel extends JPanel
 	
 	protected boolean updated()
 	{
+		CardLayout cl = (CardLayout)this.getLayout();
 		if (_incoming == null)
 		{
 			log.info("herp");
-			clear();
-			createDefaultPanel();
-			this.add(_defaultPanel);
+			cl.show(this, DEFAULT_CARD);
 			repaint();
 			return true;
 		}
@@ -160,19 +155,11 @@ public class InvitationPanel extends JPanel
 		
 		log.info("Setting text to: " + invite);
 		
-		clear();
-		createInvitationPanel();
-		this.add(_invitePanel);
+		cl.show(this, INVITE_CARD);
 		
 		repaint();
 		
 		return true;
-	}
-	
-	protected void createDefaultPanel()
-	{
-		_defaultPanel = new PlayerCountPanel(_ctx, 0);	
-		_defaultPanel.setBackground(getBackground());
 	}
 	
 	protected void createInvitationPanel()
@@ -209,6 +196,7 @@ public class InvitationPanel extends JPanel
 		this.removeAll();
 		_invitePanel = null;
 		_defaultPanel = null;
+		_idtr.removeInvitationListener(this);
 		//this.setLayout(new GridLayout(1, 1, 0, 0));
 	}
 	
@@ -224,9 +212,12 @@ public class InvitationPanel extends JPanel
 	protected MultiLineLabel _inviteMsg;
 	
 	protected JPanel _invitePanel = null;
-	protected PlayerCountPanel _defaultPanel = null;
+	protected JPanel _defaultPanel = null;
 	
 	protected Invitation _incoming = null;
+	
+	protected static final String DEFAULT_CARD = "default";
+	protected static final String INVITE_CARD = "invite";
 	
 	protected static final String INVITE_MSGS = "client.friend";
 	

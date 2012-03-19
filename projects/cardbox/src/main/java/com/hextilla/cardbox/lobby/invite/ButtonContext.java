@@ -24,4 +24,7 @@ public interface ButtonContext extends ActionListener
 	
 	/** Do some cleanup when the context is being discarded */
 	public void clear();
+	
+	/** Called by child contexts on the parent when the child wants to have its changes represented */
+	public void refresh();
 }

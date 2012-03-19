@@ -149,7 +149,9 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
         log.info("Continuing lobby panel config");
         
         // Label to keep track of online players
-        _invitePanel = new InvitationPanel(_ctx);
+        _onlinePlayerLabel = new PlayerCountPanel(_ctx, 0);	
+        
+        _invitePanel = new InvitationPanel(_ctx, _onlinePlayerLabel);
         _invitePanel.setBackground(CardBoxUI.ORANGE);
         _invitePanel.setMaximumSize(STATUS_MAX_SIZE);
         _invitePanel.setPreferredSize(STATUS_MAX_SIZE);
@@ -227,7 +229,7 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
 		_friendList.willEnterPlace(place);
 		_friendChat.willEnterPlace(place);
 		_globalChat.willEnterPlace(place);
-		//_onlinePlayerLabel.willEnterPlace(place);
+		_onlinePlayerLabel.willEnterPlace(place);
 	}
 	
 	// Entering and leaving the Hextilla panel
@@ -262,7 +264,7 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
     protected FriendListPanel _friendList;
     
     // Counts the number of online players
-    //protected PlayerCountPanel _onlinePlayerLabel;
+    protected PlayerCountPanel _onlinePlayerLabel;
     
     //protected InvitationPanel _invitePanel;
     protected InvitationPanel _invitePanel;

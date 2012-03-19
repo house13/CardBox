@@ -251,7 +251,8 @@ public class FriendListPanel extends JPanel
         		if (player instanceof CardBoxName)
     			{
     				CardBoxName user = (CardBoxName)player;
-    				addFriend(user);
+    				if (isFriend(user.getFacebookId()))
+    					addFriend(user);
     			}
         	}
         	_tabler.tableAdded(table);

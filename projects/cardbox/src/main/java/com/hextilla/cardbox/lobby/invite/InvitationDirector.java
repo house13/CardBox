@@ -34,7 +34,22 @@ public class InvitationDirector extends BasicDirector
 	
 	public void addInvitationListener(InvitationListener il)
 	{
-		_listeners.add(il);
+		_inlisteners.add(il);
+	}
+	
+	public void addResultListener(InvitationResultListener rl)
+	{
+		_relisteners.add(rl);
+	}
+	
+	public boolean removeInvitationListener(InvitationListener il)
+	{
+		return _inlisteners.remove(il);
+	}
+	
+	public boolean removeResultListener(InvitationResultListener rl)
+	{
+		return _relisteners.remove(rl);
 	}
 	
 	public boolean hasPending()
@@ -45,6 +60,22 @@ public class InvitationDirector extends BasicDirector
 	public boolean hasOutgoing()
 	{
 		return _outgoing != null;
+	}
+	
+	/** Remove the given invite from our pending set, then accept it */
+	public void accept(Invitation invite)
+	{
+		int id = invite.inviteId;
+		_pending.remove(id);
+		invite.accept();
+	}
+	
+	/** Remove the given invite from our pending set, then refuse it */
+	public void refuse(Invitation invite, String msg)
+	{
+		int id = invite.inviteId;
+		_pending.remove(id);
+		invite.refuse(msg);
 	}
 	
 	public Invitation getNextInvite()
@@ -66,8 +97,8 @@ public class InvitationDirector extends BasicDirector
 	public void sendInvitation(CardBoxName friend)
 	{
 		// You can't send an invite to yourself
-		if (friend.equals((CardBoxName)_ctx.getUsername()))
-			return;
+		//if (friend.equals((CardBoxName)_ctx.getUsername()))
+		//	return;
 		if (_outgoing == null)
 			_outgoing = _pdtr.invite(friend, _config, this);
 	}
@@ -78,6 +109,7 @@ public class InvitationDirector extends BasicDirector
 		if (_outgoing != null)
 		{
 			_outgoing.cancel();
+			log.info("Cancelled my outgoing invitation");
 			_outgoing = null;
 		}
 		for (int id : _incoming)
@@ -85,11 +117,14 @@ public class InvitationDirector extends BasicDirector
 			Invitation invite = _pending.remove(id);
 			if (invite != null)
 			{
-				invite.cancel();
+				invite.refuse(null);
+				log.info("Refusing pending invitation", "id", id);
 			}
 		}
 		_incoming.clear();
 		_pending.clear();
+		_inlisteners.clear();
+		_relisteners.clear();
 	}
 
 	// InvitationHandler permits us to accept invitations from others
@@ -105,13 +140,24 @@ public class InvitationDirector extends BasicDirector
 		_pending.put(invite.inviteId, invite);
 		// Notify the listeners only if this is our only invite.
 		if (_pending.size() == 1) {
-			for (InvitationListener listener : _listeners)
+			log.info("Incoming Invite being pushed to listeners");
+			for (InvitationListener listener : _inlisteners)
 			{
 				listener.invitationIncoming(invite);
 			}
 		} else {
+			log.info("Incoming Invite being pushed onto queue");
 			_incoming.add(invite.inviteId);
 		}
+	}
+	
+	protected void outgoingHandled()
+	{
+		if (_outgoing == null)
+			for (InvitationResultListener listener : _relisteners)
+			{
+				listener.outgoingHandled();
+			}
 	}
 	
 	/** 
@@ -135,6 +181,7 @@ public class InvitationDirector extends BasicDirector
 	{
 		log.info("Invitation was accepted!!!!", "invite", invite);
 		_outgoing = null;
+		outgoingHandled();
 	}
 	
 	@Override
@@ -142,6 +189,7 @@ public class InvitationDirector extends BasicDirector
 	{
 		log.info("Invitation was refused!!!!", "invite", invite);
 		_outgoing = null;
+		outgoingHandled();
 	}
 	
 	@Override
@@ -149,6 +197,7 @@ public class InvitationDirector extends BasicDirector
 	{
 		log.info("Invitation was countered!!!!", "invite", invite);
 		_outgoing = null;
+		outgoingHandled();
 	}
 	
 	/** END   InvitationResponseObserver methods */
@@ -164,7 +213,8 @@ public class InvitationDirector extends BasicDirector
 	/* Limit you to a single outgoing invite at a time. */
 	protected Invitation _outgoing = null;
 	
-	protected Vector<InvitationListener> _listeners = new Vector<InvitationListener>();
+	protected Vector<InvitationListener> _inlisteners = new Vector<InvitationListener>();
+	protected Vector<InvitationResultListener> _relisteners = new Vector<InvitationResultListener>();
 	
 	protected LinkedList<Integer> _incoming = new LinkedList<Integer>();
 	protected HashIntMap<Invitation> _pending = new HashIntMap<Invitation>();
