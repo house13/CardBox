@@ -97,8 +97,6 @@ public class FriendSelectionContext
 			switch (_selected.getStatus().getStatus())
 			{
 			case OnlineStatus.ONLINE:
-			case OnlineStatus.WAITING:
-			case OnlineStatus.LEAVING:
 				_child = new InvitationContext(_ctx, _selected.getName(), this);
 				break;
 			default:
@@ -122,8 +120,6 @@ public class FriendSelectionContext
 			switch (status.getStatus())
 			{
 			case OnlineStatus.ONLINE:
-			case OnlineStatus.WAITING:
-			case OnlineStatus.LEAVING:
 				_child = new InvitationContext(_ctx, user, this);
 				break;
 			default:
