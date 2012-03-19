@@ -23,6 +23,7 @@ import com.threerings.presents.dobj.EntryRemovedEvent;
 import com.threerings.presents.dobj.SetAdapter;
 
 import com.threerings.crowd.data.BodyObject;
+import com.threerings.crowd.data.Place;
 import com.threerings.crowd.data.PlaceObject;
 import com.threerings.crowd.server.PlaceManager;
 
@@ -85,8 +86,9 @@ public class LobbyManager extends PlaceManager
     
     public boolean isInLobby(BodyObject body)
     {
-    	if (_lobobj != null) {
-    		return _lobobj.equals(body.location);
+    	Place here = getLocation();
+    	if (here != null) {
+    		return here.equals(body.location);
     	} else {
     		return false;
     	}

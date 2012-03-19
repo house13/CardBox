@@ -96,8 +96,10 @@ public class InvitationDirector extends BasicDirector
 	
 	public void cancelOutgoing()
 	{
-		if (_outgoing != null)
+		if (_outgoing != null) {
 			_outgoing.cancel();
+			_outgoing = null;
+		}
 	}
 	
 	/** The _incoming Invite has been handled, grab the next one in the queue */

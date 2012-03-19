@@ -36,7 +36,6 @@ public class InvitationContext
 			_idtr.cancelOutgoing();
 			break;
 		}
-		
 		updateMode();
 		if (_parent != null)
 			_parent.refresh();

@@ -350,9 +350,10 @@ public class CardBoxManager extends ParlorManager
     	// We need to look up this invite and notify the invitee that the game's off.
     	Invitation invite = super._invites.remove(inviteId);
     	if (invite != null) {
-    		String cancel_msg = "Invite " + inviteId + " extended to you has been cancelled.";
+    		// Unfortunately, we're not currently able to give feedback when an invite is cancelled
+    		/* String cancel_msg = "Invite " + inviteId + " extended to you has been cancelled.";
 	    	ParlorSender.sendInviteResponse(
-	                invite.invitee, invite.inviteId, INVITATION_REFUSED, cancel_msg);
+	                invite.invitee, invite.inviteId, INVITATION_REFUSED, cancel_msg); */
 	    	_cancelledInvites.add(inviteId);
     	}
     }
@@ -384,7 +385,7 @@ public class CardBoxManager extends ParlorManager
             {
             	throw new Exception("One or more users participating in this invitation are no longer " +
             			"in the original lobby, aborting. " + "invite=" + invite + ", invitee=" + invite.config.players[0]
-            					+ ", inviter " + invite.config.players[1]);
+            					+ ", inviter " + invite.config.players[1] + "\n");
             }
             
             if (_cancelledInvites.remove(invite.inviteId))
