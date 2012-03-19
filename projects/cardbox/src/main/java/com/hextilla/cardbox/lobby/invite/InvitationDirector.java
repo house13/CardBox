@@ -97,8 +97,8 @@ public class InvitationDirector extends BasicDirector
 	public void sendInvitation(CardBoxName friend)
 	{
 		// You can't send an invite to yourself
-		//if (friend.equals((CardBoxName)_ctx.getUsername()))
-		//	return;
+		if (friend.equals((CardBoxName)_ctx.getUsername()))
+			return;
 		if (_outgoing == null)
 			_outgoing = _pdtr.invite(friend, _config, this);
 	}
