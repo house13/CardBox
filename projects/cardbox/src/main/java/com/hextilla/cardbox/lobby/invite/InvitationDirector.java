@@ -122,8 +122,8 @@ public class InvitationDirector extends BasicDirector
 	public void sendInvitation(CardBoxName friend)
 	{
 		// You can't send an invite to yourself
-		//if (friend.equals((CardBoxName)_ctx.getUsername()))
-		//	return;
+		if (friend.equals((CardBoxName)_ctx.getUsername()))
+			return;
 		if (_outgoing == null)
 			_outgoing = _pdtr.invite(friend, _config, this);
 	}
@@ -170,7 +170,7 @@ public class InvitationDirector extends BasicDirector
 	{
 		_pending.put(invite.inviteId, invite);
 		// Notify the listeners only if this is our only invite.
-		if (_incoming == null && _pending.size() == 0) {
+		if (_incoming == null) {
 			_incoming = invite;
 			log.info("Incoming Invite being pushed to listeners");
 			for (InvitationListener listener : _inlisteners)
