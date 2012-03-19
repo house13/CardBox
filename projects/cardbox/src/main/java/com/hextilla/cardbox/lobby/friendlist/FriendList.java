@@ -40,7 +40,7 @@ public class FriendList extends JList
         boolean isAdjusting = e.getValueIsAdjusting(); 
         
         if (_selectModel.isSelectionEmpty()) {
-        	// no-op
+        	updateContexts(null);
         } else if (!isAdjusting) {
             // Since we only support single selection, this will get us the info we need
             int index = _selectModel.getMinSelectionIndex();

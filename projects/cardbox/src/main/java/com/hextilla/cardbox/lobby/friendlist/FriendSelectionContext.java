@@ -111,9 +111,8 @@ public class FriendSelectionContext
 	
 	@Override
 	public void statusUpdated(CardBoxName user, OnlineStatus status) {
-		log.info("FriendSelectionContext: Status updated to", "status", status);
-		// Update our delegate only if we're making a state transition
-		if (_selected != null && !_selected.getStatus().equals(status))
+		// Update our delegate only if it's for the same person...
+		if (_selected != null && _selected.getName().equals(user))
 		{
 			if (_child != null)
 				_child.clear();
@@ -126,6 +125,7 @@ public class FriendSelectionContext
 				_child = null;
 				break;
 			}
+			log.info("FriendSelectionContext: Status updated to", "status", status);
 			updated();
 		}
 	}
