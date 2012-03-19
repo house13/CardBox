@@ -236,9 +236,9 @@ public class InvitationPanel extends JPanel
 	protected static final String REFUSE_MSG = "m.refuse";
 	protected static final String INVITE_MSG = "m.invite_received";
 	
-	protected static Dimension STATUS_MAX_SIZE = new Dimension(200, 50);
+	protected static Dimension STATUS_MAX_SIZE = new Dimension(190, 40);
     protected static Dimension STATUS_MIN_SIZE = new Dimension(100, 25); 
     
-    protected static Dimension BUTTON_MAX_SIZE = new Dimension(10, 50);
+    protected static Dimension BUTTON_MAX_SIZE = new Dimension(90, 40);
     protected static Dimension BUTTON_MIN_SIZE = new Dimension(50, 25); 
 }
