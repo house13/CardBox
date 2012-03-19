@@ -44,8 +44,6 @@ import com.threerings.crowd.server.CrowdServer;
 import com.threerings.crowd.server.PlaceManager;
 import com.threerings.crowd.server.PlaceRegistry;
 
-import com.threerings.parlor.server.ParlorManager;
-
 import com.hextilla.cardbox.server.persist.CardBoxRepository;
 import com.hextilla.cardbox.server.persist.FBUserRepository;
 import com.hextilla.cardbox.server.persist.GameSupplyRepository;
@@ -162,8 +160,6 @@ public class CardBoxServer extends CrowdServer
         }
         @Inject protected CardBoxManager _cardmgr;
     }
-
-    @Inject protected ParlorManager _parmgr;
     @Inject protected CardBoxManager _cardmgr;
     @Inject protected CardBoxUserManager _usermgr;
     @Inject protected CardBoxCardManager _cbcmgr;

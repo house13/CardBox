@@ -76,6 +76,11 @@ public class LobbyManager extends PlaceManager
     {
         return _game;
     }
+    
+    public TableManager getTableManager ()
+    {
+    	return _tablemgr;
+    }
 
     // documentation inherited
     @Override

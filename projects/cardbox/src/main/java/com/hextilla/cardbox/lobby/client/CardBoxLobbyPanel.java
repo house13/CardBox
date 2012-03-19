@@ -23,6 +23,7 @@ import com.hextilla.cardbox.lobby.data.LobbyCodes;
 import com.hextilla.cardbox.lobby.data.LobbyConfig;
 import com.hextilla.cardbox.lobby.data.LobbyObject;
 import com.hextilla.cardbox.lobby.friendlist.FriendListPanel;
+import com.hextilla.cardbox.lobby.invite.InvitationPanel;
 import com.hextilla.cardbox.lobby.matchmaking.ComputerOpponentView;
 import com.hextilla.cardbox.lobby.matchmaking.MatchListener;
 import com.hextilla.cardbox.lobby.matchmaking.MatchMaker;
@@ -31,6 +32,7 @@ import com.hextilla.cardbox.lobby.matchmaking.MatchMakingButton;
 import com.hextilla.cardbox.lobby.matchmaking.StrangerTableFilter;
 import com.hextilla.cardbox.lobby.matchmaking.FriendTableFilter;
 import com.hextilla.cardbox.lobby.matchmaking.MatchMaker.MatchStatus;
+import com.hextilla.cardbox.swing.CardBoxContextualButton;
 import com.hextilla.cardbox.swing.CardBoxTabbedPanel;
 import com.hextilla.cardbox.swing.PlayerCountPanel;
 import com.hextilla.cardbox.util.CardBoxContext;
@@ -63,6 +65,9 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
         
         // Add the friendPanel (same size as button panel)
         _friendList = new FriendListPanel(ctx, friendlyConfig);   
+        
+        // Use our friendly game configuration in our invitations
+        _ctx.getInvitationDirector().init(friendlyConfig);
                 
         // Modify the look/feel of the tabbedPane
         UIDefaults def = UIManager.getLookAndFeelDefaults();
@@ -81,45 +86,13 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
         // Classes to handle match making
         _mdtr = new MatchMakerDirector(ctx);
 		_strangerMatchMaker = new MatchMaker(ctx, strangerConfig, _mdtr, 
-				new StrangerTableFilter());
-		_friendlyMatchMaker = new MatchMaker(ctx, friendlyConfig, _mdtr, 
-				new FriendTableFilter(ctx, _ctx.getSocialDirector().getFriends()));		         
+				new StrangerTableFilter());       
 		       
 		// Stranger Play button
 		_strangerPlay = new MatchMakingButton(_msgs.xlate("m.stranger"), _strangerMatchMaker);
 		_strangerPlay.setFont(CardBoxUI.AppFontMedium);
 		_strangerPlay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				// Stop the other match making if it is running
-				switch (_friendPlay.getState()){
-				case MATCHING:
-					_friendPlay.stopMatchMaking();
-				case STOPPING:
-					// Disable the button if stopping (or we just stopped),
-					// we will fire the button again matchmaking has stopped
-					_strangerPlay.setEnabled(false);
-					// Create the listener to fire the button once the other
-					// matchmaker has cleared up.
-					_friendlyMatchMaker.AddMatchListener(new MatchListener() {
-						public boolean update(MatchStatus status, int tableId) {
-							// Only care about the stopped status
-							if (status != MatchStatus.STOPPED) return false;
-							
-							log.info("Friendly MM shutdown complete.");
-							
-							// Re-enable the button, start match making!
-							_strangerPlay.setEnabled(true);
-							_strangerPlay.startMatchMaking();
-							
-							// Remove the listener once we get the STOP
-							return true;							
-						}
-					});
-					return;
-				default:
-					break;
-				}
-				
 				switch (_strangerPlay.getState()){
 				case MATCHING:
 					// Stop if currently running
@@ -137,59 +110,10 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
 			}
 		});	
 		
-        // Friend Play button   
-		_friendPlay = new MatchMakingButton(_msgs.xlate("m.friend"), _friendlyMatchMaker);
+		log.info("Making the new Contextual Button");
+		_friendPlay = new CardBoxContextualButton(_ctx);
 		_friendPlay.setFont(CardBoxUI.AppFontMedium);
-		_friendPlay.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				
-				// Stop the other match making if it is running
-				switch (_strangerPlay.getState()){
-				case MATCHING:
-					_strangerPlay.stopMatchMaking();
-				case STOPPING:
-					// Disable the button if stopping (or we just stopped),
-					// we will fire the button again matchmaking has stopped
-					_friendPlay.setEnabled(false);
-					
-					// Create the listener to fire the button once the other
-					// matchmaker has cleared up.
-					_strangerMatchMaker.AddMatchListener(new MatchListener() {
-						public boolean update(MatchStatus status, int tableId) {							
-							// Only care about the stopped status
-							if (status != MatchStatus.STOPPED) return false;						
-							
-							log.info("Stranger MM shutdown complete.");
-							
-							// Re-enable the button, start match making!
-							_friendPlay.setEnabled(true);
-							_friendPlay.startMatchMaking();
-							
-							// Remove the listener once we get the STOP
-							return true;
-						}
-					});					
-					return;
-				default:
-					break;
-				}
-				
-				switch (_friendPlay.getState()){
-				case MATCHING:
-					// Stop if currently running
-					_friendPlay.stopMatchMaking();
-					break;
-				case STOPPED:
-					// Start if stopped
-					_friendPlay.startMatchMaking();
-					break;
-				default:
-					// Should never get here
-					log.info("Unhandled state: ", _friendPlay.getState());
-					break;
-				}
-			}
-		});		        
+		_friendPlay.setContext(_friendList.getContext());
 		
         // SoloPlay   	
         _soloPlay = new ComputerOpponentView(_ctx, aiConfig);
@@ -198,26 +122,6 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
 				// disable the other buttons so they don't get pressed
 				_friendPlay.setEnabled(false);
 				_strangerPlay.setEnabled(false);
-				
-				// Friend play is running
-				switch (_friendPlay.getState()){
-				case MATCHING:
-					// Stop if currently running
-					_friendPlay.stopMatchMaking();					
-					break;
-				case STOPPING:
-					// Wait for the matchmaking to end
-					_friendlyMatchMaker.AddMatchListener(new MatchListener() {
-						public boolean update(MatchStatus status, int tableId) {							
-							if (status != MatchStatus.STOPPED) return false;													
-							_soloPlay.startAIMatch();
-							return true;
-						}
-					});	
-					return;
-				default:
-					break;
-				}
 				
 				// Stranger play is running
 				switch (_strangerPlay.getState()){
@@ -242,18 +146,17 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
 			}
 		});
         
-        // Label to keep track of online players
-		_onlinePlayerLabel = new PlayerCountPanel(ctx, 0);
-		JPanel spaceHolder = new JPanel();
+        log.info("Continuing lobby panel config");
         
-        // Create the page layout
-		// Set the max/min/preferred sizes
-		_onlinePlayerLabel.setMaximumSize(PC_MAX_SIZE);
-		_onlinePlayerLabel.setPreferredSize(PC_MAX_SIZE);
-		_onlinePlayerLabel.setMinimumSize(PC_MIN_SIZE);
-		spaceHolder.setMaximumSize(SPACE_MAX_SIZE);
-		spaceHolder.setPreferredSize(SPACE_MAX_SIZE);
-		spaceHolder.setMinimumSize(SPACE_MAX_SIZE);		
+        // Label to keep track of online players
+        _onlinePlayerLabel = new PlayerCountPanel(_ctx, 0);	
+        
+        _invitePanel = new InvitationPanel(_ctx, _onlinePlayerLabel);
+        _invitePanel.setBackground(CardBoxUI.ORANGE);
+        _invitePanel.setMaximumSize(STATUS_MAX_SIZE);
+        _invitePanel.setPreferredSize(STATUS_MAX_SIZE);
+        _invitePanel.setMinimumSize(STATUS_MIN_SIZE);
+        
 		
 		_strangerPlay.setMaximumSize(BUTTON_MAX_SIZE);
 		_strangerPlay.setPreferredSize(BUTTON_MAX_SIZE);
@@ -295,9 +198,7 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
 	    		   layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 	    		      .addGroup(layout.createSequentialGroup()
 	    		    		  .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER, true)
-	    		    				  .addGroup(layout.createSequentialGroup()
-	    		    				  			.addComponent(_onlinePlayerLabel)
-	    		    				  			.addComponent(spaceHolder))
+	    		    				  .addComponent(_invitePanel)
 	    		    				  .addComponent(_friendPlay)
 	    		    				  .addComponent(_strangerPlay)
 	    		    				  .addComponent(_soloPlay))
@@ -311,15 +212,15 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
 	    		   layout.createSequentialGroup()
 	    		      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, true)
 	    		    		  .addGroup(layout.createSequentialGroup()
-	    		    				  .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, true)
-	    		    						  	.addComponent(_onlinePlayerLabel)
-	    		    						  	.addComponent(spaceHolder))
+	    		    				  .addComponent(_invitePanel)
 	    		    				  .addComponent(_friendPlay)
 	    		    				  .addComponent(_strangerPlay)
 	    		    				  .addComponent(_soloPlay))
 		    				  .addComponent(_friendList))
 					  .addComponent(chatPane)
 	    		);
+        
+        log.info("Finished lobby panel config");
 	}
 	
 	public void init(PlaceObject place) 
@@ -336,15 +237,14 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
 		_lobj = (LobbyObject)place;
 		_soloPlay.setPlace(place);
 		_strangerMatchMaker.setPlace(place);
-		_friendlyMatchMaker.setPlace(place);
 		_mdtr.setPlace(place);
 	}
 
 	public void didLeavePlace(PlaceObject place) {
 		_soloPlay.leavePlace(place);
 		_strangerMatchMaker.leavePlace(place);
-		_friendlyMatchMaker.leavePlace(place);
 		_mdtr.leavePlace(place);
+		_ctx.getInvitationDirector().clearInvitations();
 	}		
 	
 	/** ChatPanel objects **/
@@ -365,25 +265,25 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
     
     // Counts the number of online players
     protected PlayerCountPanel _onlinePlayerLabel;
+    
+    //protected InvitationPanel _invitePanel;
+    protected InvitationPanel _invitePanel;
         
 	// Matchmaking classes
-	public static MatchMaker _strangerMatchMaker;
-	public static MatchMaker _friendlyMatchMaker;  
+	public static MatchMaker _strangerMatchMaker; 
 	protected MatchMakerDirector _mdtr;
     
     // Buttons
     protected ComputerOpponentView _soloPlay;
-    protected MatchMakingButton _friendPlay;
+    protected CardBoxContextualButton _friendPlay;
     protected MatchMakingButton _strangerPlay;   
 	
 	// Whether we're running in development mode (i.e. gameId = -1)
 	protected boolean _devmode = false;
 
 	// PlayerCount label sizes (and the whitespace beside it)
-    protected static Dimension PC_MAX_SIZE = new Dimension(150, 50);
-    protected static Dimension PC_MIN_SIZE = new Dimension(75, 25);
-    protected static Dimension SPACE_MAX_SIZE = new Dimension(250, 50);
-    protected static Dimension SPACE_MIN_SIZE = new Dimension(125, 25);    
+	protected static Dimension STATUS_MAX_SIZE = new Dimension(400, 50);
+    protected static Dimension STATUS_MIN_SIZE = new Dimension(200, 25);   
 	
     // Button sizes
     protected static Dimension BUTTON_MAX_SIZE = new Dimension(400, 100);

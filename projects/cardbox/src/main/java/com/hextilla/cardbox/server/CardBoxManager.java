@@ -53,9 +53,14 @@ import com.threerings.crowd.data.PlaceConfig;
 import com.threerings.crowd.server.PlaceManager;
 import com.threerings.crowd.server.PlaceRegistry;
 
+import com.threerings.parlor.data.Table;
+import com.threerings.parlor.data.TableConfig;
 import com.threerings.parlor.game.data.GameConfig;
 import com.threerings.parlor.game.server.GameManager;
 import com.threerings.parlor.game.server.GameManagerDelegate;
+import com.threerings.parlor.server.ParlorManager;
+import com.threerings.parlor.server.TableManager;
+import com.threerings.util.Name;
 
 import com.hextilla.cardbox.lobby.data.LobbyConfig;
 import com.hextilla.cardbox.lobby.data.LobbyObject;
@@ -64,6 +69,7 @@ import com.hextilla.cardbox.lobby.server.LobbyManager;
 import com.hextilla.cardbox.data.GameDefinition;
 import com.hextilla.cardbox.data.CardBoxGameConfig;
 import com.hextilla.cardbox.data.HexDeck;
+import com.hextilla.cardbox.data.TableMatchConfig;
 import com.hextilla.cardbox.server.persist.GameRecord.Status;
 import com.hextilla.cardbox.server.persist.GameRecord;
 import com.hextilla.cardbox.server.persist.SessionRecord;
@@ -77,7 +83,7 @@ import static com.hextilla.cardbox.data.CardBoxCodes.*;
  * Manages the server side of the CardBox services.
  */
 @Singleton
-public class CardBoxManager
+public class CardBoxManager extends ParlorManager
     implements CardBoxProvider
 {
     /**
@@ -100,6 +106,7 @@ public class CardBoxManager
 
     @Inject public CardBoxManager (InvocationManager invmgr)
     {
+    	super(invmgr);
         // register ourselves as providing the cardbox service
         invmgr.registerDispatcher(new CardBoxDispatcher(this), TOYBOX_GROUP);
     }
@@ -331,11 +338,51 @@ public class CardBoxManager
             });
         }
     }
+    
+    @Override
+    protected void processAcceptedInvitation (Invitation invite)
+    {
+        try {
+        	LobbyManager lmgr = (LobbyManager)_plreg.getPlaceManager(_lobbyOids.get(invite.config.getGameId()));
+            log.info("Processing accepted invitation [invite=" + invite + "].");
+
+            // configure the game config with the player info
+            invite.config.players = new Name[] { invite.invitee.getVisibleName(),
+                                                 invite.inviter.getVisibleName() };
+            
+            TableConfig tconfig = new TableConfig();
+            tconfig.minimumPlayerCount = 2;
+            tconfig.desiredPlayerCount = 2;
+            
+            // We need to check if someone's accepted an invite from themselves for some reason
+            if (invite.invitee.getVisibleName().equals(invite.inviter.getVisibleName()))
+    		{
+            	throw new Exception("User " + invite.invitee.getVisibleName().toString() + 
+            			" attempted to invite themselves to a game");
+    		}
+            
+            TableManager tablemgr = lmgr.getTableManager();
+            Table table = tablemgr.createTable(invite.inviter, tconfig, invite.config);
+            if (table != null) {
+            	tablemgr.joinTable(invite.invitee, table.tableId, 1, null);
+            } else {
+            	log.warning("Invitational table could not be created", "invite", invite);
+            }
+        } catch (Exception e) {
+            log.warning("Unable to process accepted invitation", "invite", invite, e);
+        }
+    }
+    
+    @Override
+    protected void createGameManager (GameConfig config)
+            throws InstantiationException, InvocationException
+    {
+    }
 
     /**
      * Creates a game based on the supplied configuration.
      */
-    public GameManager createGame (final GameRecord game, GameConfig config)
+    public GameManager createGame (GameConfig config)
         throws InvocationException
     {
         // TODO: various complicated bits to pass this request off to the standalone game server
@@ -344,7 +391,6 @@ public class CardBoxManager
         	{
         		HexDeck deck = _cbcmgr.getCards();
         		((CardBoxGameConfig)config).setDeck(deck);
-        		log.info("Creating a new game with cards loaded from DB", "deck", deck);
         	}
         	
             PlaceManager pmgr = _plreg.createPlace(config);
@@ -358,7 +404,7 @@ public class CardBoxManager
                 @Override
                 public void gameDidEnd () {
                     long playtime = System.currentTimeMillis() - _started;
-                    recordPlaytime(game, playtime);
+                    log.info("CardBoxManager: Game ended","playtime", playtime);
                 }
                 protected long _started;
             });
