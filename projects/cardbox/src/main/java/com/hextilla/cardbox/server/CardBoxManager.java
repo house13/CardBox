@@ -354,6 +354,13 @@ public class CardBoxManager extends ParlorManager
             tconfig.minimumPlayerCount = 2;
             tconfig.desiredPlayerCount = 2;
             
+            // We need to check if someone's accepted an invite from themselves for some reason
+            if (invite.invitee.getVisibleName().equals(invite.inviter.getVisibleName()))
+    		{
+            	throw new Exception("User " + invite.invitee.getVisibleName().toString() + 
+            			" attempted to invite themselves to a game");
+    		}
+            
             TableManager tablemgr = lmgr.getTableManager();
             Table table = tablemgr.createTable(invite.inviter, tconfig, invite.config);
             if (table != null) {
@@ -362,7 +369,7 @@ public class CardBoxManager extends ParlorManager
             	log.warning("Invitational table could not be created", "invite", invite);
             }
         } catch (Exception e) {
-            log.warning("Unable to create game manager [invite=" + invite + "].", e);
+            log.warning("Unable to process accepted invitation", "invite", invite, e);
         }
     }
     

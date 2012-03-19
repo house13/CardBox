@@ -23,6 +23,7 @@ import com.hextilla.cardbox.lobby.data.LobbyCodes;
 import com.hextilla.cardbox.lobby.data.LobbyConfig;
 import com.hextilla.cardbox.lobby.data.LobbyObject;
 import com.hextilla.cardbox.lobby.friendlist.FriendListPanel;
+import com.hextilla.cardbox.lobby.invite.InvitationPanel;
 import com.hextilla.cardbox.lobby.matchmaking.ComputerOpponentView;
 import com.hextilla.cardbox.lobby.matchmaking.MatchListener;
 import com.hextilla.cardbox.lobby.matchmaking.MatchMaker;
@@ -148,17 +149,12 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
         log.info("Continuing lobby panel config");
         
         // Label to keep track of online players
-		_onlinePlayerLabel = new PlayerCountPanel(ctx, 0);
-		JPanel spaceHolder = new JPanel();
+        _invitePanel = new InvitationPanel(_ctx);
+        _invitePanel.setBackground(CardBoxUI.ORANGE);
+        _invitePanel.setMaximumSize(STATUS_MAX_SIZE);
+        _invitePanel.setPreferredSize(STATUS_MAX_SIZE);
+        _invitePanel.setMinimumSize(STATUS_MIN_SIZE);
         
-        // Create the page layout
-		// Set the max/min/preferred sizes
-		_onlinePlayerLabel.setMaximumSize(PC_MAX_SIZE);
-		_onlinePlayerLabel.setPreferredSize(PC_MAX_SIZE);
-		_onlinePlayerLabel.setMinimumSize(PC_MIN_SIZE);
-		spaceHolder.setMaximumSize(SPACE_MAX_SIZE);
-		spaceHolder.setPreferredSize(SPACE_MAX_SIZE);
-		spaceHolder.setMinimumSize(SPACE_MAX_SIZE);		
 		
 		_strangerPlay.setMaximumSize(BUTTON_MAX_SIZE);
 		_strangerPlay.setPreferredSize(BUTTON_MAX_SIZE);
@@ -200,9 +196,7 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
 	    		   layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 	    		      .addGroup(layout.createSequentialGroup()
 	    		    		  .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER, true)
-	    		    				  .addGroup(layout.createSequentialGroup()
-	    		    				  			.addComponent(_onlinePlayerLabel)
-	    		    				  			.addComponent(spaceHolder))
+	    		    				  .addComponent(_invitePanel)
 	    		    				  .addComponent(_friendPlay)
 	    		    				  .addComponent(_strangerPlay)
 	    		    				  .addComponent(_soloPlay))
@@ -216,9 +210,7 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
 	    		   layout.createSequentialGroup()
 	    		      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, true)
 	    		    		  .addGroup(layout.createSequentialGroup()
-	    		    				  .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, true)
-	    		    						  	.addComponent(_onlinePlayerLabel)
-	    		    						  	.addComponent(spaceHolder))
+	    		    				  .addComponent(_invitePanel)
 	    		    				  .addComponent(_friendPlay)
 	    		    				  .addComponent(_strangerPlay)
 	    		    				  .addComponent(_soloPlay))
@@ -235,7 +227,7 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
 		_friendList.willEnterPlace(place);
 		_friendChat.willEnterPlace(place);
 		_globalChat.willEnterPlace(place);
-		_onlinePlayerLabel.willEnterPlace(place);
+		//_onlinePlayerLabel.willEnterPlace(place);
 	}
 	
 	// Entering and leaving the Hextilla panel
@@ -250,6 +242,7 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
 		_soloPlay.leavePlace(place);
 		_strangerMatchMaker.leavePlace(place);
 		_mdtr.leavePlace(place);
+		_ctx.getInvitationDirector().clearInvitations();
 	}		
 	
 	/** ChatPanel objects **/
@@ -269,7 +262,10 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
     protected FriendListPanel _friendList;
     
     // Counts the number of online players
-    protected PlayerCountPanel _onlinePlayerLabel;
+    //protected PlayerCountPanel _onlinePlayerLabel;
+    
+    //protected InvitationPanel _invitePanel;
+    protected InvitationPanel _invitePanel;
         
 	// Matchmaking classes
 	public static MatchMaker _strangerMatchMaker; 
@@ -284,10 +280,8 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
 	protected boolean _devmode = false;
 
 	// PlayerCount label sizes (and the whitespace beside it)
-    protected static Dimension PC_MAX_SIZE = new Dimension(150, 50);
-    protected static Dimension PC_MIN_SIZE = new Dimension(75, 25);
-    protected static Dimension SPACE_MAX_SIZE = new Dimension(250, 50);
-    protected static Dimension SPACE_MIN_SIZE = new Dimension(125, 25);    
+	protected static Dimension STATUS_MAX_SIZE = new Dimension(400, 50);
+    protected static Dimension STATUS_MIN_SIZE = new Dimension(200, 25);   
 	
     // Button sizes
     protected static Dimension BUTTON_MAX_SIZE = new Dimension(400, 100);

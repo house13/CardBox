@@ -36,7 +36,7 @@ public class InvitationContext
 	}
 	@Override
 	public boolean getEnabled() {
-		return true;
+		return !_idtr.hasPending();
 	}
 	@Override
 	public void addObserver(ButtonContextObserver ob) {
