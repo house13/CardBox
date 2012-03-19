@@ -361,6 +361,14 @@ public class CardBoxManager extends ParlorManager
             			" attempted to invite themselves to a game");
     		}
             
+            // Ensure that both of the "invitational" parties are actually still in the lobby by the time 
+            if (!(lmgr.isInLobby(invite.inviter) && lmgr.isInLobby(invite.invitee)))
+            {
+            	throw new Exception("One or more users participating in this invitation are no longer " +
+            			"in the original lobby, aborting. " + "invite=" + invite + ", invitee=" + invite.config.players[0]
+            					+ ", inviter " + invite.config.players[1]);
+            }
+            
             TableManager tablemgr = lmgr.getTableManager();
             Table table = tablemgr.createTable(invite.inviter, tconfig, invite.config);
             if (table != null) {
