@@ -13,12 +13,13 @@ import com.threerings.crowd.data.PlaceObject;
 import com.threerings.parlor.client.SeatednessObserver;
 import com.threerings.parlor.client.TableDirector;
 import com.threerings.parlor.client.TableObserver;
+import com.threerings.parlor.client.TableService;
 import com.threerings.parlor.data.Table;
 import com.threerings.parlor.data.TableConfig;
 import com.threerings.parlor.data.TableLobbyObject;
 import com.threerings.parlor.game.client.GameConfigurator;
 
-public class MatchMaker implements TableObserver, SeatednessObserver 
+public class MatchMaker implements TableObserver, SeatednessObserver, TableService.ResultListener
 {
 
 	// Use an enum to indicate status, we may need to change this if we need more info
@@ -56,11 +57,9 @@ public class MatchMaker implements TableObserver, SeatednessObserver
 		
 		// Search for open games
 	    for (Table table : _openList) {
-	    	// Try to join at the next open position (Join at position 2, host sits in 1)
-	    	//TODO: may need to keep track of open seats using seatedness observer
-	    	//TODO: We need to try again if join fails (how to detect this...?)
-	    	
-            _tdtr.joinTable(table.tableId, 1);
+	    	// Try to join at the next open position (Join at position 2, host sits in 1)	
+	    	log.info("Attempt to join table: + table.tableId");
+            _tdtr.joinTable(table.tableId, 1);           
             return;
 	    }
 	    
@@ -189,8 +188,7 @@ public class MatchMaker implements TableObserver, SeatednessObserver
 	    	if (table.tableId == updatedTable.tableId) {
 	    		
 	    		// Move the table to the other list if the game is transitioning to in play
-	    		if (table.gameOid != -1){     
-	    			log.info("Possible match found...");
+	    		if (updatedTable.gameOid != -1){     
 	                // Move table to playing tables
 	                _openList.remove(table);
 	                _playList.add(updatedTable);
@@ -230,6 +228,18 @@ public class MatchMaker implements TableObserver, SeatednessObserver
         _playList.clear();
 	}	
 	
+
+	public void requestFailed(String cause) {
+		// Restart matchmaker
+		log.info("Table request failed, restarting matchmaker");
+		startMatchMaking();
+	}
+
+	public void requestProcessed(Object result) {
+		// TODO Auto-generated method stub
+		
+	}   
+	
 	// Vector of listeners
 	protected List<MatchListener> listeners;	
 	
@@ -264,5 +274,5 @@ public class MatchMaker implements TableObserver, SeatednessObserver
     protected int _currentTableID = -1;
     
     // Reference to the lobby
-    TableLobbyObject _tlobj;    
+    TableLobbyObject _tlobj; 
 }
