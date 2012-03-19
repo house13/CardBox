@@ -60,6 +60,8 @@ public class FriendSelectionContext
 	public void clear() {
 		_observers.clear();
 		_child = null;
+		if (_selected != null)
+			_selected.getStatus().removeListener(this);
 		_selected = null;
 	}
 
@@ -85,9 +87,11 @@ public class FriendSelectionContext
 	
 	public void setFriend(FriendEntry fe)
 	{
-		_selected = fe;
-		if (_selected != null)
+		if (fe != null)
 		{
+			if (_selected != null)
+				_selected.getStatus().removeListener(this);
+			_selected = fe;
 			if (_child != null)
 				_child.clear();
 			switch (_selected.getStatus().getStatus())
@@ -101,6 +105,9 @@ public class FriendSelectionContext
 				_child = null;
 				break;
 			}
+			_selected.getStatus().addListener(this);
+		} else {
+			_selected = null;
 		}
 	}
 	

@@ -65,8 +65,6 @@ public class ComputerOpponentView extends JPanel
 	        _playButton = new CardBoxButton(_msgs.xlate("m.ai"));
 	        _playButton.setFont(CardBoxUI.AppFontMedium);
 	        
-	        JLabel _aiLabel = new JLabel("AI Skill");
-	        
 	        _difficultyLevel = CardBoxPrefs.getAILevel();
 	        JSlider _aiSlider = new JSlider(0, 8, _difficultyLevel);
 	        _aiSlider.setMajorTickSpacing(1);
@@ -96,18 +94,14 @@ public class ComputerOpponentView extends JPanel
 	        layout.setHorizontalGroup(
 	        		layout.createParallelGroup(GroupLayout.Alignment.CENTER, true)
 	        			.addComponent(_playButton)
-	        			.addGroup(layout.createSequentialGroup()
-	        					.addComponent(_aiLabel)
-	        					.addComponent(_aiSlider))
+	        			.addComponent(_aiSlider)
 		    		);    
 	        
 	        // Vertical Grouping
 	        layout.setVerticalGroup(
 	        		layout.createSequentialGroup()
         			.addComponent(_playButton)
-        			.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER, true)
-        					.addComponent(_aiLabel)
-        					.addComponent(_aiSlider))
+        			.addComponent(_aiSlider)
 	    		);        
 	    }
 

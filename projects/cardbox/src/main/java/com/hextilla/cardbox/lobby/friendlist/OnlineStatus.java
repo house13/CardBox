@@ -56,6 +56,15 @@ public class OnlineStatus
 			_observers.add(so);
 	}
 	
+	public boolean removeListener (StatusObserver so)
+	{
+		if (so != null) {
+			return _observers.remove(so);
+		} else {
+			return false;
+		}
+	}
+	
 	public void clearListeners ()
 	{
 		_observers.clear();

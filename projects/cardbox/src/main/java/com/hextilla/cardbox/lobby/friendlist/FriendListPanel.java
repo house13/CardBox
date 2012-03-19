@@ -227,6 +227,14 @@ public class FriendListPanel extends JPanel
 	@Override
 	public void occupantUpdated(OccupantInfo oldinfo, OccupantInfo newinfo)
 	{
+		if (oldinfo.status == OccupantInfo.DISCONNECTED &&
+			newinfo.status == OccupantInfo.ACTIVE) {
+			occupantEntered(newinfo);
+		} else if ((oldinfo.status == OccupantInfo.ACTIVE || oldinfo.status == OccupantInfo.IDLE) &&
+					newinfo.status == OccupantInfo.DISCONNECTED) {
+			occupantLeft(newinfo);
+		}
+		
 		CardBoxName olduser = (CardBoxName)oldinfo.username;
 		CardBoxName newuser = (CardBoxName)newinfo.username;
 		log.info("Occupant Updated", "olduser", olduser, "oldstatus", occupantStatus(oldinfo),

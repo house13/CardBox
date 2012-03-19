@@ -10,6 +10,7 @@ import com.threerings.crowd.client.OccupantObserver;
 import com.threerings.crowd.client.PlaceView;
 import com.threerings.crowd.data.OccupantInfo;
 import com.threerings.crowd.data.PlaceObject;
+import com.threerings.util.MessageBundle;
 
 public class PlayerCountPanel extends JPanel implements OccupantObserver, PlaceView
 {
@@ -19,6 +20,8 @@ public class PlayerCountPanel extends JPanel implements OccupantObserver, PlaceV
 		_ctx = ctx;
 		
 		_playerCount = currentPlayerCount;
+		
+		_onlineCountText = _ctx.xlate(LOBBY_MSGS, COUNT_MSG);
 		
 		_onlineCountTextLabel = new JLabel(_onlineCountText, JLabel.LEFT);
 		_onlineCountTextLabel.setFont(CardBoxUI.AppFontSmall);
@@ -30,7 +33,7 @@ public class PlayerCountPanel extends JPanel implements OccupantObserver, PlaceV
 	}
 
 	// Label text
-	protected static String _onlineCountText = "Players Online: ";
+	protected String _onlineCountText;
 
 	public void setOnlinePlayerCount(long count) {
 		_playerCount = count;
@@ -48,6 +51,13 @@ public class PlayerCountPanel extends JPanel implements OccupantObserver, PlaceV
 	}
 
 	public void occupantUpdated(OccupantInfo oldinfo, OccupantInfo newinfo) {
+		if (oldinfo.status == OccupantInfo.DISCONNECTED &&
+			newinfo.status == OccupantInfo.ACTIVE) {
+			occupantEntered(newinfo);
+		} else if ((oldinfo.status == OccupantInfo.ACTIVE || oldinfo.status == OccupantInfo.IDLE) &&
+					newinfo.status == OccupantInfo.DISCONNECTED) {
+			occupantLeft(newinfo);
+		}
 	}
 
 	public void willEnterPlace(PlaceObject place) {
@@ -64,11 +74,12 @@ public class PlayerCountPanel extends JPanel implements OccupantObserver, PlaceV
 	protected CardBoxContext _ctx;
 	
 	// The number of players currently connected
-	long _playerCount;	
+	protected long _playerCount;	
 	
 	// The labels for showing the online players
-	JLabel _onlineCountTextLabel;
-	JLabel _onlineCountNumberLabel;
+	protected JLabel _onlineCountTextLabel;
+	protected JLabel _onlineCountNumberLabel;
 		
-
+	protected static final String LOBBY_MSGS = "client.lobby";
+	protected static final String COUNT_MSG = "m.player_count";
 }
