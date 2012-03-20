@@ -216,6 +216,8 @@ public class InvitationDirector extends BasicDirector
 	{
 		log.info("Invitation was accepted!!!!", "invite", invite);
 		_outgoing = null;
+		// Clean stuff up, since we're going to be leaving shortly!
+		clearInvitations();
 		outgoingHandled();
 	}
 	
