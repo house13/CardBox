@@ -128,6 +128,7 @@ public class CardBoxApplet extends ManagedJApplet
         if (_client != null) {
             Client client = _client.getContext().getClient();
             if (client != null && client.isLoggedOn()) {
+            	_client.getContext().getInvitationDirector().clearInvitations();
                 client.logoff(true);
             }
         }
