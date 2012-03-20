@@ -64,7 +64,10 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
         _devmode = (config.getGameId() == -1);
         
         // Add the friendPanel (same size as button panel)
-        _friendList = new FriendListPanel(ctx, friendlyConfig);   
+        _friendList = new FriendListPanel(ctx, friendlyConfig);  
+        
+        // In case you have some icky state kicking around
+        _ctx.getInvitationDirector().clearInvitations();
         
         // Use our friendly game configuration in our invitations
         _ctx.getInvitationDirector().init(friendlyConfig);
@@ -269,10 +272,10 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
 	}
 
 	public void didLeavePlace(PlaceObject place) {
+		_ctx.getInvitationDirector().clearInvitations();
 		_soloPlay.leavePlace(place);
 		_strangerMatchMaker.leavePlace(place);
 		_mdtr.leavePlace(place);
-		_ctx.getInvitationDirector().clearInvitations();
 	}		
 	
 	/** ChatPanel objects **/
