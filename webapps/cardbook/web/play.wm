@@ -22,7 +22,7 @@ codebase="http://java.sun.com/update/1.6.0/jinstall-6u22-windows-i586.cab">
 <param name="resource_url" value="$resource_url"/>
 <param name="game_id" value="$game.gameId"/>
 <param name="session_id" value="$session_id"/>
-If you're reading this, you need to <a href="http://java.com/en/download/index.jsp">install the Java plugin.</a>
+If you are reading this, you need to <a href="http://java.com/en/download/index.jsp">install the Java plugin.</a>
 </object> 
 <!--[if !IE]>-->
 </object>
@@ -37,12 +37,12 @@ If you're reading this, you need to <a href="http://java.com/en/download/index.j
             empty spaces on the game board, competing to determine who can control the most cards by the time the board
             is full. Similar to some physical games, Hextilla uses hexagonal cards, with the board arranged in a
             hextille grid. Each card has a set of numbers along its edge which represent the power of each side, the
-            centre icon being the card’s elemental type. By placing a card next to one of your opponent’s cards, you can
+            centre icon being the card&#39s elemental type. By placing a card next to one of your opponent&#39s cards, you can
             capture it if the adjacent edge on your card has a greater power than the edge on the opposing card. Some
             spaces on the board may have their own elemental type - this will grant a bonus to cards of a matching type,
             and a penalty to other types, but Normal-type cards are unaffected; placing a card on a Normal space will
-            not have a special effect. It’s possible to capture up to six opposing cards in a single move, so plan your
-            strategies well, and we’ll see you in-game!</p>
+            not have a special effect. It&#39s possible to capture up to six opposing cards in a single move, so plan your
+            strategies well, and we&#39ll see you in-game!</p>
         </div>
     </div>
 
