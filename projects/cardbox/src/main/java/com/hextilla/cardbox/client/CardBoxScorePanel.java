@@ -70,6 +70,10 @@ public class CardBoxScorePanel extends TurnDisplay implements AttributeChangeLis
 
         } else if (name.equals(GameObject.WINNERS)) {
             createList();
+        } 
+        else if (name.equals(CardBoxGameObject.ACCEPTS_REMATCH))
+        {
+        	createList();
         }
     }
 	
