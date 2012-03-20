@@ -131,7 +131,13 @@ public class FriendListPanel extends JPanel
 	// Remove a friend from the friend list
 	public void removeFriend(CardBoxName name)
 	{
-		_listModel.removeElement(new FriendEntry(_ctx, name));
+		FriendEntry fe = new FriendEntry(_ctx, name);
+		int index = _listModel.getIndexOf(fe);
+		// If the guy who left was selected, clear the selection
+		if (_friendList.isSelectedIndex(index)) {
+			_friendList.clearSelection();
+		}
+		_listModel.removeElement(index);
 	}
 
 	@Override

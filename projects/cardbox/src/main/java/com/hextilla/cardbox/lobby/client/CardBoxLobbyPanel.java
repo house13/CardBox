@@ -157,6 +157,34 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
         _invitePanel.setPreferredSize(STATUS_MAX_SIZE);
         _invitePanel.setMinimumSize(STATUS_MIN_SIZE);
         
+        _invitePanel.setAcceptListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+				// disable the other buttons so they don't get pressed
+        		_soloPlay.setEnabled(false);
+				_strangerPlay.setEnabled(false);
+				
+				// Stranger play is running
+				switch (_strangerPlay.getState()){
+				case MATCHING:
+					// Stop if currently running
+					_strangerPlay.stopMatchMaking();					
+				case STOPPING:
+					// Wait for the matchmaking to end
+					_strangerMatchMaker.AddMatchListener(new MatchListener() {
+						public boolean update(MatchStatus status, int tableId) {							
+							if (status != MatchStatus.STOPPED) return false;
+							_invitePanel.accept();
+							return true;
+						}
+					});	
+					return;
+				default:
+					break;
+				}
+				
+				_invitePanel.accept();
+			}
+        });
 		
 		_strangerPlay.setMaximumSize(BUTTON_MAX_SIZE);
 		_strangerPlay.setPreferredSize(BUTTON_MAX_SIZE);

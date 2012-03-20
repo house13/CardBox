@@ -35,15 +35,16 @@ public class InvitationPanel extends JPanel
 		_inviteMsg.setFont(CardBoxUI.AppFontSmall);
 		
 		_accept = new CardBoxButton(_ctx.xlate(INVITE_MSGS, ACCEPT_MSG));
-		_accept.addActionListener(new ActionListener() {
+		setAcceptListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				accept();
 			}
 		});
+		_accept.addActionListener(_acceptListener);
 		
 		_refuse = new CardBoxButton(_ctx.xlate(INVITE_MSGS, REFUSE_MSG));
-		_refuse.addActionListener(new ActionListener() {
+		setRefuseListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				refuse();
@@ -202,6 +203,24 @@ public class InvitationPanel extends JPanel
 	    		);
 	}
 	
+	public void setAcceptListener(ActionListener al)
+	{
+		if (_acceptListener != null)
+			_accept.removeActionListener(_acceptListener);
+		_acceptListener = al;
+		if (_acceptListener != null)
+			_accept.addActionListener(_acceptListener);
+	}
+	
+	public void setRefuseListener(ActionListener al)
+	{
+		if (_refuseListener != null)
+			_refuse.removeActionListener(_refuseListener);
+		_refuseListener = al;
+		if (_refuseListener != null)
+			_refuse.addActionListener(_refuseListener);
+	}
+	
 	protected void clear()
 	{
 		this.removeAll();
@@ -219,6 +238,9 @@ public class InvitationPanel extends JPanel
 	
 	protected CardBoxButton _accept;
 	protected CardBoxButton _refuse;
+	
+	protected ActionListener _acceptListener;
+	protected ActionListener _refuseListener;
 	
 	protected MultiLineLabel _inviteMsg;
 	

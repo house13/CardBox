@@ -117,6 +117,12 @@ public class FriendListModel extends AbstractListModel
 		return _directory.get(name);
 	}
 	
+	// Used for de-selection
+	public int getIndexOf(FriendEntry entry)
+	{
+		return Collections.binarySearch(_model, entry);
+	}
+	
 	@Override
 	public Object getElementAt(int index)
 	{

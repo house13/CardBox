@@ -53,7 +53,10 @@ public class MatchMaker implements TableObserver, SeatednessObserver, TableServi
 
 	// Start searching for a game
 	public void startMatchMaking() {
-		log.info("Start Matchmaking...");		
+		log.info("Start Matchmaking...");	
+		
+		// If we have an existing outgoing invitation, cancel it since we're going into matchmaking.
+		_ctx.getInvitationDirector().cancelOutgoing();
 		
 		// Search for open games
 	    for (Table table : _openList) {
