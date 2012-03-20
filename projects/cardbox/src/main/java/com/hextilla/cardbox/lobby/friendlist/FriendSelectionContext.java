@@ -109,6 +109,8 @@ public class FriendSelectionContext
 			_selected.getStatus().addListener(this);
 		} else {
 			_selected = null;
+			_child.clear();
+			_child = null;
 		}
 	}
 	
