@@ -54,7 +54,7 @@ public class InvitationDirector extends BasicDirector
 	
 	public boolean hasPending()
 	{
-		return _pending.size() > 0;
+		return _incoming != null || _pending.size() > 0;
 	}
 	
 	public boolean hasOutgoing()
@@ -63,33 +63,60 @@ public class InvitationDirector extends BasicDirector
 	}
 	
 	/** Remove the given invite from our pending set, then accept it */
-	public void accept(Invitation invite)
+	public void accept()
 	{
-		int id = invite.inviteId;
-		_pending.remove(id);
-		invite.accept();
+		if (_incoming == null) {
+			log.info("No incoming message to accept");
+			return;
+		}
+			
+		int id = _incoming.inviteId;
+		Invitation removed = _pending.remove(id);
+		if (removed != null) {
+			_incoming.accept();
+			_incoming = null;
+		}
 	}
 	
 	/** Remove the given invite from our pending set, then refuse it */
-	public void refuse(Invitation invite, String msg)
+	public void refuse(String msg)
 	{
-		int id = invite.inviteId;
-		_pending.remove(id);
-		invite.refuse(msg);
+		if (_incoming == null) {
+			log.info("No incoming message to refuse");
+			return;
+		}
+		
+		int id = _incoming.inviteId;
+		Invitation removed = _pending.remove(id);
+		if (removed != null) {
+			_incoming.refuse(msg);
+			_incoming = null;
+		}
 	}
 	
+	public void cancelOutgoing()
+	{
+		if (_outgoing != null) {
+			_outgoing.cancel();
+			_outgoing = null;
+		}
+	}
+	
+	/** The _incoming Invite has been handled, grab the next one in the queue */
 	public Invitation getNextInvite()
 	{
 		Invitation invite = null;
-		while (!_incoming.isEmpty())
+		while (!_incomingQ.isEmpty())
 		{
-			int id = _incoming.remove();
-			invite = _pending.remove(id);
+			int id = _incomingQ.remove();
+			invite = _pending.get(id);
 			if (invite != null)
 			{
+				_incoming = invite;
 				return invite;
 			}
 		}
+		_incoming = invite;
 		return invite;
 	}
 	
@@ -112,16 +139,22 @@ public class InvitationDirector extends BasicDirector
 			log.info("Cancelled my outgoing invitation");
 			_outgoing = null;
 		}
-		for (int id : _incoming)
+		if (_incoming != null)
+		{
+			_incoming.refuse("User leaving the lobby");
+			log.info("Cancelled my outgoing invitation");
+			_outgoing = null;
+		}
+		for (int id : _incomingQ)
 		{
 			Invitation invite = _pending.remove(id);
 			if (invite != null)
 			{
-				invite.refuse(null);
+				invite.refuse("User leaving the lobby");
 				log.info("Refusing pending invitation", "id", id);
 			}
 		}
-		_incoming.clear();
+		_incomingQ.clear();
 		_pending.clear();
 		_inlisteners.clear();
 		_relisteners.clear();
@@ -139,7 +172,8 @@ public class InvitationDirector extends BasicDirector
 	{
 		_pending.put(invite.inviteId, invite);
 		// Notify the listeners only if this is our only invite.
-		if (_pending.size() == 1) {
+		if (_incoming == null) {
+			_incoming = invite;
 			log.info("Incoming Invite being pushed to listeners");
 			for (InvitationListener listener : _inlisteners)
 			{
@@ -147,7 +181,7 @@ public class InvitationDirector extends BasicDirector
 			}
 		} else {
 			log.info("Incoming Invite being pushed onto queue");
-			_incoming.add(invite.inviteId);
+			_incomingQ.add(invite.inviteId);
 		}
 	}
 	
@@ -167,8 +201,9 @@ public class InvitationDirector extends BasicDirector
 	@Override
 	public void invitationCancelled(Invitation invite) 
 	{
+		// Won't ever get called by anything (ParlorDirector doesn't handle cancellations well)
 		log.info("Invitation cancelled", "invite", invite); 
-		_pending.remove(invite.inviteId);
+		//_pending.remove(invite.inviteId);
 	}
 	
 	/** END   InvitationHandler methods */
@@ -187,9 +222,24 @@ public class InvitationDirector extends BasicDirector
 	@Override
 	public void invitationRefused(Invitation invite, String message)
 	{
-		log.info("Invitation was refused!!!!", "invite", invite);
-		_outgoing = null;
-		outgoingHandled();
+		// Invitation cancellation overrides the refusal function...
+		if (_outgoing != null && _outgoing.inviteId == invite.inviteId)
+		{
+			log.info("Invitation was refused!!!!", "invite", invite, "message", message);
+			_outgoing = null;
+			outgoingHandled();
+		} else if (_incoming != null && _incoming.inviteId == invite.inviteId) {
+			// They only really need to know if the current invite being handled got cancelled.
+			for (InvitationListener listener : _inlisteners)
+			{
+				listener.invitationCancelled(invite);
+			}
+			_incoming = null;
+		} else if (_pending.containsKey(invite.inviteId)) {
+			// Just less work to do later on I guess
+			_pending.remove(invite.inviteId);
+			log.info("Invitation has been cancelled by the inviter", "invite", invite, "message", message);
+		}
 	}
 	
 	@Override
@@ -210,12 +260,15 @@ public class InvitationDirector extends BasicDirector
 	/** The friendly game configuration we use in our invitations */
 	protected GameConfig _config = null;
 	
-	/* Limit you to a single outgoing invite at a time. */
+	/** Limit you to a single outgoing invite at a time. */
 	protected Invitation _outgoing = null;
+	
+	/** Hang onto the incoming invite currently being processed */
+	protected Invitation _incoming = null;
 	
 	protected Vector<InvitationListener> _inlisteners = new Vector<InvitationListener>();
 	protected Vector<InvitationResultListener> _relisteners = new Vector<InvitationResultListener>();
 	
-	protected LinkedList<Integer> _incoming = new LinkedList<Integer>();
+	protected LinkedList<Integer> _incomingQ = new LinkedList<Integer>();
 	protected HashIntMap<Invitation> _pending = new HashIntMap<Invitation>();
 }

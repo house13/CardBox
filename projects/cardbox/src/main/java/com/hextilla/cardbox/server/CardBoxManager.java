@@ -33,6 +33,7 @@ import com.google.inject.Singleton;
 import com.samskivert.io.PersistenceException;
 import com.samskivert.io.StreamUtil;
 import com.samskivert.jdbc.WriteOnlyUnit;
+import com.samskivert.util.HashIntSet;
 import com.samskivert.util.IntIntMap;
 import com.samskivert.util.Interval;
 import com.samskivert.util.Invoker;
@@ -49,6 +50,7 @@ import com.threerings.presents.server.PresentsDObjectMgr;
 import com.threerings.presents.util.PersistingUnit;
 import com.threerings.presents.util.ResultAdapter;
 
+import com.threerings.crowd.data.BodyObject;
 import com.threerings.crowd.data.PlaceConfig;
 import com.threerings.crowd.server.PlaceManager;
 import com.threerings.crowd.server.PlaceRegistry;
@@ -59,6 +61,7 @@ import com.threerings.parlor.game.data.GameConfig;
 import com.threerings.parlor.game.server.GameManager;
 import com.threerings.parlor.game.server.GameManagerDelegate;
 import com.threerings.parlor.server.ParlorManager;
+import com.threerings.parlor.server.ParlorSender;
 import com.threerings.parlor.server.TableManager;
 import com.threerings.util.Name;
 
@@ -130,6 +133,8 @@ public class CardBoxManager extends ParlorManager
             };
             _popval.schedule(60 * 1000L, true);
         }
+        
+        _cancelledInvites.setSentinel(INVITE_SENTINEL);
 
         log.info("CardBoxManager ready [rsrcdir=" + CardBoxConfig.getResourceDir() + "].");
     }
@@ -340,6 +345,20 @@ public class CardBoxManager extends ParlorManager
     }
     
     @Override
+    public void cancelInvite (BodyObject source, int inviteId)
+    {
+    	// We need to look up this invite and notify the invitee that the game's off.
+    	Invitation invite = super._invites.remove(inviteId);
+    	if (invite != null) {
+    		// Unfortunately, we're not currently able to give feedback when an invite is cancelled
+    		/* String cancel_msg = "Invite " + inviteId + " extended to you has been cancelled.";
+	    	ParlorSender.sendInviteResponse(
+	                invite.invitee, invite.inviteId, INVITATION_REFUSED, cancel_msg); */
+	    	_cancelledInvites.add(inviteId);
+    	}
+    }
+    
+    @Override
     protected void processAcceptedInvitation (Invitation invite)
     {
         try {
@@ -360,6 +379,20 @@ public class CardBoxManager extends ParlorManager
             	throw new Exception("User " + invite.invitee.getVisibleName().toString() + 
             			" attempted to invite themselves to a game");
     		}
+            
+            // Ensure that both of the "invitational" parties are actually still in the lobby by the time 
+            if (!(lmgr.isInLobby(invite.inviter) && lmgr.isInLobby(invite.invitee)))
+            {
+            	throw new Exception("One or more users participating in this invitation are no longer " +
+            			"in the original lobby, aborting. " + "invite=" + invite + ", invitee=" + invite.config.players[0]
+            					+ ", inviter " + invite.config.players[1] + "\n");
+            }
+            
+            if (_cancelledInvites.remove(invite.inviteId))
+            {
+            	throw new Exception("User " + invite.invitee.getVisibleName().toString() + 
+            			" attempted to accept a cancelled invitation");
+            }
             
             TableManager tablemgr = lmgr.getTableManager();
             Table table = tablemgr.createTable(invite.inviter, tconfig, invite.config);
@@ -477,6 +510,10 @@ public class CardBoxManager extends ParlorManager
     /** Maps game identifiers to custom class loaders. In general this will only have one mapping,
      * but we'll be general just in case.  */
     protected Map<String,CardBoxClassLoader> _loaders = Maps.newHashMap();
+    
+    /** Keep a set of invite IDs we've cancelled in case people try to accept them */
+    protected HashIntSet _cancelledInvites = new HashIntSet();
+    protected static final int INVITE_SENTINEL = -2;
 
     /** Periodically writes out the number of users online in each game to a file. */
     protected Interval _popval;

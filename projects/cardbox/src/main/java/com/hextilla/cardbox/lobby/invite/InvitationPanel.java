@@ -26,7 +26,6 @@ public class InvitationPanel extends JPanel
 {	
 	public InvitationPanel (CardBoxContext ctx, JPanel dp)
 	{
-		log.info("Setting up the InvitationPanel");
 		_ctx = ctx;
 		_idtr = _ctx.getInvitationDirector();
 		
@@ -63,7 +62,6 @@ public class InvitationPanel extends JPanel
 		_refuse.setPreferredSize(BUTTON_MAX_SIZE);
 		_refuse.setMinimumSize(BUTTON_MIN_SIZE);
 		
-		//createDefaultPanel();
 		_defaultPanel = dp;
 		this.add(_defaultPanel, DEFAULT_CARD);
 		
@@ -74,8 +72,6 @@ public class InvitationPanel extends JPanel
 		
 		CardLayout cl = (CardLayout)this.getLayout();
 		cl.show(this, DEFAULT_CARD);
-		
-		log.info("InvitationPanel set up!!");
 	}
 
 	@Override
@@ -85,6 +81,20 @@ public class InvitationPanel extends JPanel
 		_incoming = invite;
 		updated();
 	}
+	
+	@Override
+	public void invitationCancelled(Invitation invite)
+	{
+		// Our currently-being-processed incoming invite got cancelled, bummer.
+		if (_incoming != null && _incoming.inviteId == invite.inviteId) {
+			// We could probably use this opportunity to offer some feedback to the user
+			if (!getNext())
+				_incoming = null;
+			updated();
+		} else {
+			log.info("InvitationPanel: Some sort of Invitation Cancelled!", "invite", invite);
+		}
+	}  
 	
 	@Override
 	public void setBackground(Color bg)
@@ -108,7 +118,7 @@ public class InvitationPanel extends JPanel
 	{
 		if (_incoming != null)
 		{
-			_idtr.accept(_incoming);
+			_idtr.accept();
 			if (!getNext())
 				_incoming = null;
 			updated();
@@ -119,7 +129,7 @@ public class InvitationPanel extends JPanel
 	{
 		if (_incoming != null)
 		{
-			_idtr.refuse(_incoming, null);
+			_idtr.refuse("Invite Refused by " + _ctx.getUsername());
 			if (!getNext())
 				_incoming = null;
 			updated();
@@ -132,9 +142,10 @@ public class InvitationPanel extends JPanel
 		{
 			_incoming = _idtr.getNextInvite();
 			return true;
+		} else {
+			_incoming = null;
+			return false;
 		}
-		
-		return false;
 	}
 	
 	protected boolean updated()
@@ -225,9 +236,9 @@ public class InvitationPanel extends JPanel
 	protected static final String REFUSE_MSG = "m.refuse";
 	protected static final String INVITE_MSG = "m.invite_received";
 	
-	protected static Dimension STATUS_MAX_SIZE = new Dimension(180, 40);
+	protected static Dimension STATUS_MAX_SIZE = new Dimension(190, 40);
     protected static Dimension STATUS_MIN_SIZE = new Dimension(100, 25); 
     
     protected static Dimension BUTTON_MAX_SIZE = new Dimension(90, 40);
-    protected static Dimension BUTTON_MIN_SIZE = new Dimension(50, 25);   
+    protected static Dimension BUTTON_MIN_SIZE = new Dimension(50, 25); 
 }

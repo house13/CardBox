@@ -97,8 +97,6 @@ public class FriendSelectionContext
 			switch (_selected.getStatus().getStatus())
 			{
 			case OnlineStatus.ONLINE:
-			case OnlineStatus.WAITING:
-			case OnlineStatus.LEAVING:
 				_child = new InvitationContext(_ctx, _selected.getName(), this);
 				break;
 			default:
@@ -113,23 +111,21 @@ public class FriendSelectionContext
 	
 	@Override
 	public void statusUpdated(CardBoxName user, OnlineStatus status) {
-		log.info("FriendSelectionContext: Status updated to", "status", status);
-		// Update our delegate only if we're making a state transition
-		if (_selected != null && !_selected.getStatus().equals(status))
+		// Update our delegate only if it's for the same person...
+		if (_selected != null && _selected.getName().equals(user))
 		{
 			if (_child != null)
 				_child.clear();
 			switch (status.getStatus())
 			{
 			case OnlineStatus.ONLINE:
-			case OnlineStatus.WAITING:
-			case OnlineStatus.LEAVING:
 				_child = new InvitationContext(_ctx, user, this);
 				break;
 			default:
 				_child = null;
 				break;
 			}
+			log.info("FriendSelectionContext: Status updated to", "status", status);
 			updated();
 		}
 	}

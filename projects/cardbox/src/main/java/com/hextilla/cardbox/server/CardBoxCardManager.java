@@ -79,7 +79,6 @@ public class CardBoxCardManager
     		for (CardRecord record : records)
     		{
     			_collection.add(transmuteCard(record));
-    			log.info("Getting card ", record);
     		}
     		_deck.setCards(_collection);
     	}

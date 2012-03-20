@@ -28,7 +28,15 @@ public class InvitationContext
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		_idtr.sendInvitation(_friend);
+		switch(_mode) {
+		case INVITE_MODE:
+			_idtr.sendInvitation(_friend);
+			break;
+		case CANCEL_MODE:
+			_idtr.cancelOutgoing();
+			break;
+		}
+		updateMode();
 		if (_parent != null)
 			_parent.refresh();
 	}
@@ -38,23 +46,28 @@ public class InvitationContext
 	}
 	@Override
 	public String getText() {
-		String invite = MessageBundle.tcompose(INVITE_MSG, _friend.getFriendlyName().toString());
-		invite = _ctx.xlate(BUTTON_MSGS, invite); 
-		return invite;
+		String text = "";
+		switch(_mode) {
+		case INVITE_MODE:
+			text = MessageBundle.tcompose(INVITE_MSG, _friend.getFriendlyName().toString());
+			text = _ctx.xlate(BUTTON_MSGS, text); 
+			break;
+		case CANCEL_MODE:
+			text = _ctx.xlate(BUTTON_MSGS, CANCEL_MSG);
+			break;
+		}
+		return text;
 	}
 	@Override
 	public boolean getEnabled() {
-		return !_idtr.hasOutgoing();
+		return true;
 	}
 	@Override
 	public void outgoingHandled() {
 		// Should re-enable the invite button
-		if (_parent != null)
-		{
-			log.info("Outgoing Handled!!!");
+		if (_parent != null) {
+			updateMode();
 			_parent.refresh();
-		} else {
-			log.info("Outgoing NOT Handled!!!");
 		}
 			
 	}
@@ -78,6 +91,15 @@ public class InvitationContext
 		// no-op
 	}
 	
+	protected void updateMode()
+	{
+		if (_idtr.hasOutgoing()) {
+			_mode = CANCEL_MODE;
+		} else {
+			_mode = INVITE_MODE;
+		}
+	}
+	
 	protected CardBoxContext _ctx;
 	
 	protected InvitationDirector _idtr;
@@ -87,8 +109,14 @@ public class InvitationContext
 	protected  ButtonContext _parent = null;
 	protected  ButtonContext _child = null;
 	
+	protected byte _mode = INVITE_MODE;
+	
 	protected static final String BUTTON_MSGS = "client.friend";
 	protected static final String INVITE_MSG = "m.button_invite";
+	protected static final String CANCEL_MSG = "m.button_cancel";
+	
+	protected static final byte INVITE_MODE = 1;
+	protected static final byte CANCEL_MODE = 2;
 	
 	protected static final String __NAME = "InvitationContext";
 }

@@ -22,6 +22,8 @@ package com.hextilla.cardbox.lobby.server;
 import com.threerings.presents.dobj.EntryRemovedEvent;
 import com.threerings.presents.dobj.SetAdapter;
 
+import com.threerings.crowd.data.BodyObject;
+import com.threerings.crowd.data.Place;
 import com.threerings.crowd.data.PlaceObject;
 import com.threerings.crowd.server.PlaceManager;
 
@@ -80,6 +82,16 @@ public class LobbyManager extends PlaceManager
     public TableManager getTableManager ()
     {
     	return _tablemgr;
+    }
+    
+    public boolean isInLobby(BodyObject body)
+    {
+    	Place here = getLocation();
+    	if (here != null) {
+    		return here.equals(body.location);
+    	} else {
+    		return false;
+    	}
     }
 
     // documentation inherited
