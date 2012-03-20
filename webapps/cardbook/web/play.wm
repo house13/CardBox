@@ -22,7 +22,7 @@ codebase="http://java.sun.com/update/1.6.0/jinstall-6u22-windows-i586.cab">
 <param name="resource_url" value="$resource_url"/>
 <param name="game_id" value="$game.gameId"/>
 <param name="session_id" value="$session_id"/>
-Install the Javer.
+If you're reading this, you need to <a href="http://java.com/en/download/index.jsp">install the Java plugin.</a>
 </object> 
 <!--[if !IE]>-->
 </object>
