@@ -136,6 +136,7 @@ public class FriendListPanel extends JPanel
 		// If the guy who left was selected, clear the selection
 		if (_friendList.isSelectedIndex(index)) {
 			_friendList.clearSelection();
+			//_friendList.updateContexts(null);
 		}
 		_listModel.removeElement(index);
 	}

@@ -82,6 +82,9 @@ public class FriendSelectionContext
 			FriendEntry fe = (FriendEntry)ob;
 			setFriend(fe);
 			updated();
+		} else {
+			setFriend(null);
+			updated();
 		}
 	}
 	
