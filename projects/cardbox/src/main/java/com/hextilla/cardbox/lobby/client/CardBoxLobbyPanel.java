@@ -66,7 +66,7 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
         // Add the friendPanel (same size as button panel)
         _friendList = new FriendListPanel(ctx, friendlyConfig);  
         
-        // In case you have some icky state kicking around
+        // In case you have some kind of icky state kicking around I guess
         _ctx.getInvitationDirector().clearInvitations();
         
         // Use our friendly game configuration in our invitations

@@ -143,7 +143,7 @@ public class InvitationDirector extends BasicDirector
 		{
 			_incoming.refuse("User leaving the lobby");
 			log.info("Cancelled my outgoing invitation");
-			_outgoing = null;
+			_incoming = null;
 		}
 		for (int id : _incomingQ)
 		{
