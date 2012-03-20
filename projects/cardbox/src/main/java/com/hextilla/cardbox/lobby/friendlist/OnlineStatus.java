@@ -32,8 +32,7 @@ public class OnlineStatus
 			if (_status == LEAVING && status != ONLINE)
 				return false;
 			_status = status;
-			if (status == ONLINE || status == INGAME)
-				updateNotify();
+			updateNotify();
 			return true;
 		} else {
 			return false;
