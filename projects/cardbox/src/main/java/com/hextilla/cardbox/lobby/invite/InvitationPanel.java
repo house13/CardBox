@@ -154,7 +154,6 @@ public class InvitationPanel extends JPanel
 		CardLayout cl = (CardLayout)this.getLayout();
 		if (_incoming == null)
 		{
-			log.info("herp");
 			cl.show(this, DEFAULT_CARD);
 			repaint();
 			return true;
@@ -227,7 +226,6 @@ public class InvitationPanel extends JPanel
 		_invitePanel = null;
 		_defaultPanel = null;
 		_idtr.removeInvitationListener(this);
-		//this.setLayout(new GridLayout(1, 1, 0, 0));
 	}
 	
 	protected CardBoxContext _ctx;
