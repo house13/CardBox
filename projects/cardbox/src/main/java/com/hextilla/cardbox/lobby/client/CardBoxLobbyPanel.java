@@ -125,6 +125,7 @@ public class CardBoxLobbyPanel extends JPanel implements PlaceView
 				// disable the other buttons so they don't get pressed
 				_friendPlay.setEnabled(false);
 				_strangerPlay.setEnabled(false);
+				_soloPlay.setEnabled(false);
 				
 				// Stranger play is running
 				switch (_strangerPlay.getState()){
