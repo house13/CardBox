@@ -25,6 +25,8 @@ import java.awt.Image;
 import java.io.IOException;
 import java.net.URL;
 
+import javax.swing.UIManager;
+
 import com.threerings.media.FrameManager;
 import com.threerings.media.ManagedJApplet;
 
@@ -57,6 +59,12 @@ public class CardBoxApplet extends ManagedJApplet
 
         System.setProperty("awt.useSystemAAFontSettings","on");
         System.setProperty("swing.aatext", "true");
+        
+        try {
+        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+        } catch (Exception e) {
+        	log.warning("Attempt to set look and feel to cross-platform failed", e);
+        }
         
         log.info("Java: " + System.getProperty("java.version") +
             ", " + System.getProperty("java.vendor") + ")");
