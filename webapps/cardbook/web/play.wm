@@ -44,6 +44,12 @@ If you are reading this, you need to <a href="http://java.com/en/download/index.
             not have a special effect. It&#39s possible to capture up to six opposing cards in a single move, so plan your
             strategies well, and we&#39ll see you in-game!</p>
         </div>
+        
+        <div class="sixteen columns" id="problems">
+        	<h2>Problems?</h2>
+        	<p>Are you having trouble connecting to the server, or playing a game? <a href="mailto:admin@hextilla.com">Drop us a line</a>,
+        	and we&#39ll try to get things working again. Thanks for your patience with us.</p>
+        </div>
     </div>
 
 #import ("/footer.wm")
